@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import androidx.annotation.NonNull;
  *
  * @see Slide
  */
-public class Stack {
+public class Stack implements Serializable {
     /**
      * Titre de la présentation.
      */
