@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 
@@ -47,7 +48,7 @@ public class Stack implements Serializable {
 
     public Stack(@NonNull String title) {
         this.slides = new ArrayList<>();
-        this.title = title;
+        this.title = Objects.requireNonNull(title);
         this.creationTime = System.currentTimeMillis();
     }
 

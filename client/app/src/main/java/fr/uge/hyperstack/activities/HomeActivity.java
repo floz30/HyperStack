@@ -20,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +81,14 @@ public class HomeActivity extends AppCompatActivity implements TwoButtonsDialogL
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         CreationStackDialogFragment dialogContext = (CreationStackDialogFragment) dialog;
-        Stack newStack = new Stack(dialogContext.getTitle());
+        String title = dialogContext.getTitle();
+        if (title.isEmpty()) {
+            // Solution temporaire
+            Toast toast = Toast.makeText(getApplicationContext(), "Le nom de la présentation ne peut pas être vide.", Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
+        Stack newStack = new Stack(title);
         stackAdapter.addStack(newStack);
 
         // On envoie vers l'écran de modification
