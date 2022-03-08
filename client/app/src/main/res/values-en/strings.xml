@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cancel">Cancel</string>
+    <string name="validate">Validate</string>
+    <string name="title">Title</string>
+    <string name="creation_stack_btn">Create new stack</string>
+</resources>

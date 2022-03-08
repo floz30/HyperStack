@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">Hyperstack</string>
+    <string name="app_name" translatable="false">Hyperstack</string>
+    <string name="cancel">Annuler</string>
+    <string name="validate">Valider</string>
+    <string name="title">Titre</string>
+    <string name="creation_stack_btn">Création d\'une présentation</string>
 </resources>

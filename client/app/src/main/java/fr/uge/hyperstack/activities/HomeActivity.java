@@ -2,14 +2,14 @@ package fr.uge.hyperstack.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.Adapter;
 import fr.uge.hyperstack.R;
+import fr.uge.hyperstack.fragment.CreationStackDialogFragment;
+import fr.uge.hyperstack.fragment.TwoButtonsDialogListener;
 import fr.uge.hyperstack.model.Stack;
 
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,7 +24,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements TwoButtonsDialogListener {
     private final List<Stack> stacks = new ArrayList<>();
     private StackAdapter stackAdapter;
 
@@ -61,7 +61,7 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.creationStack:
-                createNewStack();
+                showCreationStackDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -69,16 +69,33 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /**
-     * Initialise une nouvelle présentation en demandant les informations nécessaires à sa création.
+     * Affiche une fenêtre de dialogue invitant à rentrer le nom de la nouvelle présentation.
      */
-    private void createNewStack() {
-        stackAdapter.addStack(new Stack("Toto")); // exemple à retirer
-        // TODO : afficher une fenêtre de dialogue pour demander le nom de la nouvelle présentation et afficher EditActivity
+    private void showCreationStackDialog() {
+        DialogFragment newFragment = new CreationStackDialogFragment();
+        newFragment.show(getSupportFragmentManager(), "creation");
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        CreationStackDialogFragment dialogContext = (CreationStackDialogFragment) dialog;
+        Stack newStack = new Stack(dialogContext.getTitle());
+        stackAdapter.addStack(newStack);
+
+        // On envoie vers l'écran de modification
+        Intent editIntent = new Intent(getApplicationContext(), EditActivity.class);
+        editIntent.putExtra("stack", newStack);
+        startActivity(editIntent);
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        // Do nothing if cancelled
     }
 
     public class StackAdapter extends RecyclerView.Adapter<StackAdapter.StackViewHolder> {
-
         private final List<Stack> stacks;
+
 
         public StackAdapter(List<Stack> stacks) {
             super();
@@ -116,6 +133,7 @@ public class HomeActivity extends AppCompatActivity {
         public class StackViewHolder extends RecyclerView.ViewHolder {
             private final TextView stackTitleTextView;
             private final ImageView stackImageView;
+
 
             public StackViewHolder(@NonNull View itemView) {
                 super(itemView);

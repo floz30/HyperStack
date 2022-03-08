@@ -5,5 +5,5 @@
     <item
         android:id="@+id/creationStack"
         android:icon="@drawable/ic_action_add"
-        android:title="Créer une présentation" />
+        android:title="@string/creation_stack_btn" />
 </menu>
