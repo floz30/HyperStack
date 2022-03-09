@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ import java.util.List;
  * @see Layer
  * @see Stack
  */
-public class Slide {
+public class Slide implements Serializable {
     /**
      * Ensemble des calques de cette diapositive.
      */
