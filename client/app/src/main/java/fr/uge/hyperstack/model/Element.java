@@ -1,5 +1,7 @@
 package fr.uge.hyperstack.model;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.view.View;
 
 /**
@@ -34,10 +36,9 @@ public interface Element {
      */
     int getHeight();
 
+
     /**
-     * Renvoie le composant de l'interface graphique.
-     *
-     * @return le composant de l'interface graphique.
+     * Dessine l'élément
      */
-    View getContent();
+    void drawElement(Canvas canvas, Paint paint);
 }

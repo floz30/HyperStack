@@ -5,4 +5,5 @@
     <string name="title">Title</string>
     <string name="creation_stack_btn">Create new stack</string>
     <string name="back">Back</string>
+    <string name="edit">Edit</string>
 </resources>

@@ -3,6 +3,8 @@ package fr.uge.hyperstack.model;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +50,7 @@ public class Stack implements Serializable {
 
     public Stack(@NonNull String title) {
         this.slides = new ArrayList<>();
+        this.slides.add(new Slide());
         this.title = Objects.requireNonNull(title);
         this.creationTime = System.currentTimeMillis();
     }
@@ -67,5 +70,17 @@ public class Stack implements Serializable {
             System.err.println("ERROR");
             return null;
         }
+    }
+
+    public void addLayerElementToSlide(Layer layer, int index) {
+        slides.get(index).addLayer(layer);
+    }
+
+    public void drawSlide(Canvas canvas, Paint paint, int index) {
+        slides.get(index).drawLayers(canvas, paint);
+    }
+
+    public void addNewSlide() {
+        slides.add(new Slide());
     }
 }

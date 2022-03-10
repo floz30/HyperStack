@@ -3,6 +3,8 @@ package fr.uge.hyperstack.model;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +39,20 @@ public class Slide implements Serializable {
 
     public Slide() {
         this.layers = new ArrayList<>();
+    }
+
+    public List<Layer> getLayers() {
+        return layers;
+    }
+
+    public void addLayer(Layer layer) {
+        layers.add(layer);
+    }
+
+    public void drawLayers(Canvas canvas, Paint paint) {
+        for (Layer layer : layers) {
+            layer.drawElements(canvas, paint);
+        }
     }
 
 }

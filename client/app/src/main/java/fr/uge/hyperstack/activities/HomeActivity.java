@@ -35,7 +35,10 @@ public class HomeActivity extends AppCompatActivity implements TwoButtonsDialogL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        stacks.add(new Stack("Cours Android"));
+        Stack stack = new Stack("Cours Android");
+        stack.addNewSlide();
+        stack.addNewSlide();
+        stacks.add(stack);
         stacks.add(new Stack("Cours JEE"));
         stacks.add(new Stack("CV"));
         stacks.add(new Stack("Scala"));

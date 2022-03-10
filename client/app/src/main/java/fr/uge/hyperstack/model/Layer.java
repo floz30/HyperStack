@@ -1,5 +1,8 @@
 package fr.uge.hyperstack.model;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,5 +30,11 @@ public class Layer {
 
     public void addElement(@NonNull Element element) {
         this.elements.add(element);
+    }
+
+    public void drawElements(Canvas canvas, Paint paint) {
+        for (Element element : elements) {
+            element.drawElement(canvas, paint);
+        }
     }
 }
