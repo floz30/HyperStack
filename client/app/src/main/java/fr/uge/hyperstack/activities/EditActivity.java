@@ -1,5 +1,6 @@
 package fr.uge.hyperstack.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -102,6 +104,13 @@ public class EditActivity extends AppCompatActivity {
         });
     }
 
+    private static void setUpSlideNavigationButton(Context context, EditorView editorView, FloatingActionButton previousButton, FloatingActionButton nextButton, int value) {
+        editorView.currentSlide += value;
+        editorView.invalidate();
+        nextButton.setEnabled(editorView.getCurrentStack().sizeOfStack() > 0 && editorView.currentSlide < editorView.getCurrentStack().sizeOfStack() - 1);
+        previousButton.setEnabled(editorView.currentSlide > 0);
+    }
+
     private void setUpEditMode() {
         FloatingActionButton editButton = findViewById(R.id.editButton);
         EditorView editorView = findViewById(R.id.editorView2);
@@ -117,7 +126,19 @@ public class EditActivity extends AppCompatActivity {
                     editButton.setImageResource(android.R.drawable.ic_menu_edit);
                 }
             }
-
         );
+
+        FloatingActionButton previousButton = findViewById(R.id.previousSlideButton);
+        FloatingActionButton nextButton = findViewById(R.id.nextSlideButton);
+        nextButton.setEnabled(editorView.getCurrentStack().sizeOfStack() > 0 && editorView.currentSlide < editorView.getCurrentStack().sizeOfStack() - 1);
+        previousButton.setEnabled(editorView.currentSlide > 0);
+
+        previousButton.setOnClickListener(
+                (view) -> setUpSlideNavigationButton(this, editorView, previousButton, nextButton, -1)
+        );
+        nextButton.setOnClickListener(
+                (view) -> setUpSlideNavigationButton(this, editorView, previousButton, nextButton, 1)
+        );
+
     }
 }

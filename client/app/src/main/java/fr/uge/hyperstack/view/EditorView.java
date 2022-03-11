@@ -75,9 +75,7 @@ public class EditorView extends View implements Serializable {
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
 
-        if (currentSlide != -1) {
-            currentStack.drawSlide(canvas, paint, currentSlide);
-        }
+        currentStack.drawSlide(canvas, paint, currentSlide);
 
     }
 
@@ -106,7 +104,5 @@ public class EditorView extends View implements Serializable {
         invalidate();
         return super.onTouchEvent(event);
     }
-
-
 
 }

@@ -22,16 +22,12 @@ public class Stroke implements Serializable, Element {
         this.strokeSize = strokeSize;
     }
 
-    public Path getPathOfStroke() {
-        return pathOfStroke;
-    }
-
     public void moveTo(float x, float y) {
-        getPathOfStroke().moveTo(x, y);
+        pathOfStroke.moveTo(x, y);
     }
 
     public void lineTo(float x, float y) {
-        getPathOfStroke().lineTo(x, y);
+        pathOfStroke.lineTo(x, y);
     }
 
     @Override
