@@ -35,6 +35,15 @@ public class HomeActivity extends AppCompatActivity implements TwoButtonsDialogL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        initData();
+
+        RecyclerView recyclerView = findViewById(R.id.stacksRecyclerView);
+        stackAdapter = new StackAdapter(stacks);
+        recyclerView.setAdapter(stackAdapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+    }
+
+    private void initData() {
         Stack stack = new Stack("Cours Android");
         stack.addNewSlide();
         stack.addNewSlide();
@@ -43,11 +52,6 @@ public class HomeActivity extends AppCompatActivity implements TwoButtonsDialogL
         stacks.add(new Stack("CV"));
         stacks.add(new Stack("Scala"));
         stacks.add(new Stack("Batch Processing"));
-
-        RecyclerView recyclerView = findViewById(R.id.stacksRecyclerView);
-        stackAdapter = new StackAdapter(stacks);
-        recyclerView.setAdapter(stackAdapter);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
     }
 
     @Override

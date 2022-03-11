@@ -2,11 +2,47 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Ajout d'un élément texte sur le calque -->
+    <item
+        android:id="@+id/action_add_text"
+        android:icon="@drawable/ic_text"
+        android:title="Ajouter un élément texte"
+        app:showAsAction="always" />
+
+    <!-- Ajout d'une image/video -->
+    <item
+        android:id="@+id/action_add_image"
+        android:icon="@drawable/ic_image"
+        android:title="Ajouter une image/vidéo"
+        app:showAsAction="always" />
+
+    <!-- Ajout d'un son -->
+    <item
+        android:id="@+id/action_add_sound"
+        android:icon="@drawable/ic_sound"
+        android:title="Ajouter un son"
+        app:showAsAction="always" />
+
+    <!-- Ajout d'une position GPS -->
+    <item
+        android:id="@+id/action_add_location"
+        android:icon="@drawable/ic_location"
+        android:title="Ajouter une position GPS"
+        app:showAsAction="always" />
+
+    <!-- Ajout d'une entrée utilisateur -->
+    <item
+        android:id="@+id/action_add_user_input"
+        android:icon="@drawable/ic_input"
+        android:title="Ajouter une entrée utilisateur"
+        app:showAsAction="always" />
+
+    <!-- Suppression d'un élément du calque après sa sélection -->
     <item
         android:id="@+id/action_erase"
-        android:icon="@android:drawable/ic_menu_delete"
-        android:title="@string/edit"
-        app:showAsAction="ifRoom" />
+        android:icon="@drawable/ic_delete"
+        android:title="Supprimer"
+        app:showAsAction="always" />
 
 
 </menu>

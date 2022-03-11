@@ -1,24 +1,24 @@
 package fr.uge.hyperstack.activities;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
-import fr.uge.hyperstack.R;
-import fr.uge.hyperstack.model.Layer;
-import fr.uge.hyperstack.model.Mode;
-import fr.uge.hyperstack.model.Stroke;
-import fr.uge.hyperstack.model.Stack;
-import fr.uge.hyperstack.view.EditorView;
-import fr.uge.hyperstack.view.listener.EditorViewListener;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Button;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.appcompat.app.AppCompatActivity;
+import fr.uge.hyperstack.R;
+import fr.uge.hyperstack.fragment.ImportImageDialogFragment;
+import fr.uge.hyperstack.model.Layer;
+import fr.uge.hyperstack.model.Mode;
+import fr.uge.hyperstack.model.Stack;
+import fr.uge.hyperstack.model.Stroke;
+import fr.uge.hyperstack.view.EditorView;
+import fr.uge.hyperstack.view.listener.EditorViewListener;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -38,10 +38,39 @@ public class EditActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_edit, menu);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("");
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_text:
+                return true;
+            case R.id.action_add_image:
+                loadImage();
+                return true;
+            case R.id.action_add_sound:
+                return true;
+            case R.id.action_add_location:
+                return true;
+            case R.id.action_add_user_input:
+                return true;
+            case R.id.action_erase:
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    private void loadImage() {
+        ImportImageDialogFragment imageDialogFragment = new ImportImageDialogFragment();
+        imageDialogFragment.show(getSupportFragmentManager(), "import");
+    }
+
 
     public void setEditSetup() {
         EditorView ev = findViewById(R.id.editorView2);
