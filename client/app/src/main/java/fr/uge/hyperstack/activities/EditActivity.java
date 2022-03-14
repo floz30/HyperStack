@@ -3,11 +3,17 @@ package fr.uge.hyperstack.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -24,7 +30,6 @@ import fr.uge.hyperstack.view.listener.EditorViewListener;
 public class EditActivity extends AppCompatActivity {
     private int currentStackNum = -1;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +37,7 @@ public class EditActivity extends AppCompatActivity {
 
         setEditSetup();
         setUpEditMode();
+
         EditorView editorView = findViewById(R.id.editorView2);
         editorView.getCurrentStack().setDrawableElements();
 
@@ -57,6 +63,7 @@ public class EditActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_text:
+                editSlideText();
                 return true;
             case R.id.action_add_image:
                 loadImage();
@@ -78,6 +85,40 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Loses focus on TextView when clicking outside of the TextView
+     * See https://stackoverflow.com/questions/4828636/edittext-clear-focus-on-touch-outside
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if ( v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+
+    private void editSlideText() {
+        TextView et = findViewById(R.id.slide_text);
+
+        et.setVisibility(View.VISIBLE);
+        et.requestFocus();
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+    }
+
     private void loadImage() {
         ImportImageDialogFragment imageDialogFragment = new ImportImageDialogFragment();
         imageDialogFragment.show(getSupportFragmentManager(), "import");
@@ -90,7 +131,6 @@ public class EditActivity extends AppCompatActivity {
         Intent homeIntent = getIntent();
         ev.setCurrentStack((Stack) homeIntent.getSerializableExtra("stack"));
         currentStackNum = homeIntent.getIntExtra("stackNum", -1);
-
 
         ev.setEditorViewListener(new EditorViewListener() {
             @Override
