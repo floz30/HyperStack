@@ -32,6 +32,11 @@ public class Stroke implements Serializable, Element {
         }
     }
 
+    @Override
+    public void onFingerMoveAction(float x, float y) {
+        lineTo(x, y);
+    }
+
     public void moveTo(float x, float y) {
         pathOfStroke.moveTo(x, y);
         pathPoints.add(new float[]{x, y});
@@ -44,22 +49,22 @@ public class Stroke implements Serializable, Element {
     }
 
     @Override
-    public int getPositionX() {
+    public float getPositionX() {
         return 0;
     }
 
     @Override
-    public int getPositionY() {
+    public float getPositionY() {
         return 0;
     }
 
     @Override
-    public int getWidth() {
+    public float getWidth() {
         return 0;
     }
 
     @Override
-    public int getHeight() {
+    public float getHeight() {
         return 0;
     }
 

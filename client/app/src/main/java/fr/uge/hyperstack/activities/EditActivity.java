@@ -21,10 +21,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.fragment.ImportImageDialogFragment;
+import fr.uge.hyperstack.model.Element;
 import fr.uge.hyperstack.model.Layer;
 import fr.uge.hyperstack.model.Mode;
+import fr.uge.hyperstack.model.Point;
+import fr.uge.hyperstack.model.Rectangle;
 import fr.uge.hyperstack.model.Stack;
 import fr.uge.hyperstack.model.Stroke;
+import fr.uge.hyperstack.model.Triangle;
 import fr.uge.hyperstack.view.EditorView;
 import fr.uge.hyperstack.view.listener.EditorViewListener;
 
@@ -142,9 +146,9 @@ public class EditActivity extends AppCompatActivity {
 
         ev.setEditorViewListener(new EditorViewListener() {
             @Override
-            public void onFingerTouch(double x, double y) {
+            public void onFingerTouch(float x, float y) {
                 Stroke stroke = new Stroke(Color.RED, 25);
-                stroke.moveTo((float)x,(float)y);
+                stroke.moveTo(x,y);
                 ev.getStrokeStack().add(stroke);
                 Layer layer = new Layer();
                 layer.addElement(stroke);
@@ -152,17 +156,53 @@ public class EditActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFingerMove(double x, double y) {
-                Stroke currentStroke = ev.getStrokeStack().peek();
-                currentStroke.lineTo((float)x, (float)y);
+            public void onFingerMove(float x, float y) {
+                Element currentElem = ev.getStrokeStack().peek();
+                currentElem.onFingerMoveAction(x,y);
             }
 
             @Override
-            public void onFingerRaise(double x, double y) {
+            public void onFingerRaise(float x, float y) {
 
             }
         });
     }
+
+    public static Element initFigure(float x, float y, EditorView ev){
+        switch (ev.getCurrentMode()){
+            case RECTANGLE: return new Rectangle(new Point(x,y),new Point(x,y),Color.RED,10);
+            case TRIANGLE: return new Triangle(Color.RED,10,new Point(x,y),new Point(x,y),new Point(x,y));
+            default: return null;
+        }
+    }
+
+    public void setFigureSetup() {
+        EditorView ev = findViewById(R.id.editorView2);
+        Intent homeIntent = getIntent();
+        ev.setCurrentStack((Stack) homeIntent.getSerializableExtra("stack"));
+        ev.setEditorViewListener(new EditorViewListener() {
+            @Override
+            public void onFingerTouch(float x, float y) {
+                Element rect = initFigure(x,y,ev);
+                ev.getStrokeStack().add(rect);
+                Layer layer = new Layer();
+                layer.addElement(rect);
+                ev.getCurrentStack().addLayerElementToSlide(layer, ev.currentSlide);
+            }
+
+            @Override
+            public void onFingerMove(float x, float y) {
+                Element currentElem = ev.getStrokeStack().peek();
+                currentElem.onFingerMoveAction(x,y);
+            }
+
+            @Override
+            public void onFingerRaise(float x, float y) {
+
+            }
+        });
+    }
+
 
     private static void setUpSlideNavigationButton(Context context, EditorView editorView, FloatingActionButton previousButton, FloatingActionButton nextButton, int value) {
         editorView.currentSlide += value;
@@ -173,9 +213,12 @@ public class EditActivity extends AppCompatActivity {
 
     private void setUpEditMode() {
         FloatingActionButton editButton = findViewById(R.id.editButton);
+        FloatingActionButton rectButton = findViewById(R.id.rectButton);
+        FloatingActionButton triangleButton = findViewById(R.id.triangleButton);
         EditorView editorView = findViewById(R.id.editorView2);
         editButton.setOnClickListener(
             (view) -> {
+                setEditSetup();
                 if (!editorView.drawModeOn) {
                     editorView.drawModeOn = true;
                     editorView.setCurrentMode(Mode.DRAW);
@@ -186,6 +229,35 @@ public class EditActivity extends AppCompatActivity {
                     editButton.setImageResource(android.R.drawable.ic_menu_edit);
                 }
             }
+        );
+
+
+        rectButton.setOnClickListener(
+                (view) -> {
+                    setFigureSetup();
+                   if(editorView.getCurrentMode().equals(Mode.RECTANGLE)){
+                       editorView.setCurrentMode(Mode.SELECTION);
+                       rectButton.setImageResource(android.R.drawable.btn_default_small);
+                   }
+                   else{
+                       editorView.setCurrentMode(Mode.RECTANGLE);
+                       rectButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+                   }
+                }
+        );
+
+        triangleButton.setOnClickListener(
+                (view) -> {
+                    setFigureSetup();
+                    if(editorView.getCurrentMode().equals(Mode.RECTANGLE)){
+                        editorView.setCurrentMode(Mode.SELECTION);
+                        triangleButton.setImageResource(android.R.drawable.arrow_up_float);
+                    }
+                    else{
+                        editorView.setCurrentMode(Mode.TRIANGLE);
+                        triangleButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+                    }
+                }
         );
 
         FloatingActionButton previousButton = findViewById(R.id.previousSlideButton);

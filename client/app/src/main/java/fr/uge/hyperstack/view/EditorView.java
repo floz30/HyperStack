@@ -11,6 +11,7 @@ import android.view.View;
 import java.io.Serializable;
 import java.util.Stack;
 
+import fr.uge.hyperstack.model.Element;
 import fr.uge.hyperstack.model.Mode;
 import fr.uge.hyperstack.model.Stroke;
 import fr.uge.hyperstack.view.listener.EditorViewListener;
@@ -19,7 +20,7 @@ public class EditorView extends View implements Serializable {
     private final Paint paint = new Paint();
     private EditorViewListener editorViewListener;
     private fr.uge.hyperstack.model.Stack currentStack;
-    private java.util.Stack<Stroke> strokeStack = new java.util.Stack<>();
+    private java.util.Stack<Element> strokeStack = new java.util.Stack<>();
     public int currentSlide = 0;
     private Mode currentMode = Mode.SELECTION;
     public boolean drawModeOn;
@@ -56,8 +57,12 @@ public class EditorView extends View implements Serializable {
         this.currentStack = currentStack;
     }
 
-    public Stack<Stroke> getStrokeStack() {
+    public Stack<Element> getStrokeStack() {
         return strokeStack;
+    }
+
+    public Mode getCurrentMode() {
+        return currentMode;
     }
 
     public void setCurrentMode(Mode currentMode) {
@@ -83,10 +88,10 @@ public class EditorView extends View implements Serializable {
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getActionMasked();
 
-        double x = event.getX();
-        double y = event.getY();
+        float x = event.getX();
+        float y = event.getY();
 
-        if (currentMode == Mode.DRAW) {
+        if (currentMode == Mode.DRAW || currentMode == Mode.TRIANGLE || currentMode == Mode.RECTANGLE) {
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
                     editorViewListener.onFingerTouch(x, y);
@@ -98,7 +103,6 @@ public class EditorView extends View implements Serializable {
                 case MotionEvent.ACTION_UP:
                     editorViewListener.onFingerRaise(x, y);
                     break;
-
             }
         }
         invalidate();

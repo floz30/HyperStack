@@ -13,28 +13,28 @@ public interface Element {
      *
      * @return la position du coin haut gauche sur l'axe des abscisses
      */
-    int getPositionX();
+    float getPositionX();
 
     /**
      * Renvoie la position du coin haut gauche de l'élément sur l'axe des ordonnées.
      *
      * @return la position du coin haut gauche sur l'axe des ordonnées.
      */
-    int getPositionY();
+    float getPositionY();
 
     /**
      * Renvoie la largeur de l'élément.
      *
      * @return la largeur de l'élément.
      */
-    int getWidth();
+    float getWidth();
 
     /**
      * Renvoie la hauteur de l'élément.
      *
      * @return la hauteur de l'élément.
      */
-    int getHeight();
+    float getHeight();
 
 
     /**
@@ -43,4 +43,6 @@ public interface Element {
     void drawElement(Canvas canvas, Paint paint);
 
     void setPathOfStroke();
+
+    void onFingerMoveAction(float x, float y);
 }
