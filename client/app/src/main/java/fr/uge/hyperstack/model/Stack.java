@@ -93,4 +93,8 @@ public class Stack implements Serializable {
             slide.setDrawableElements();
         }
     }
+
+    public void resetSlide(int index) {
+        slides.set(index, new Slide());
+    }
 }

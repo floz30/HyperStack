@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -75,6 +76,7 @@ public class EditActivity extends AppCompatActivity {
             case R.id.action_add_user_input:
                 return true;
             case R.id.action_erase:
+                clearSlide();
                 return true;
 
             default:
@@ -117,6 +119,12 @@ public class EditActivity extends AppCompatActivity {
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+    }
+
+    private void clearSlide() {
+        EditorView ev = findViewById(R.id.editorView2);
+        Stack s = ev.getCurrentStack();
+        s.resetSlide(ev.currentSlide);
     }
 
     private void loadImage() {
