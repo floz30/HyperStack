@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.fragment.ImportImageDialogFragment;
 import fr.uge.hyperstack.model.Element;
+import fr.uge.hyperstack.fragment.ImportSoundDialogFragment;
 import fr.uge.hyperstack.model.Layer;
 import fr.uge.hyperstack.model.Mode;
 import fr.uge.hyperstack.model.Point;
@@ -74,6 +75,7 @@ public class EditActivity extends AppCompatActivity {
                 loadImage();
                 return true;
             case R.id.action_add_sound:
+                loadSound();
                 return true;
             case R.id.action_add_location:
                 return true;
@@ -114,7 +116,6 @@ public class EditActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(event);
     }
 
-
     private void editSlideText() {
         TextView et = findViewById(R.id.slide_text);
 
@@ -134,6 +135,12 @@ public class EditActivity extends AppCompatActivity {
     private void loadImage() {
         ImportImageDialogFragment imageDialogFragment = new ImportImageDialogFragment();
         imageDialogFragment.show(getSupportFragmentManager(), "import");
+    }
+
+    private void loadSound() {
+        ImportSoundDialogFragment soundDialogFragment = new ImportSoundDialogFragment();
+        soundDialogFragment.show(getSupportFragmentManager(), "import");
+
     }
 
 
