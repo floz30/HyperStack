@@ -1,10 +1,8 @@
 package fr.uge.hyperstack.model;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.view.View;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -22,12 +20,27 @@ public class Stroke implements Serializable, Element {
         this.strokeSize = strokeSize;
     }
 
+    public void setPathOfStroke() {
+        Path path = new Path();
+        if (!pathPoints.isEmpty()) {
+            float[] firstPoint = pathPoints.getFirst();
+            path.moveTo(firstPoint[0], firstPoint[1]);
+            for (int i = 1; i < pathPoints.size(); i++) {
+                path.lineTo(pathPoints.get(i)[0], pathPoints.get(i)[1]);
+            }
+            this.pathOfStroke = path;
+        }
+    }
+
     public void moveTo(float x, float y) {
         pathOfStroke.moveTo(x, y);
+        pathPoints.add(new float[]{x, y});
     }
 
     public void lineTo(float x, float y) {
         pathOfStroke.lineTo(x, y);
+        pathPoints.add(new float[]{x, y});
+
     }
 
     @Override

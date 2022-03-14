@@ -41,4 +41,6 @@ public interface Element {
      * Dessine l'élément
      */
     void drawElement(Canvas canvas, Paint paint);
+
+    void setPathOfStroke();
 }

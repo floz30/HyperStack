@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -23,6 +22,8 @@ import fr.uge.hyperstack.view.EditorView;
 import fr.uge.hyperstack.view.listener.EditorViewListener;
 
 public class EditActivity extends AppCompatActivity {
+    private int currentStackNum = -1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +32,18 @@ public class EditActivity extends AppCompatActivity {
 
         setEditSetup();
         setUpEditMode();
+        EditorView editorView = findViewById(R.id.editorView2);
+        editorView.getCurrentStack().setDrawableElements();
 
         Button backButton = findViewById(R.id.backEditButton);
-        backButton.setOnClickListener(v -> finish());
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            editorView.getCurrentStack().addNewSlide();
+            intent.putExtra("newCurrentStack", editorView.getCurrentStack());
+            intent.putExtra("stackNum", currentStackNum);
+            setResult(RESULT_OK, intent);
+            finish();
+        });
     }
 
     @Override
@@ -79,6 +89,8 @@ public class EditActivity extends AppCompatActivity {
 
         Intent homeIntent = getIntent();
         ev.setCurrentStack((Stack) homeIntent.getSerializableExtra("stack"));
+        currentStackNum = homeIntent.getIntExtra("stackNum", -1);
+
 
         ev.setEditorViewListener(new EditorViewListener() {
             @Override
@@ -86,15 +98,15 @@ public class EditActivity extends AppCompatActivity {
                 Stroke stroke = new Stroke(Color.RED, 25);
                 stroke.moveTo((float)x,(float)y);
                 ev.getStrokeStack().add(stroke);
+                Layer layer = new Layer();
+                layer.addElement(stroke);
+                ev.getCurrentStack().addLayerElementToSlide(layer, ev.currentSlide);
             }
 
             @Override
             public void onFingerMove(double x, double y) {
                 Stroke currentStroke = ev.getStrokeStack().peek();
                 currentStroke.lineTo((float)x, (float)y);
-                Layer layer = new Layer();
-                layer.addElement(currentStroke);
-                ev.getCurrentStack().addLayerElementToSlide(layer, ev.currentSlide);
             }
 
             @Override

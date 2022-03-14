@@ -87,4 +87,10 @@ public class Stack implements Serializable {
     public int sizeOfStack() {
         return slides.size();
     }
+
+    public void setDrawableElements(){
+        for (Slide slide : slides) {
+            slide.setDrawableElements();
+        }
+    }
 }

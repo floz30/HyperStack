@@ -1,13 +1,8 @@
 package fr.uge.hyperstack.model;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +47,12 @@ public class Slide implements Serializable {
     public void drawLayers(Canvas canvas, Paint paint) {
         for (Layer layer : layers) {
             layer.drawElements(canvas, paint);
+        }
+    }
+
+    public void setDrawableElements() {
+        for (Layer layer : layers) {
+            layer.setDrawableElements();
         }
     }
 

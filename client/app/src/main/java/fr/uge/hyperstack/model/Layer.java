@@ -3,6 +3,7 @@ package fr.uge.hyperstack.model;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import androidx.annotation.NonNull;
  * @see Slide
  * @see Element
  */
-public class Layer {
+public class Layer implements Serializable {
     /**
      * Ensemble des éléments présents sur ce calque.
      */
@@ -35,6 +36,12 @@ public class Layer {
     public void drawElements(Canvas canvas, Paint paint) {
         for (Element element : elements) {
             element.drawElement(canvas, paint);
+        }
+    }
+
+    public void setDrawableElements() {
+        for(Element element : elements) {
+            element.setPathOfStroke();
         }
     }
 }

@@ -1,6 +1,7 @@
 package fr.uge.hyperstack.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -21,14 +22,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements TwoButtonsDialogListener {
     private final List<Stack> stacks = new ArrayList<>();
     private StackAdapter stackAdapter;
+    private int calledStack = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +55,14 @@ public class HomeActivity extends AppCompatActivity implements TwoButtonsDialogL
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            Stack savedStack = (Stack) data.getSerializableExtra("newCurrentStack");
+            int stackNum = data.getIntExtra("stackNum", -1);
+            stacks.set(stackNum, savedStack);
+            stackAdapter.notifyItemChanged(stackNum);
+        }
     }
 
     @Override
@@ -101,7 +107,7 @@ public class HomeActivity extends AppCompatActivity implements TwoButtonsDialogL
         // On envoie vers l'écran de modification
         Intent editIntent = new Intent(getApplicationContext(), EditActivity.class);
         editIntent.putExtra("stack", newStack);
-        startActivity(editIntent);
+        startActivityForResult(editIntent, RESULT_OK);
     }
 
     @Override
@@ -131,7 +137,9 @@ public class HomeActivity extends AppCompatActivity implements TwoButtonsDialogL
             holder.stackImageView.setOnClickListener(v -> {
                 Intent editIntent = new Intent(getApplicationContext(), EditActivity.class);
                 editIntent.putExtra("stack", currentStack);
-                startActivity(editIntent);
+                editIntent.putExtra("stackNum", position);
+                startActivityForResult(editIntent, 1);
+
             });
         }
 
