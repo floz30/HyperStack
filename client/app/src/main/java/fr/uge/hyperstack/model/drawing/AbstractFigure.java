@@ -1,6 +1,8 @@
-package fr.uge.hyperstack.model;
+package fr.uge.hyperstack.model.drawing;
 
-abstract class AbstractFigure implements Figure, Element{
+import fr.uge.hyperstack.model.Element;
+
+abstract class AbstractFigure implements Figure, Element {
     private int color;
     private int strokeSize;
     private boolean fill;

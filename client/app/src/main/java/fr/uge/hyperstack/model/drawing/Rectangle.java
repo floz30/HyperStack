@@ -1,4 +1,4 @@
-package fr.uge.hyperstack.model;
+package fr.uge.hyperstack.model.drawing;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

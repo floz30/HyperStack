@@ -13,7 +13,6 @@ import java.util.Stack;
 
 import fr.uge.hyperstack.model.Element;
 import fr.uge.hyperstack.model.Mode;
-import fr.uge.hyperstack.model.Stroke;
 import fr.uge.hyperstack.view.listener.EditorViewListener;
 
 public class EditorView extends View implements Serializable {

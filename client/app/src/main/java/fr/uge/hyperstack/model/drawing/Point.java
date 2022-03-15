@@ -1,4 +1,4 @@
-package fr.uge.hyperstack.model;
+package fr.uge.hyperstack.model.drawing;
 
 public class Point {
     private float x;

@@ -1,6 +1,5 @@
 package fr.uge.hyperstack.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,8 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 import fr.uge.hyperstack.R;
-import fr.uge.hyperstack.model.Sound;
-import fr.uge.hyperstack.view.EditorView;
+import fr.uge.hyperstack.model.sound.Sound;
 
 public class SoundListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;

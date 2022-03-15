@@ -1,4 +1,4 @@
-package fr.uge.hyperstack.model;
+package fr.uge.hyperstack.model.drawing;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -6,6 +6,8 @@ import android.graphics.Path;
 
 import java.io.Serializable;
 import java.util.LinkedList;
+
+import fr.uge.hyperstack.model.Element;
 
 public class Stroke implements Serializable, Element {
 
