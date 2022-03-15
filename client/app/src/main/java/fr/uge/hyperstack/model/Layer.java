@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 
@@ -42,6 +43,29 @@ public class Layer implements Serializable {
     public void setDrawableElements() {
         for(Element element : elements) {
             element.setPathOfStroke();
+        }
+    }
+
+    public Memento save() {
+        return new Memento(elements);
+    }
+
+    public void restore(Memento m) {
+        Objects.requireNonNull(m);
+        this.elements = m.state;
+    }
+
+
+    class Memento {
+        private final List<Element> state;
+
+        public Memento(List<Element> elements) {
+            Objects.requireNonNull(elements);
+            this.state = elements;
+        }
+
+        public List<Element> getState() {
+            return state;
         }
     }
 }
