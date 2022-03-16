@@ -1,4 +1,4 @@
-package fr.uge.hyperstack.model.sound;
+package fr.uge.hyperstack.model.media;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;

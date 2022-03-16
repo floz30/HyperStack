@@ -11,7 +11,7 @@ import android.view.View;
 import java.io.Serializable;
 import java.util.Stack;
 
-import fr.uge.hyperstack.model.Element;
+import fr.uge.hyperstack.model.PaintElement;
 import fr.uge.hyperstack.model.Mode;
 import fr.uge.hyperstack.view.listener.EditorViewListener;
 
@@ -19,7 +19,7 @@ public class EditorView extends View implements Serializable {
     private final Paint paint = new Paint();
     private EditorViewListener editorViewListener;
     private fr.uge.hyperstack.model.Stack currentStack;
-    private java.util.Stack<Element> strokeStack = new java.util.Stack<>();
+    private java.util.Stack<PaintElement> strokeStack = new java.util.Stack<>();
     public int currentSlide = 0;
     private Mode currentMode = Mode.SELECTION;
     public boolean drawModeOn;
@@ -56,7 +56,7 @@ public class EditorView extends View implements Serializable {
         this.currentStack = currentStack;
     }
 
-    public Stack<Element> getStrokeStack() {
+    public Stack<PaintElement> getStrokeStack() {
         return strokeStack;
     }
 

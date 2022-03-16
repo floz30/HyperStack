@@ -46,7 +46,7 @@ public class Slide implements Serializable {
 
     public void drawLayers(Canvas canvas, Paint paint) {
         for (Layer layer : layers) {
-            layer.drawElements(canvas, paint);
+            layer.draw(canvas, paint);
         }
     }
 

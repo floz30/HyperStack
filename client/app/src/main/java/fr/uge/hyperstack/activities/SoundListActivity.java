@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 import fr.uge.hyperstack.R;
-import fr.uge.hyperstack.model.sound.Sound;
+import fr.uge.hyperstack.model.media.Sound;
 
 public class SoundListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;

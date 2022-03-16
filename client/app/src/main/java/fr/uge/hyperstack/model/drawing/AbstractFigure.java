@@ -1,12 +1,12 @@
 package fr.uge.hyperstack.model.drawing;
 
-import fr.uge.hyperstack.model.Element;
 
-abstract class AbstractFigure implements Figure, Element {
+abstract class AbstractFigure implements Figure {
     private int color;
     private int strokeSize;
     private boolean fill;
     private Point origin;
+
 
     public AbstractFigure(int color, int strokeSize, Point origin) {
         this.origin = origin;
@@ -15,6 +15,7 @@ abstract class AbstractFigure implements Figure, Element {
         this.fill = false;
     }
 
+    @Override
     public int getColor() {
         return color;
     }
@@ -29,6 +30,7 @@ abstract class AbstractFigure implements Figure, Element {
         return origin.getY();
     }
 
+    @Override
     public int getStrokeSize() {
         return strokeSize;
     }

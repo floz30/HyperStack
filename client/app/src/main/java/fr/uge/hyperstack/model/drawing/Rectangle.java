@@ -3,14 +3,15 @@ package fr.uge.hyperstack.model.drawing;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class Rectangle extends AbstractFigure{
-
+public class Rectangle extends AbstractFigure {
     private Point endPoint;
 
-    public Rectangle(Point origin, Point endPoint,int color, int strokeSize) {
-        super(color,strokeSize,origin);
+
+    public Rectangle(Point origin, Point endPoint, int color, int strokeSize) {
+        super(color, strokeSize, origin);
         this.endPoint = endPoint;
     }
+
 
     @Override
     public float getWidth() {
@@ -23,7 +24,7 @@ public class Rectangle extends AbstractFigure{
     }
 
     @Override
-    public void drawElement(Canvas canvas, Paint paint) {
+    public void draw(Canvas canvas, Paint paint) {
         paint.setColor(getColor());
         paint.setStrokeWidth(getStrokeSize());
         canvas.drawRect(getPositionX(), getPositionY(), endPoint.getX(), endPoint.getY(), paint);
@@ -51,5 +52,9 @@ public class Rectangle extends AbstractFigure{
 
     public void setEndPoint(Point endPoint) {
         this.endPoint = endPoint;
+    }
+
+    public Point getEndPoint() {
+        return endPoint;
     }
 }

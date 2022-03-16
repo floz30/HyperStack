@@ -2,6 +2,7 @@ package fr.uge.hyperstack.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -17,10 +18,11 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.fragment.ImportImageDialogFragment;
-import fr.uge.hyperstack.model.Element;
+import fr.uge.hyperstack.model.PaintElement;
 import fr.uge.hyperstack.fragment.ImportSoundDialogFragment;
 import fr.uge.hyperstack.model.Layer;
 import fr.uge.hyperstack.model.Mode;
@@ -29,19 +31,26 @@ import fr.uge.hyperstack.model.drawing.Rectangle;
 import fr.uge.hyperstack.model.Stack;
 import fr.uge.hyperstack.model.drawing.Stroke;
 import fr.uge.hyperstack.model.drawing.Triangle;
+import fr.uge.hyperstack.model.media.Image;
+import fr.uge.hyperstack.utils.Permission;
 import fr.uge.hyperstack.view.EditorView;
 import fr.uge.hyperstack.view.listener.EditorViewListener;
 
 public class EditActivity extends AppCompatActivity {
     private int currentStackNum = -1;
+    private Stack currentStack;
+    private ImportImageDialogFragment imageDialogFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
+
         setEditSetup();
         setUpEditMode();
+
+        imageDialogFragment = new ImportImageDialogFragment();
 
         EditorView editorView = findViewById(R.id.editorView2);
         editorView.getCurrentStack().setDrawableElements();
@@ -71,7 +80,7 @@ public class EditActivity extends AppCompatActivity {
                 editSlideText();
                 return true;
             case R.id.action_add_image:
-                loadImage();
+                showImportImageVideoDialog();
                 return true;
             case R.id.action_add_sound:
                 loadSound();
@@ -89,6 +98,23 @@ public class EditActivity extends AppCompatActivity {
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
 
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case Permission.IMAGE_CAPTURE_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    Bundle extras = data.getExtras();
+                    Image img = new Image((Bitmap) extras.get("data"));
+                    //currentStack.addLayerElementToSlide(new Layer(img), 0); // TODO
+                    imageDialogFragment.dismiss();
+                }
+                break;
+            case Permission.VIDEO_CAPTURE_REQUEST_CODE:
+                break;
         }
     }
 
@@ -131,14 +157,16 @@ public class EditActivity extends AppCompatActivity {
         s.resetSlide(ev.currentSlide);
     }
 
-    private void loadImage() {
-        ImportImageDialogFragment imageDialogFragment = new ImportImageDialogFragment();
-        imageDialogFragment.show(getSupportFragmentManager(), "import");
+    /**
+     * Affiche le BottomSheetDialog proposant d'importer une photo/vidéo ou de prendre une photo/vidéo directement.
+     */
+    private void showImportImageVideoDialog() {
+        imageDialogFragment.show(getSupportFragmentManager(), "importImage");
     }
 
     private void loadSound() {
         ImportSoundDialogFragment soundDialogFragment = new ImportSoundDialogFragment();
-        soundDialogFragment.show(getSupportFragmentManager(), "import");
+        soundDialogFragment.show(getSupportFragmentManager(), "importSound");
 
     }
 
@@ -147,7 +175,8 @@ public class EditActivity extends AppCompatActivity {
         EditorView ev = findViewById(R.id.editorView2);
 
         Intent homeIntent = getIntent();
-        ev.setCurrentStack((Stack) homeIntent.getSerializableExtra("stack"));
+        currentStack = (Stack) homeIntent.getSerializableExtra("stack");
+        ev.setCurrentStack(currentStack);
         currentStackNum = homeIntent.getIntExtra("stackNum", -1);
 
         ev.setEditorViewListener(new EditorViewListener() {
@@ -157,13 +186,13 @@ public class EditActivity extends AppCompatActivity {
                 stroke.moveTo(x,y);
                 ev.getStrokeStack().add(stroke);
                 Layer layer = new Layer();
-                layer.addElement(stroke);
+                layer.addPaintElement(stroke);
                 ev.getCurrentStack().addLayerElementToSlide(layer, ev.currentSlide);
             }
 
             @Override
             public void onFingerMove(float x, float y) {
-                Element currentElem = ev.getStrokeStack().peek();
+                PaintElement currentElem = ev.getStrokeStack().peek();
                 currentElem.onFingerMoveAction(x,y);
             }
 
@@ -174,7 +203,7 @@ public class EditActivity extends AppCompatActivity {
         });
     }
 
-    public static Element initFigure(float x, float y, EditorView ev){
+    public static PaintElement initFigure(float x, float y, EditorView ev){
         switch (ev.getCurrentMode()){
             case RECTANGLE: return new Rectangle(new Point(x,y),new Point(x,y),Color.RED,10);
             case TRIANGLE: return new Triangle(Color.RED,10,new Point(x,y),new Point(x,y),new Point(x,y));
@@ -189,16 +218,16 @@ public class EditActivity extends AppCompatActivity {
         ev.setEditorViewListener(new EditorViewListener() {
             @Override
             public void onFingerTouch(float x, float y) {
-                Element rect = initFigure(x,y,ev);
+                PaintElement rect = initFigure(x,y,ev);
                 ev.getStrokeStack().add(rect);
                 Layer layer = new Layer();
-                layer.addElement(rect);
+                layer.addPaintElement(rect);
                 ev.getCurrentStack().addLayerElementToSlide(layer, ev.currentSlide);
             }
 
             @Override
             public void onFingerMove(float x, float y) {
-                Element currentElem = ev.getStrokeStack().peek();
+                PaintElement currentElem = ev.getStrokeStack().peek();
                 currentElem.onFingerMoveAction(x,y);
             }
 

@@ -1,8 +1,5 @@
 package fr.uge.hyperstack.model;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.view.View;
 
 /**
  * Représente un élément que l'utilisateur peut ajouter sur les calques de ses présentations.
@@ -37,12 +34,4 @@ public interface Element {
     float getHeight();
 
 
-    /**
-     * Dessine l'élément
-     */
-    void drawElement(Canvas canvas, Paint paint);
-
-    void setPathOfStroke();
-
-    void onFingerMoveAction(float x, float y);
 }

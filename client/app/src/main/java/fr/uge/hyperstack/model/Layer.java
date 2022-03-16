@@ -16,13 +16,13 @@ import androidx.annotation.NonNull;
  * Un calque peut être partagés par plusieurs diapositives.
  *
  * @see Slide
- * @see Element
+ * @see PaintElement
  */
 public class Layer implements Serializable {
     /**
      * Ensemble des éléments présents sur ce calque.
      */
-    private List<Element> elements;
+    private List<PaintElement> elements;
 
 
     public Layer() {
@@ -30,19 +30,21 @@ public class Layer implements Serializable {
     }
 
 
-    public void addElement(@NonNull Element element) {
-        this.elements.add(element);
+    public void addPaintElement(@NonNull PaintElement paintElement) {
+        elements.add(paintElement);
     }
 
-    public void drawElements(Canvas canvas, Paint paint) {
-        for (Element element : elements) {
-            element.drawElement(canvas, paint);
+    public void draw(Canvas canvas, Paint paint) {
+        for (PaintElement element : elements) {
+            element.draw(canvas, paint);
         }
     }
 
     public void setDrawableElements() {
-        for(Element element : elements) {
-            element.setPathOfStroke();
+        for (Element element : elements) {
+            if (element instanceof PaintElement) {
+                ((PaintElement) element).setPathOfStroke();
+            }
         }
     }
 
@@ -57,14 +59,14 @@ public class Layer implements Serializable {
 
 
     class Memento {
-        private final List<Element> state;
+        private final List<PaintElement> state;
 
-        public Memento(List<Element> elements) {
+        public Memento(List<PaintElement> elements) {
             Objects.requireNonNull(elements);
             this.state = elements;
         }
 
-        public List<Element> getState() {
+        public List<PaintElement> getState() {
             return state;
         }
     }

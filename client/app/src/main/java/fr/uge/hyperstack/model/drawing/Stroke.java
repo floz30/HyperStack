@@ -7,9 +7,9 @@ import android.graphics.Path;
 import java.io.Serializable;
 import java.util.LinkedList;
 
-import fr.uge.hyperstack.model.Element;
+import fr.uge.hyperstack.model.PaintElement;
 
-public class Stroke implements Serializable, Element {
+public class Stroke implements Serializable, PaintElement {
 
     private int color;
     private int strokeSize;
@@ -32,6 +32,16 @@ public class Stroke implements Serializable, Element {
             }
             this.pathOfStroke = path;
         }
+    }
+
+    @Override
+    public int getColor() {
+        return color;
+    }
+
+    @Override
+    public int getStrokeSize() {
+        return strokeSize;
     }
 
     @Override
@@ -71,7 +81,7 @@ public class Stroke implements Serializable, Element {
     }
 
     @Override
-    public void drawElement(Canvas canvas, Paint paint) {
+    public void draw(Canvas canvas, Paint paint) {
         paint.setColor(this.color);
         paint.setStrokeWidth(this.strokeSize);
         canvas.drawPath(this.pathOfStroke, paint);

@@ -11,7 +11,9 @@
         android:theme="@style/Theme.Hyperstack">
         <activity
             android:name=".activities.EditActivity"
+            android:parentActivityName=".activities.HomeActivity"
             android:exported="false" />
+
         <activity
             android:name=".activities.HomeActivity"
             android:exported="true">
@@ -21,8 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.SoundListActivity"
+            android:parentActivityName=".activities.EditActivity"
             android:exported="false" />
     </application>
 
