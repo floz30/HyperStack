@@ -31,9 +31,12 @@ public class Slide implements Serializable {
      */
     private List<Layer> layers;
 
+    private int slideNumber;
 
-    public Slide() {
+
+    public Slide(int slideNumber) {
         this.layers = new ArrayList<>();
+        this.slideNumber = slideNumber;
     }
 
     public List<Layer> getLayers() {
@@ -54,6 +57,11 @@ public class Slide implements Serializable {
         for (Layer layer : layers) {
             layer.setDrawableElements();
         }
+    }
+
+
+    public int getSlideNumber() {
+        return slideNumber;
     }
 
 }

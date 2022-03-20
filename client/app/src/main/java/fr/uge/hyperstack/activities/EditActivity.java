@@ -1,5 +1,6 @@
 package fr.uge.hyperstack.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,12 +17,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import fr.uge.hyperstack.R;
+import fr.uge.hyperstack.adapter.SlideBottomBarAdapter;
 import fr.uge.hyperstack.fragment.ImportImageDialogFragment;
+import fr.uge.hyperstack.fragment.SlideBottomBarDialogFragment;
 import fr.uge.hyperstack.model.PaintElement;
 import fr.uge.hyperstack.fragment.ImportSoundDialogFragment;
 import fr.uge.hyperstack.model.Layer;
@@ -36,34 +42,76 @@ import fr.uge.hyperstack.utils.Permission;
 import fr.uge.hyperstack.view.EditorView;
 import fr.uge.hyperstack.view.listener.EditorViewListener;
 
+@SuppressLint("NonConstantResourceId")
 public class EditActivity extends AppCompatActivity {
     private int currentStackNum = -1;
     private Stack currentStack;
+    private EditorView editorView;
     private ImportImageDialogFragment imageDialogFragment;
+    private SlideBottomBarDialogFragment slideBottomBarDialogFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
+        Intent homeIntent = getIntent();
+
+        editorView = findViewById(R.id.editorView2);
+        currentStack = (Stack) homeIntent.getSerializableExtra("stack");
+        editorView.setCurrentStack(currentStack);
+        currentStackNum = homeIntent.getIntExtra("stackNum", -1);
 
         setEditSetup();
         setUpEditMode();
 
         imageDialogFragment = new ImportImageDialogFragment();
+        slideBottomBarDialogFragment = new SlideBottomBarDialogFragment(currentStack.getSlides());
 
-        EditorView editorView = findViewById(R.id.editorView2);
+        updateSlideNumberLabel();
+
+        BottomAppBar bottomAppBar = findViewById(R.id.bottomAppBar);
+        bottomAppBar.setNavigationOnClickListener(view -> {
+            slideBottomBarDialogFragment.show(getSupportFragmentManager(), "slideBottomBar");
+        });
+        bottomAppBar.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.previousSlide:
+                    if (editorView.currentSlide > 0) {
+                        editorView.currentSlide--;
+                        updateSlideNumberLabel();
+                        editorView.invalidate();
+                    }
+                    return true;
+                case R.id.nextSlide:
+                    if (currentStack.sizeOfStack() > 0 && editorView.currentSlide < currentStack.sizeOfStack() - 1) {
+                        editorView.currentSlide++;
+                        updateSlideNumberLabel();
+                        editorView.invalidate();
+                    }
+                    return true;
+                default:
+                    return false;
+            }
+        });
+
         editorView.getCurrentStack().setDrawableElements();
 
-        Button backButton = findViewById(R.id.backEditButton);
-        backButton.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            editorView.getCurrentStack().addNewSlide();
-            intent.putExtra("newCurrentStack", editorView.getCurrentStack());
-            intent.putExtra("stackNum", currentStackNum);
-            setResult(RESULT_OK, intent);
-            finish();
-        });
+//        Button backButton = findViewById(R.id.backEditButton);
+//        backButton.setOnClickListener(v -> {
+//            Intent intent = new Intent();
+//            editorView.getCurrentStack().addNewSlide();
+//            intent.putExtra("newCurrentStack", editorView.getCurrentStack());
+//            intent.putExtra("stackNum", currentStackNum);
+//            setResult(RESULT_OK, intent);
+//            finish();
+//        });
+    }
+
+    private void updateSlideNumberLabel() {
+        TextView slideNumberTextView = findViewById(R.id.slideNumberBottomBarTextView);
+        slideNumberTextView.setText(String.format(getResources().getString(R.string.slide_number_bottom_bar), editorView.currentSlide + 1, currentStack.sizeOfStack()));
     }
 
     @Override
@@ -92,12 +140,8 @@ public class EditActivity extends AppCompatActivity {
             case R.id.action_erase:
                 clearSlide();
                 return true;
-
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-
         }
     }
 
@@ -152,9 +196,8 @@ public class EditActivity extends AppCompatActivity {
     }
 
     private void clearSlide() {
-        EditorView ev = findViewById(R.id.editorView2);
-        Stack s = ev.getCurrentStack();
-        s.resetSlide(ev.currentSlide);
+        Stack s = editorView.getCurrentStack();
+        s.resetSlide(editorView.currentSlide);
     }
 
     /**
@@ -167,32 +210,23 @@ public class EditActivity extends AppCompatActivity {
     private void loadSound() {
         ImportSoundDialogFragment soundDialogFragment = new ImportSoundDialogFragment();
         soundDialogFragment.show(getSupportFragmentManager(), "importSound");
-
     }
 
-
     public void setEditSetup() {
-        EditorView ev = findViewById(R.id.editorView2);
-
-        Intent homeIntent = getIntent();
-        currentStack = (Stack) homeIntent.getSerializableExtra("stack");
-        ev.setCurrentStack(currentStack);
-        currentStackNum = homeIntent.getIntExtra("stackNum", -1);
-
-        ev.setEditorViewListener(new EditorViewListener() {
+        editorView.setEditorViewListener(new EditorViewListener() {
             @Override
             public void onFingerTouch(float x, float y) {
                 Stroke stroke = new Stroke(Color.RED, 25);
                 stroke.moveTo(x,y);
-                ev.getStrokeStack().add(stroke);
+                editorView.getStrokeStack().add(stroke);
                 Layer layer = new Layer();
                 layer.addPaintElement(stroke);
-                ev.getCurrentStack().addLayerElementToSlide(layer, ev.currentSlide);
+                editorView.getCurrentStack().addLayerElementToSlide(layer, editorView.currentSlide);
             }
 
             @Override
             public void onFingerMove(float x, float y) {
-                PaintElement currentElem = ev.getStrokeStack().peek();
+                PaintElement currentElem = editorView.getStrokeStack().peek();
                 currentElem.onFingerMoveAction(x,y);
             }
 
@@ -212,22 +246,21 @@ public class EditActivity extends AppCompatActivity {
     }
 
     public void setFigureSetup() {
-        EditorView ev = findViewById(R.id.editorView2);
         Intent homeIntent = getIntent();
-        ev.setCurrentStack((Stack) homeIntent.getSerializableExtra("stack"));
-        ev.setEditorViewListener(new EditorViewListener() {
+        editorView.setCurrentStack((Stack) homeIntent.getSerializableExtra("stack"));
+        editorView.setEditorViewListener(new EditorViewListener() {
             @Override
             public void onFingerTouch(float x, float y) {
-                PaintElement rect = initFigure(x,y,ev);
-                ev.getStrokeStack().add(rect);
+                PaintElement rect = initFigure(x, y, editorView);
+                editorView.getStrokeStack().add(rect);
                 Layer layer = new Layer();
                 layer.addPaintElement(rect);
-                ev.getCurrentStack().addLayerElementToSlide(layer, ev.currentSlide);
+                editorView.getCurrentStack().addLayerElementToSlide(layer, editorView.currentSlide);
             }
 
             @Override
             public void onFingerMove(float x, float y) {
-                PaintElement currentElem = ev.getStrokeStack().peek();
+                PaintElement currentElem = editorView.getStrokeStack().peek();
                 currentElem.onFingerMoveAction(x,y);
             }
 
@@ -238,33 +271,25 @@ public class EditActivity extends AppCompatActivity {
         });
     }
 
-
-    private static void setUpSlideNavigationButton(Context context, EditorView editorView, FloatingActionButton previousButton, FloatingActionButton nextButton, int value) {
-        editorView.currentSlide += value;
-        editorView.invalidate();
-        nextButton.setEnabled(editorView.getCurrentStack().sizeOfStack() > 0 && editorView.currentSlide < editorView.getCurrentStack().sizeOfStack() - 1);
-        previousButton.setEnabled(editorView.currentSlide > 0);
-    }
-
     private void setUpEditMode() {
-        FloatingActionButton editButton = findViewById(R.id.editButton);
+//        FloatingActionButton editButton = findViewById(R.id.editButton);
         FloatingActionButton rectButton = findViewById(R.id.rectButton);
         FloatingActionButton triangleButton = findViewById(R.id.triangleButton);
         EditorView editorView = findViewById(R.id.editorView2);
-        editButton.setOnClickListener(
-            (view) -> {
-                setEditSetup();
-                if (!editorView.drawModeOn) {
-                    editorView.drawModeOn = true;
-                    editorView.setCurrentMode(Mode.DRAW);
-                    editButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
-                } else{
-                    editorView.drawModeOn = false;
-                    editorView.setCurrentMode(Mode.SELECTION);
-                    editButton.setImageResource(android.R.drawable.ic_menu_edit);
-                }
-            }
-        );
+//        editButton.setOnClickListener(
+//            (view) -> {
+//                setEditSetup();
+//                if (!editorView.drawModeOn) {
+//                    editorView.drawModeOn = true;
+//                    editorView.setCurrentMode(Mode.DRAW);
+//                    editButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+//                } else{
+//                    editorView.drawModeOn = false;
+//                    editorView.setCurrentMode(Mode.SELECTION);
+//                    editButton.setImageResource(android.R.drawable.ic_menu_edit);
+//                }
+//            }
+//        );
 
 
         rectButton.setOnClickListener(
@@ -293,18 +318,6 @@ public class EditActivity extends AppCompatActivity {
                         triangleButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
                     }
                 }
-        );
-
-        FloatingActionButton previousButton = findViewById(R.id.previousSlideButton);
-        FloatingActionButton nextButton = findViewById(R.id.nextSlideButton);
-        nextButton.setEnabled(editorView.getCurrentStack().sizeOfStack() > 0 && editorView.currentSlide < editorView.getCurrentStack().sizeOfStack() - 1);
-        previousButton.setEnabled(editorView.currentSlide > 0);
-
-        previousButton.setOnClickListener(
-                (view) -> setUpSlideNavigationButton(this, editorView, previousButton, nextButton, -1)
-        );
-        nextButton.setOnClickListener(
-                (view) -> setUpSlideNavigationButton(this, editorView, previousButton, nextButton, 1)
         );
 
     }

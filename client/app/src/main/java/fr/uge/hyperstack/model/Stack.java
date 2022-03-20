@@ -50,7 +50,7 @@ public class Stack implements Serializable {
 
     public Stack(@NonNull String title) {
         this.slides = new ArrayList<>();
-        this.slides.add(new Slide());
+        this.slides.add(new Slide(1));
         this.title = Objects.requireNonNull(title);
         this.creationTime = System.currentTimeMillis();
     }
@@ -72,6 +72,10 @@ public class Stack implements Serializable {
         }
     }
 
+    public List<Slide> getSlides() {
+        return slides;
+    }
+
     public void addLayerElementToSlide(Layer layer, int index) {
         slides.get(index).addLayer(layer);
     }
@@ -81,7 +85,7 @@ public class Stack implements Serializable {
     }
 
     public void addNewSlide() {
-        slides.add(new Slide());
+        slides.add(new Slide(slides.size() + 1));
     }
 
     public int sizeOfStack() {
@@ -95,6 +99,6 @@ public class Stack implements Serializable {
     }
 
     public void resetSlide(int index) {
-        slides.set(index, new Slide());
+        slides.set(index, new Slide(index));
     }
 }

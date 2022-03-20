@@ -6,4 +6,8 @@
     <string name="creation_stack_btn">Création d\'une présentation</string>
     <string name="back">Retour</string>
     <string name="edit">Editer</string>
+    <string name="next">Suivant</string>
+    <string name="previous">Précédent</string>
+    <string name="slide_number_item" translatable="false">Slide n°%1$d</string>
+    <string name="slide_number_bottom_bar">%1$d sur %2$d</string>
 </resources>

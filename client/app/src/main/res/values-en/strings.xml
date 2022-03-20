@@ -6,4 +6,7 @@
     <string name="creation_stack_btn">Create new stack</string>
     <string name="back">Back</string>
     <string name="edit">Edit</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="slide_number_bottom_bar">%1$d on %2$d</string>
 </resources>

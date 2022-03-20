@@ -1,34 +1,30 @@
 package fr.uge.hyperstack.activities;
 
-import androidx.annotation.NonNull;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.uge.hyperstack.R;
+import fr.uge.hyperstack.adapter.StackAdapter;
 import fr.uge.hyperstack.fragment.CreationStackDialogFragment;
 import fr.uge.hyperstack.fragment.TwoButtonsDialogListener;
 import fr.uge.hyperstack.model.Stack;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-import java.util.ArrayList;
-import java.util.List;
-
 public class HomeActivity extends AppCompatActivity implements TwoButtonsDialogListener {
     private final List<Stack> stacks = new ArrayList<>();
     private StackAdapter stackAdapter;
-    private int calledStack = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +34,7 @@ public class HomeActivity extends AppCompatActivity implements TwoButtonsDialogL
         initData();
 
         RecyclerView recyclerView = findViewById(R.id.stacksRecyclerView);
-        stackAdapter = new StackAdapter(stacks);
+        stackAdapter = new StackAdapter(HomeActivity.this, stacks);
         recyclerView.setAdapter(stackAdapter);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
     }
@@ -96,9 +92,7 @@ public class HomeActivity extends AppCompatActivity implements TwoButtonsDialogL
         CreationStackDialogFragment dialogContext = (CreationStackDialogFragment) dialog;
         String title = dialogContext.getTitle();
         if (title.isEmpty()) {
-            // Solution temporaire
-            Toast toast = Toast.makeText(getApplicationContext(), "Le nom de la présentation ne peut pas être vide.", Toast.LENGTH_SHORT);
-            toast.show();
+            Snackbar.make(findViewById(R.id.stacksRecyclerView), "Le nom de la présentation ne peut pas être vide.", Snackbar.LENGTH_LONG).show();
             return;
         }
         Stack newStack = new Stack(title);
@@ -115,66 +109,5 @@ public class HomeActivity extends AppCompatActivity implements TwoButtonsDialogL
         // Do nothing if cancelled
     }
 
-    public class StackAdapter extends RecyclerView.Adapter<StackAdapter.StackViewHolder> {
-        private final List<Stack> stacks;
 
-
-        public StackAdapter(List<Stack> stacks) {
-            super();
-            this.stacks = stacks;
-        }
-
-        @NonNull
-        @Override
-        public StackViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new StackViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.slide_item, parent, false));
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull StackViewHolder holder, int position) {
-            Stack currentStack = stacks.get(position);
-            holder.bind(currentStack);
-            holder.stackImageView.setOnClickListener(v -> {
-                Intent editIntent = new Intent(getApplicationContext(), EditActivity.class);
-                editIntent.putExtra("stack", currentStack);
-                editIntent.putExtra("stackNum", position);
-                startActivityForResult(editIntent, 1);
-
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return stacks.size();
-        }
-
-        public void addStack(Stack stack) {
-            stacks.add(stack);
-            notifyItemInserted(stacks.size());
-        }
-
-
-        public class StackViewHolder extends RecyclerView.ViewHolder {
-            private final TextView stackTitleTextView;
-            private final ImageView stackImageView;
-
-
-            public StackViewHolder(@NonNull View itemView) {
-                super(itemView);
-                this.stackTitleTextView = itemView.findViewById(R.id.stackTitleTextView);
-                this.stackImageView = itemView.findViewById(R.id.stackImageView);
-            }
-
-            /**
-             * Lie les données de la présentation à l'interface graphique.
-             *
-             * @param stack les données de la présentation.
-             */
-            private void bind(Stack stack) {
-                stackTitleTextView.setText(stack.getTitle());
-
-                stackImageView.setImageBitmap(stack.getImage(stackImageView.getContext()));
-            }
-        }
-    }
 }
