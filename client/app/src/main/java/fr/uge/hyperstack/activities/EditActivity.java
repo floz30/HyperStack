@@ -61,6 +61,8 @@ public class EditActivity extends AppCompatActivity {
         currentStack = (Stack) homeIntent.getSerializableExtra("stack");
         editorView.setCurrentStack(currentStack);
         currentStackNum = homeIntent.getIntExtra("stackNum", -1);
+        currentStack.initSlideLayer(editorView);
+
 
         setEditSetup();
         setUpEditMode();
@@ -218,9 +220,7 @@ public class EditActivity extends AppCompatActivity {
                 Stroke stroke = new Stroke(Color.RED, 25);
                 stroke.moveTo(x,y);
                 editorView.getStrokeStack().add(stroke);
-                Layer layer = new Layer();
-                layer.addPaintElement(stroke);
-                editorView.getCurrentStack().addLayerElementToSlide(layer, editorView.currentSlide);
+                editorView.getCurrentStack().addLayerElementToSlide(stroke, editorView.currentSlide);
             }
 
             @Override
@@ -249,11 +249,9 @@ public class EditActivity extends AppCompatActivity {
         editorView.setEditorViewListener(new EditorViewListener() {
             @Override
             public void onFingerTouch(float x, float y) {
-                PaintElement rect = initFigure(x, y, editorView);
-                editorView.getStrokeStack().add(rect);
-                Layer layer = new Layer();
-                layer.addPaintElement(rect);
-                editorView.getCurrentStack().addLayerElementToSlide(layer, editorView.currentSlide);
+                PaintElement element = initFigure(x, y, editorView);
+                editorView.getStrokeStack().add(element);
+                editorView.getCurrentStack().addLayerElementToSlide(element, editorView.currentSlide);
             }
 
             @Override

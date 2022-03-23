@@ -2,6 +2,7 @@ package fr.uge.hyperstack.model;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.view.View;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,7 +32,11 @@ public class Slide implements Serializable {
      */
     private List<Layer> layers;
 
+    private View editView;
+
     private int slideNumber;
+
+    private int currentLayer;
 
 
     public Slide(int slideNumber) {
@@ -43,8 +48,15 @@ public class Slide implements Serializable {
         return layers;
     }
 
-    public void addLayer(Layer layer) {
-        layers.add(layer);
+    public void addElementOnLayer(PaintElement layer) {
+        layers.get(currentLayer).addPaintElement(layer);
+    }
+
+    public void createLayer(View view){
+        Layer tmp = new Layer();
+        setEditView(view);
+        layers.add(tmp);
+        currentLayer = layers.size()-1;
     }
 
     public void drawLayers(Canvas canvas, Paint paint) {
@@ -64,4 +76,7 @@ public class Slide implements Serializable {
         return slideNumber;
     }
 
+    public void setEditView(View editView) {
+        this.editView = editView;
+    }
 }

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.view.View;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +56,12 @@ public class Stack implements Serializable {
         this.creationTime = System.currentTimeMillis();
     }
 
+    public void initSlideLayer(View view){
+        for(Slide slide : slides){
+            slide.createLayer(view);
+        }
+    }
+
 
     public String getTitle() {
         return title;
@@ -76,8 +83,8 @@ public class Stack implements Serializable {
         return slides;
     }
 
-    public void addLayerElementToSlide(Layer layer, int index) {
-        slides.get(index).addLayer(layer);
+    public void addLayerElementToSlide(PaintElement element, int index) {
+        slides.get(index).addElementOnLayer(element);
     }
 
     public void drawSlide(Canvas canvas, Paint paint, int index) {

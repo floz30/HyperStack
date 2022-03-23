@@ -2,6 +2,7 @@ package fr.uge.hyperstack.model;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.view.View;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,6 +10,8 @@ import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
+
+import fr.uge.hyperstack.model.media.Video;
 
 /**
  * Classe représentant un calque qui contient un ou plusieurs éléments.
@@ -23,10 +26,12 @@ public class Layer implements Serializable  {
      * Ensemble des éléments présents sur ce calque.
      */
     private List<PaintElement> elements;
+    private List<Video> videos;
 
 
     public Layer() {
         this.elements = new ArrayList<>();
+        this.videos = new ArrayList<>();
     }
 
 
@@ -47,6 +52,7 @@ public class Layer implements Serializable  {
             }
         }
     }
+
 
     public Memento save() {
         return new Memento(elements);
