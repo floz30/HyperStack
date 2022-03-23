@@ -6,4 +6,6 @@ public enum Mode {
     RECTANGLE,
     TRIANGLE,
     SELECTION,
+    CIRCLE,
+    ;
 }

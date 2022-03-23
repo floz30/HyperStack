@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -22,16 +21,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
+
 import fr.uge.hyperstack.R;
-import fr.uge.hyperstack.adapter.SlideBottomBarAdapter;
 import fr.uge.hyperstack.fragment.ImportImageDialogFragment;
 import fr.uge.hyperstack.fragment.SlideBottomBarDialogFragment;
 import fr.uge.hyperstack.model.PaintElement;
 import fr.uge.hyperstack.fragment.ImportSoundDialogFragment;
 import fr.uge.hyperstack.model.Layer;
 import fr.uge.hyperstack.model.Mode;
+import fr.uge.hyperstack.model.drawing.Circle;
 import fr.uge.hyperstack.model.drawing.Point;
 import fr.uge.hyperstack.model.drawing.Rectangle;
 import fr.uge.hyperstack.model.Stack;
@@ -231,9 +230,7 @@ public class EditActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFingerRaise(float x, float y) {
-
-            }
+            public void onFingerRaise(float x, float y) { }
         });
     }
 
@@ -241,6 +238,7 @@ public class EditActivity extends AppCompatActivity {
         switch (ev.getCurrentMode()){
             case RECTANGLE: return new Rectangle(new Point(x,y),new Point(x,y),Color.RED,10);
             case TRIANGLE: return new Triangle(Color.RED,10,new Point(x,y),new Point(x,y),new Point(x,y));
+            case CIRCLE: return new Circle(Color.RED,new Point(x,y),10,new Point(x,y));
             default: return null;
         }
     }
@@ -266,7 +264,7 @@ public class EditActivity extends AppCompatActivity {
 
             @Override
             public void onFingerRaise(float x, float y) {
-
+                editorView.setCurrentMode(Mode.SELECTION);
             }
         });
     }
@@ -276,6 +274,7 @@ public class EditActivity extends AppCompatActivity {
         FloatingActionButton rectButton = findViewById(R.id.rectButton);
         FloatingActionButton triangleButton = findViewById(R.id.triangleButton);
         EditorView editorView = findViewById(R.id.editorView2);
+
 //        editButton.setOnClickListener(
 //            (view) -> {
 //                setEditSetup();
@@ -291,32 +290,18 @@ public class EditActivity extends AppCompatActivity {
 //            }
 //        );
 
-
         rectButton.setOnClickListener(
                 (view) -> {
                     setFigureSetup();
-                   if(editorView.getCurrentMode().equals(Mode.RECTANGLE)){
-                       editorView.setCurrentMode(Mode.SELECTION);
-                       rectButton.setImageResource(android.R.drawable.btn_default_small);
-                   }
-                   else{
-                       editorView.setCurrentMode(Mode.RECTANGLE);
-                       rectButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
-                   }
+                    editorView.setCurrentMode(!editorView.getCurrentMode().equals(Mode.RECTANGLE) ? Mode.RECTANGLE : Mode.SELECTION );
                 }
         );
 
         triangleButton.setOnClickListener(
                 (view) -> {
                     setFigureSetup();
-                    if(editorView.getCurrentMode().equals(Mode.RECTANGLE)){
-                        editorView.setCurrentMode(Mode.SELECTION);
-                        triangleButton.setImageResource(android.R.drawable.arrow_up_float);
-                    }
-                    else{
-                        editorView.setCurrentMode(Mode.TRIANGLE);
-                        triangleButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
-                    }
+                    setFigureSetup();
+                    editorView.setCurrentMode(!editorView.getCurrentMode().equals(Mode.TRIANGLE) ? Mode.TRIANGLE : Mode.SELECTION );
                 }
         );
 

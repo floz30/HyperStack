@@ -18,7 +18,7 @@ import androidx.annotation.NonNull;
  * @see Slide
  * @see PaintElement
  */
-public class Layer implements Serializable {
+public class Layer implements Serializable  {
     /**
      * Ensemble des éléments présents sur ce calque.
      */
