@@ -1,27 +1,17 @@
 package fr.uge.hyperstack.view;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.view.ViewCompat;
-import fr.uge.hyperstack.R;
-import fr.uge.hyperstack.model.media.Image;
 
 public class SlideView extends ConstraintLayout {
-    private int width = LayoutParams.MATCH_PARENT;
-    private int height = LayoutParams.MATCH_PARENT;
-    private Context context;
-    //private View view;
-    private LayoutInflater inflater;
+    private final Context context;
+    private ConstraintSet constraintSet = new ConstraintSet();
 
     public SlideView(@NonNull Context context, ConstraintLayout layout) {
         super(context);
@@ -30,43 +20,59 @@ public class SlideView extends ConstraintLayout {
     }
 
     private void init(Context context, ConstraintLayout layout) {
+        this.setId(ViewCompat.generateViewId());
+        setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        view = inflater.inflate(R.layout.layer, null);
+//        ConstraintSet set = new ConstraintSet();
+//        set.clone(layout);
+//        set.constrainHeight(this.getId(), -1);
+//        set.connect(this.getId(), ConstraintSet.TOP, R.id.editLayout, ConstraintSet.TOP);
+//        set.connect(this.getId(), ConstraintSet.BOTTOM, R.id.bottomAppBar, ConstraintSet.TOP);
+//        set.connect(this.getId(), ConstraintSet.START, R.id.editLayout, ConstraintSet.START);
+//        set.connect(this.getId(), ConstraintSet.END, R.id.editLayout, ConstraintSet.END);
+//        layout.setConstraintSet(set);
 
-//        view = new View(context);
-//        view.setId(ViewCompat.generateViewId());
-
-        setId(ViewCompat.generateViewId());
-//        setLayoutParams(new LayoutParams(width, height));
-        ConstraintSet set = new ConstraintSet();
-        set.connect(this.getId(), ConstraintSet.START, R.id.editLayout, ConstraintSet.START, 5);
-        set.connect(this.getId(), ConstraintSet.END, R.id.editLayout, ConstraintSet.END, 5);
-        set.connect(this.getId(), ConstraintSet.TOP, R.id.editLayout, ConstraintSet.TOP, 200);
-        set.connect(this.getId(), ConstraintSet.BOTTOM, R.id.editLayout, ConstraintSet.BOTTOM, 200);
-        set.applyTo(layout);
 
     }
 
     public void drawImage() {
-//        ImageView imageView = new ImageView(context);
         Button btn = new Button(context);
         btn.setId(ViewCompat.generateViewId());
         btn.setText("ALLO");
-        btn.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-//        btn.layout
-//
-        ConstraintSet set = new ConstraintSet();
-        set.connect(btn.getId(), ConstraintSet.START, this.getId(), ConstraintSet.START, 50);
-        set.connect(btn.getId(), ConstraintSet.END, this.getId(), ConstraintSet.END, 5);
-        set.connect(btn.getId(), ConstraintSet.TOP, this.getId(), ConstraintSet.TOP, 50);
-        set.connect(btn.getId(), ConstraintSet.BOTTOM, this.getId(), ConstraintSet.BOTTOM, 5);
 
-        set.applyTo(this);
+        constraintSet.connect(btn.getId(), ConstraintSet.START, this.getId(), ConstraintSet.START);
+        constraintSet.connect(btn.getId(), ConstraintSet.END, this.getId(), ConstraintSet.END);
+        constraintSet.connect(btn.getId(), ConstraintSet.TOP, this.getId(), ConstraintSet.TOP);
+        constraintSet.connect(btn.getId(), ConstraintSet.BOTTOM, this.getId(), ConstraintSet.BOTTOM);
+        constraintSet.setHorizontalBias(btn.getId(), 0.25f);
+        constraintSet.setVerticalBias(btn.getId(), 0.75f);
+        constraintSet.constrainWidth(btn.getId(), ConstraintSet.WRAP_CONTENT);
+        constraintSet.constrainHeight(btn.getId(), ConstraintSet.WRAP_CONTENT);
 
-//        this.addView(btn);
         ViewGroup viewGroup = (ViewGroup) this;
         viewGroup.addView(btn);
+    }
+
+    public void drawButton() {
+        Button btn = new Button(context);
+        btn.setId(ViewCompat.generateViewId());
+        btn.setText("HELLO");
+
+        constraintSet.connect(btn.getId(), ConstraintSet.START, this.getId(), ConstraintSet.START);
+        constraintSet.connect(btn.getId(), ConstraintSet.END, this.getId(), ConstraintSet.END);
+        constraintSet.connect(btn.getId(), ConstraintSet.TOP, this.getId(), ConstraintSet.TOP);
+        constraintSet.connect(btn.getId(), ConstraintSet.BOTTOM, this.getId(), ConstraintSet.BOTTOM);
+        constraintSet.setHorizontalBias(btn.getId(), 0.75f);
+        constraintSet.setVerticalBias(btn.getId(), 0.25f);
+        constraintSet.constrainWidth(btn.getId(), ConstraintSet.WRAP_CONTENT);
+        constraintSet.constrainHeight(btn.getId(), ConstraintSet.WRAP_CONTENT);
+
+        ViewGroup viewGroup = (ViewGroup) this;
+        viewGroup.addView(btn);
+    }
+
+    public void build() {
+        this.setConstraintSet(constraintSet);
     }
 
 }
