@@ -1,10 +1,12 @@
 package fr.uge.hyperstack.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -20,6 +22,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,10 +38,9 @@ import java.util.List;
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.activities.SoundListActivity;
 import fr.uge.hyperstack.model.media.Sound;
+import fr.uge.hyperstack.utils.Permission;
 
 public class ImportSoundDialogFragment extends BottomSheetDialogFragment {
-
-    private final static int PICK_AUDIO = 1;
 
     @Nullable
     @Override
@@ -110,7 +113,15 @@ public class ImportSoundDialogFragment extends BottomSheetDialogFragment {
         }
 
         private void importSoundFromUser() throws IOException {
-
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("audio/*");
+                    activity.startActivityForResult(Intent.createChooser(intent, "SoundImport"), Permission.SOUND_IMPORT_REQUEST_CODE);
+                }
+            } else {
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, Permission.SOUND_IMPORT_REQUEST_CODE);
+            }
         }
 
         private static class ImportSoundItem {

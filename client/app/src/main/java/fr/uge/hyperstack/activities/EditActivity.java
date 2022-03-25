@@ -3,15 +3,13 @@ package fr.uge.hyperstack.activities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Parcelable;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,13 +23,11 @@ import android.widget.Toast;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +36,6 @@ import fr.uge.hyperstack.fragment.ImportImageDialogFragment;
 import fr.uge.hyperstack.fragment.SlideBottomBarDialogFragment;
 import fr.uge.hyperstack.model.PaintElement;
 import fr.uge.hyperstack.fragment.ImportSoundDialogFragment;
-import fr.uge.hyperstack.model.Layer;
 import fr.uge.hyperstack.model.Mode;
 import fr.uge.hyperstack.model.drawing.Circle;
 import fr.uge.hyperstack.model.drawing.Point;
@@ -77,8 +72,6 @@ public class EditActivity extends AppCompatActivity {
         editorView.setCurrentStack(currentStack);
         currentStackNum = homeIntent.getIntExtra("stackNum", -1);
         currentStack.initSlideLayer(editorView);
-        soundList.add((Sound) homeIntent.getSerializableExtra("sound"));
-
 
         setEditSetup();
         setUpEditMode();
@@ -166,6 +159,7 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -180,12 +174,45 @@ public class EditActivity extends AppCompatActivity {
                 break;
             case Permission.VIDEO_CAPTURE_REQUEST_CODE:
                 break;
+            case Permission.SOUND_TAKEN_FROM_APP_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    Sound sound = (Sound) data.getExtras().get("sound");
+                    soundList.add(sound);
+                    try {
+                        sound.getSound(this);
+                        Toast.makeText(this, sound.getName(), Toast.LENGTH_SHORT).show();
+                        Log.e("Sound", sound.getName());
+                    } catch (IOException e) {
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.e("Sound", e.getMessage(), e);
+                    }
+                    soundDialogFragment.dismiss();
+                }
+                break;
+            case Permission.SOUND_IMPORT_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    if ((data != null) && (data.getData() != null)){
+                        Uri audioURI = data.getData();
+                        Sound sound = new Sound("test");
+                        soundList.add(sound);
+                        // TODO faire un bouton play/pause
+                        try {
+                            sound.playSound(this, audioURI);
+                            Toast.makeText(this, "Sound is Playing", Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            Log.e("SoundError", e.getMessage(), e);
+                            Toast.makeText(this, "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                        soundDialogFragment.dismiss();
+                    }
+                }
         }
     }
 
     /**
      * Loses focus on TextView when clicking outside of the TextView
      * See https://stackoverflow.com/questions/4828636/edittext-clear-focus-on-touch-outside
+     *
      * @param event
      * @return
      */
@@ -193,10 +220,10 @@ public class EditActivity extends AppCompatActivity {
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             View v = getCurrentFocus();
-            if ( v instanceof EditText) {
+            if (v instanceof EditText) {
                 Rect outRect = new Rect();
                 v.getGlobalVisibleRect(outRect);
-                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
                     v.clearFocus();
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -213,7 +240,7 @@ public class EditActivity extends AppCompatActivity {
         et.requestFocus();
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
     private void clearSlide() {
@@ -240,12 +267,20 @@ public class EditActivity extends AppCompatActivity {
         soundDialogFragment.show(getSupportFragmentManager(), "importSound");
     }
 
+    private void setSoundPlayer(Sound sound) {
+        try {
+            sound.getSound(this);
+        } catch (IOException e) {
+            Log.e("Sound", e.getMessage(), e);
+        }
+    }
+
     public void setEditSetup() {
         editorView.setEditorViewListener(new EditorViewListener() {
             @Override
             public void onFingerTouch(float x, float y) {
                 Stroke stroke = new Stroke(Color.RED, 25);
-                stroke.moveTo(x,y);
+                stroke.moveTo(x, y);
                 editorView.getStrokeStack().add(stroke);
                 editorView.getCurrentStack().addLayerElementToSlide(stroke, editorView.currentSlide);
             }
@@ -253,20 +288,25 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onFingerMove(float x, float y) {
                 PaintElement currentElem = editorView.getStrokeStack().peek();
-                currentElem.onFingerMoveAction(x,y);
+                currentElem.onFingerMoveAction(x, y);
             }
 
             @Override
-            public void onFingerRaise(float x, float y) { }
+            public void onFingerRaise(float x, float y) {
+            }
         });
     }
 
-    public static PaintElement initFigure(float x, float y, EditorView ev){
-        switch (ev.getCurrentMode()){
-            case RECTANGLE: return new Rectangle(new Point(x,y),new Point(x,y),Color.RED,10);
-            case TRIANGLE: return new Triangle(Color.RED,10,new Point(x,y),new Point(x,y),new Point(x,y));
-            case CIRCLE: return new Circle(Color.RED,new Point(x,y),10,new Point(x,y));
-            default: return null;
+    public static PaintElement initFigure(float x, float y, EditorView ev) {
+        switch (ev.getCurrentMode()) {
+            case RECTANGLE:
+                return new Rectangle(new Point(x, y), new Point(x, y), Color.RED, 10);
+            case TRIANGLE:
+                return new Triangle(Color.RED, 10, new Point(x, y), new Point(x, y), new Point(x, y));
+            case CIRCLE:
+                return new Circle(Color.RED, new Point(x, y), 10, new Point(x, y));
+            default:
+                return null;
         }
     }
 
@@ -284,7 +324,7 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onFingerMove(float x, float y) {
                 PaintElement currentElem = editorView.getStrokeStack().peek();
-                currentElem.onFingerMoveAction(x,y);
+                currentElem.onFingerMoveAction(x, y);
             }
 
             @Override
@@ -318,7 +358,7 @@ public class EditActivity extends AppCompatActivity {
         rectButton.setOnClickListener(
                 (view) -> {
                     setFigureSetup();
-                    editorView.setCurrentMode(!editorView.getCurrentMode().equals(Mode.RECTANGLE) ? Mode.RECTANGLE : Mode.SELECTION );
+                    editorView.setCurrentMode(!editorView.getCurrentMode().equals(Mode.RECTANGLE) ? Mode.RECTANGLE : Mode.SELECTION);
                 }
         );
 
@@ -326,7 +366,7 @@ public class EditActivity extends AppCompatActivity {
                 (view) -> {
                     setFigureSetup();
                     setFigureSetup();
-                    editorView.setCurrentMode(!editorView.getCurrentMode().equals(Mode.TRIANGLE) ? Mode.TRIANGLE : Mode.SELECTION );
+                    editorView.setCurrentMode(!editorView.getCurrentMode().equals(Mode.TRIANGLE) ? Mode.TRIANGLE : Mode.SELECTION);
                 }
         );
     }

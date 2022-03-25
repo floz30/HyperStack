@@ -1,9 +1,7 @@
 package fr.uge.hyperstack.activities;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +23,7 @@ import java.util.List;
 
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.model.media.Sound;
+import fr.uge.hyperstack.utils.Permission;
 
 public class SoundListActivity extends AppCompatActivity {
     private static final int READ_FILE_PERMISSION_CODE = 1;
@@ -67,17 +66,6 @@ public class SoundListActivity extends AppCompatActivity {
         }
     }
 
-    private void checkPermission(String permission, int requestCode)
-    {
-        // Checking if permission is not granted
-        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, new String[] { permission }, requestCode);
-        }
-        else {
-            Toast.makeText(this, "Permission already granted", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private RecyclerView.LayoutManager createLayoutManager() {
         return new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
     }
@@ -88,9 +76,11 @@ public class SoundListActivity extends AppCompatActivity {
 
     public void loadSound(Sound sound) throws IOException {
         // TODO retourner sur le slide + afficher le player pour le son
-        Intent intent = new Intent(this, EditActivity.class);
-        intent.putExtra("sound", sound);
-        this.startActivity(intent);
+        sound.getSound(this);
+//        Intent intent = new Intent(this, SoundListActivity.class);
+//        intent.putExtra("sound", sound);
+//        startActivityForResult(intent, Permission.SOUND_TAKEN_FROM_APP_REQUEST_CODE);
+//        this.finish();
     }
 
     public static class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.ViewHolder> {
