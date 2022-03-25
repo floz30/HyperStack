@@ -201,6 +201,7 @@ public class EditActivity extends AppCompatActivity {
 
     public void onClickAddSlide(View v) {
         currentStack.addNewSlide();
+        updateSlideNumberLabel();
     }
 
     private void editSlideText() {
