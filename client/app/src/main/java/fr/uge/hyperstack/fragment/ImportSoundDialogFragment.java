@@ -2,8 +2,16 @@ package fr.uge.hyperstack.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
+import android.database.Cursor;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +25,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.activities.SoundListActivity;
+import fr.uge.hyperstack.model.media.Sound;
 
 public class ImportSoundDialogFragment extends BottomSheetDialogFragment {
+
+    private final static int PICK_AUDIO = 1;
 
     @Nullable
     @Override
@@ -67,7 +81,22 @@ public class ImportSoundDialogFragment extends BottomSheetDialogFragment {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             ImportSoundDialogFragment.ImportSoundItemAdapter.ImportSoundItem current = items.get(position);
             holder.bind(current);
-            holder.labelTextView.setOnClickListener(view -> this.loadSoundList());
+            holder.labelTextView.setOnClickListener(view -> {
+                // TODO position en enum
+                switch (position) {
+                    case 0:
+                        try {
+                            importSoundFromUser();
+                        } catch (IOException e) {
+                            Log.e("SoundIO", "File not found", e);
+                        }
+                        break;
+                    case 1:
+                        loadSoundList();
+                        break;
+                    default:
+                }
+            });
         }
 
         @Override
@@ -78,6 +107,10 @@ public class ImportSoundDialogFragment extends BottomSheetDialogFragment {
         private void loadSoundList() {
             Intent intent = new Intent(activity, SoundListActivity.class);
             activity.startActivity(intent);
+        }
+
+        private void importSoundFromUser() throws IOException {
+
         }
 
         private static class ImportSoundItem {

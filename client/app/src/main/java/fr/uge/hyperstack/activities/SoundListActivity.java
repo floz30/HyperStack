@@ -1,15 +1,22 @@
 package fr.uge.hyperstack.activities;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +27,8 @@ import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.model.media.Sound;
 
 public class SoundListActivity extends AppCompatActivity {
+    private static final int READ_FILE_PERMISSION_CODE = 1;
+
     private RecyclerView recyclerView;
     private SoundListAdapter soundItemAdapter;
 
@@ -29,12 +38,44 @@ public class SoundListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sound_list);
         recyclerView = findViewById(R.id.soundList);
         try {
-            soundItemAdapter = new SoundListAdapter(this, Sound.loadList(this.getApplicationContext()));
+            soundItemAdapter = new SoundListAdapter(this, Sound.loadSoundList(this.getApplicationContext()));
         } catch (IOException e) {
             Log.e("aled", "????", e);
         }
         recyclerView.setAdapter(soundItemAdapter);
         updateLayoutManager(null);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults)
+    {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == READ_FILE_PERMISSION_CODE) {
+
+            // Checking whether user granted the permission or not.
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                // Showing the toast message
+                Toast.makeText(this, "File Permission Granted", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(this, "File Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void checkPermission(String permission, int requestCode)
+    {
+        // Checking if permission is not granted
+        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[] { permission }, requestCode);
+        }
+        else {
+            Toast.makeText(this, "Permission already granted", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private RecyclerView.LayoutManager createLayoutManager() {
@@ -47,10 +88,12 @@ public class SoundListActivity extends AppCompatActivity {
 
     public void loadSound(Sound sound) throws IOException {
         // TODO retourner sur le slide + afficher le player pour le son
-        sound.getSound(this.getApplicationContext());
+        Intent intent = new Intent(this, EditActivity.class);
+        intent.putExtra("sound", sound);
+        this.startActivity(intent);
     }
 
-    public class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.ViewHolder> {
+    public static class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.ViewHolder> {
         private final SoundListActivity activity;
         private final List<Sound> soundList;
 

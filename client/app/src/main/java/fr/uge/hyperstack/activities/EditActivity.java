@@ -3,6 +3,7 @@ package fr.uge.hyperstack.activities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -15,13 +16,20 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.fragment.ImportImageDialogFragment;
@@ -37,6 +45,7 @@ import fr.uge.hyperstack.model.Stack;
 import fr.uge.hyperstack.model.drawing.Stroke;
 import fr.uge.hyperstack.model.drawing.Triangle;
 import fr.uge.hyperstack.model.media.Image;
+import fr.uge.hyperstack.model.media.Sound;
 import fr.uge.hyperstack.utils.Permission;
 import fr.uge.hyperstack.view.EditorView;
 import fr.uge.hyperstack.view.listener.EditorViewListener;
@@ -47,7 +56,9 @@ public class EditActivity extends AppCompatActivity {
     private Stack currentStack;
     private EditorView editorView;
     private ImportImageDialogFragment imageDialogFragment;
+    private ImportSoundDialogFragment soundDialogFragment;
     private SlideBottomBarDialogFragment slideBottomBarDialogFragment;
+    private final List<Sound> soundList = new ArrayList<>();
 
 
     @Override
@@ -62,12 +73,14 @@ public class EditActivity extends AppCompatActivity {
         editorView.setCurrentStack(currentStack);
         currentStackNum = homeIntent.getIntExtra("stackNum", -1);
         currentStack.initSlideLayer(editorView);
+        soundList.add((Sound) homeIntent.getSerializableExtra("sound"));
 
 
         setEditSetup();
         setUpEditMode();
 
         imageDialogFragment = new ImportImageDialogFragment();
+        soundDialogFragment = new ImportSoundDialogFragment();
         slideBottomBarDialogFragment = new SlideBottomBarDialogFragment(currentStack.getSlides());
 
         updateSlideNumberLabel();
@@ -209,7 +222,6 @@ public class EditActivity extends AppCompatActivity {
     }
 
     private void loadSound() {
-        ImportSoundDialogFragment soundDialogFragment = new ImportSoundDialogFragment();
         soundDialogFragment.show(getSupportFragmentManager(), "importSound");
     }
 
