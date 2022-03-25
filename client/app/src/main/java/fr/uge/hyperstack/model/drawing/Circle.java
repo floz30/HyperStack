@@ -3,6 +3,8 @@ package fr.uge.hyperstack.model.drawing;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import fr.uge.hyperstack.model.ElementVisitor;
+
 public class Circle extends AbstractFigure{
     private Point endPoint;
 
@@ -19,6 +21,21 @@ public class Circle extends AbstractFigure{
     @Override
     public float getHeight() {
         return Math.abs(Math.abs(endPoint.getY()) - Math.abs(getPositionY()));
+    }
+
+    @Override
+    public float convertBiasHorizontal(float width) {
+        return 0;
+    }
+
+    @Override
+    public float convertBiasVertical(float height) {
+        return 0;
+    }
+
+    @Override
+    public void accept(ElementVisitor elementVisitor) {
+
     }
 
     @Override
