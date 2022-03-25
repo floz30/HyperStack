@@ -55,7 +55,7 @@ import fr.uge.hyperstack.view.listener.EditorViewListener;
 public class EditActivity extends AppCompatActivity {
     private int currentStackNum = -1;
     private Stack currentStack;
-    private EditorView editorView;
+    //private EditorView editorView;
     private ImportImageDialogFragment imageDialogFragment;
     private SlideBottomBarDialogFragment slideBottomBarDialogFragment;
 
@@ -67,11 +67,11 @@ public class EditActivity extends AppCompatActivity {
 
         Intent homeIntent = getIntent();
 
-        editorView = findViewById(R.id.editorView2);
+        //editorView = findViewById(R.id.editorView2);
         currentStack = (Stack) homeIntent.getSerializableExtra("stack");
-        editorView.setCurrentStack(currentStack);
+        //editorView.setCurrentStack(currentStack);
         currentStackNum = homeIntent.getIntExtra("stackNum", -1);
-        currentStack.initSlideLayer(editorView);
+        currentStack.initSlideLayer(getApplicationContext(), findViewById(R.id.editLayout));
 
 
         setEditSetup();
@@ -86,28 +86,30 @@ public class EditActivity extends AppCompatActivity {
         bottomAppBar.setNavigationOnClickListener(view -> {
             slideBottomBarDialogFragment.show(getSupportFragmentManager(), "slideBottomBar");
         });
-        bottomAppBar.setOnMenuItemClickListener(menuItem -> {
-            switch (menuItem.getItemId()) {
-                case R.id.previousSlide:
-                    if (editorView.currentSlide > 0) {
-                        editorView.currentSlide--;
-                        updateSlideNumberLabel();
-                        editorView.invalidate();
-                    }
-                    return true;
-                case R.id.nextSlide:
-                    if (currentStack.sizeOfStack() > 0 && editorView.currentSlide < currentStack.sizeOfStack() - 1) {
-                        editorView.currentSlide++;
-                        updateSlideNumberLabel();
-                        editorView.invalidate();
-                    }
-                    return true;
-                default:
-                    return false;
-            }
-        });
 
-        editorView.getCurrentStack().setDrawableElements();
+        currentStack.drawSlide(0);
+//        bottomAppBar.setOnMenuItemClickListener(menuItem -> {
+//            switch (menuItem.getItemId()) {
+//                case R.id.previousSlide:
+//                    if (editorView.currentSlide > 0) {
+//                        editorView.currentSlide--;
+//                        updateSlideNumberLabel();
+//                        editorView.invalidate();
+//                    }
+//                    return true;
+//                case R.id.nextSlide:
+//                    if (currentStack.sizeOfStack() > 0 && editorView.currentSlide < currentStack.sizeOfStack() - 1) {
+//                        editorView.currentSlide++;
+//                        updateSlideNumberLabel();
+//                        editorView.invalidate();
+//                    }
+//                    return true;
+//                default:
+//                    return false;
+//            }
+//        });
+
+//        editorView.getCurrentStack().setDrawableElements();
 
 //        Button backButton = findViewById(R.id.backEditButton);
 //        backButton.setOnClickListener(v -> {
@@ -122,7 +124,7 @@ public class EditActivity extends AppCompatActivity {
 
     private void updateSlideNumberLabel() {
         TextView slideNumberTextView = findViewById(R.id.slideNumberBottomBarTextView);
-        slideNumberTextView.setText(String.format(getResources().getString(R.string.slide_number_bottom_bar), editorView.currentSlide + 1, currentStack.sizeOfStack()));
+//        slideNumberTextView.setText(String.format(getResources().getString(R.string.slide_number_bottom_bar), editorView.currentSlide + 1, currentStack.sizeOfStack()));
     }
 
     @Override
@@ -145,6 +147,7 @@ public class EditActivity extends AppCompatActivity {
                 loadSound();
                 return true;
             case R.id.action_add_location:
+                return true;
             case R.id.action_add_user_input:
                 return true;
             case R.id.action_erase:
@@ -215,16 +218,16 @@ public class EditActivity extends AppCompatActivity {
     }
 
     private void clearSlide() {
-        Stack s = editorView.getCurrentStack();
-        s.resetSlide(editorView.currentSlide);
-        editorView.invalidate();
+//        Stack s = editorView.getCurrentStack();
+//        s.resetSlide(editorView.currentSlide);
+//        editorView.invalidate();
     }
 
     private void goToLogs() {
-        EditorView ev = findViewById(R.id.editorView2);
-        Intent intent = new Intent(this, LogsActivity.class);
-        intent.putExtra("logs", ev.getCurrentStack().getLogs());
-        startActivityForResult(intent, 1);
+//        EditorView ev = findViewById(R.id.editorView2);
+//        Intent intent = new Intent(this, LogsActivity.class);
+//        intent.putExtra("logs", ev.getCurrentStack().getLogs());
+//        startActivityForResult(intent, 1);
     }
 
     /**
@@ -240,24 +243,24 @@ public class EditActivity extends AppCompatActivity {
     }
 
     public void setEditSetup() {
-        editorView.setEditorViewListener(new EditorViewListener() {
-            @Override
-            public void onFingerTouch(float x, float y) {
-                Stroke stroke = new Stroke(Color.RED, 25);
-                stroke.moveTo(x,y);
-                editorView.getStrokeStack().add(stroke);
-                editorView.getCurrentStack().addLayerElementToSlide(stroke, editorView.currentSlide);
-            }
-
-            @Override
-            public void onFingerMove(float x, float y) {
-                PaintElement currentElem = editorView.getStrokeStack().peek();
-                currentElem.onFingerMoveAction(x,y);
-            }
-
-            @Override
-            public void onFingerRaise(float x, float y) { }
-        });
+//        editorView.setEditorViewListener(new EditorViewListener() {
+//            @Override
+//            public void onFingerTouch(float x, float y) {
+//                Stroke stroke = new Stroke(Color.RED, 25);
+//                stroke.moveTo(x,y);
+//                editorView.getStrokeStack().add(stroke);
+//                editorView.getCurrentStack().addLayerElementToSlide(stroke, editorView.currentSlide);
+//            }
+//
+//            @Override
+//            public void onFingerMove(float x, float y) {
+//                PaintElement currentElem = editorView.getStrokeStack().peek();
+//                currentElem.onFingerMoveAction(x,y);
+//            }
+//
+//            @Override
+//            public void onFingerRaise(float x, float y) { }
+//        });
     }
 
     public static PaintElement initFigure(float x, float y, EditorView ev){
@@ -271,33 +274,32 @@ public class EditActivity extends AppCompatActivity {
 
     public void setFigureSetup() {
         Intent homeIntent = getIntent();
-        editorView.setCurrentStack((Stack) homeIntent.getSerializableExtra("stack"));
-        editorView.setEditorViewListener(new EditorViewListener() {
-            @Override
-            public void onFingerTouch(float x, float y) {
-                PaintElement element = initFigure(x, y, editorView);
-                editorView.getStrokeStack().add(element);
-                editorView.getCurrentStack().addLayerElementToSlide(element, editorView.currentSlide);
-            }
-
-            @Override
-            public void onFingerMove(float x, float y) {
-                PaintElement currentElem = editorView.getStrokeStack().peek();
-                currentElem.onFingerMoveAction(x,y);
-            }
-
-            @Override
-            public void onFingerRaise(float x, float y) {
-                editorView.setCurrentMode(Mode.SELECTION);
-            }
-        });
+//        editorView.setCurrentStack((Stack) homeIntent.getSerializableExtra("stack"));
+//        editorView.setEditorViewListener(new EditorViewListener() {
+//            @Override
+//            public void onFingerTouch(float x, float y) {
+//                PaintElement element = initFigure(x, y, editorView);
+//                editorView.getStrokeStack().add(element);
+//                editorView.getCurrentStack().addLayerElementToSlide(element, editorView.currentSlide);
+//            }
+//
+//            @Override
+//            public void onFingerMove(float x, float y) {
+//                PaintElement currentElem = editorView.getStrokeStack().peek();
+//                currentElem.onFingerMoveAction(x,y);
+//            }
+//
+//            @Override
+//            public void onFingerRaise(float x, float y) {
+//                editorView.setCurrentMode(Mode.SELECTION);
+//            }
+//        });
     }
 
     private void setUpEditMode() {
 //        FloatingActionButton editButton = findViewById(R.id.editButton);
         FloatingActionButton rectButton = findViewById(R.id.rectButton);
         FloatingActionButton triangleButton = findViewById(R.id.triangleButton);
-        EditorView editorView = findViewById(R.id.editorView2);
 
 //        editButton.setOnClickListener(
 //            (view) -> {
@@ -314,19 +316,20 @@ public class EditActivity extends AppCompatActivity {
 //            }
 //        );
 
-        rectButton.setOnClickListener(
-                (view) -> {
-                    setFigureSetup();
-                    editorView.setCurrentMode(!editorView.getCurrentMode().equals(Mode.RECTANGLE) ? Mode.RECTANGLE : Mode.SELECTION );
-                }
-        );
+//        rectButton.setOnClickListener(
+//                (view) -> {
+//                    setFigureSetup();
+//                    editorView.setCurrentMode(!editorView.getCurrentMode().equals(Mode.RECTANGLE) ? Mode.RECTANGLE : Mode.SELECTION );
+//                }
+//        );
+//
+//        triangleButton.setOnClickListener(
+//                (view) -> {
+//                    setFigureSetup();
+//                    setFigureSetup();
+//                    editorView.setCurrentMode(!editorView.getCurrentMode().equals(Mode.TRIANGLE) ? Mode.TRIANGLE : Mode.SELECTION );
+//                }
+//        );
 
-        triangleButton.setOnClickListener(
-                (view) -> {
-                    setFigureSetup();
-                    setFigureSetup();
-                    editorView.setCurrentMode(!editorView.getCurrentMode().equals(Mode.TRIANGLE) ? Mode.TRIANGLE : Mode.SELECTION );
-                }
-        );
     }
 }

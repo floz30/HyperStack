@@ -24,7 +24,8 @@ public class Rectangle extends AbstractFigure {
     }
 
     @Override
-    public void draw(Canvas canvas, Paint paint) {
+    public void draw(Canvas canvas) {
+        Paint paint = new Paint();
         paint.setColor(getColor());
         paint.setStrokeWidth(getStrokeSize());
         canvas.drawRect(getPositionX(), getPositionY(), endPoint.getX(), endPoint.getY(), paint);
