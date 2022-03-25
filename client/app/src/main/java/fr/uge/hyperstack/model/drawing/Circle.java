@@ -3,6 +3,8 @@ package fr.uge.hyperstack.model.drawing;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import fr.uge.hyperstack.model.ElementVisitor;
+
 public class Circle extends AbstractFigure{
     private Point endPoint;
 
@@ -22,7 +24,23 @@ public class Circle extends AbstractFigure{
     }
 
     @Override
-    public void draw(Canvas canvas, Paint paint) {
+    public float convertBiasHorizontal(float width) {
+        return 0;
+    }
+
+    @Override
+    public float convertBiasVertical(float height) {
+        return 0;
+    }
+
+    @Override
+    public void accept(ElementVisitor elementVisitor) {
+
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        Paint paint = new Paint();
         paint.setColor(getColor());
         paint.setStrokeWidth(getStrokeSize());
         canvas.drawCircle((endPoint.getX() + getPositionX())/2f, (getPositionY() + endPoint.getX())/2f,getWidth()/2f, paint);

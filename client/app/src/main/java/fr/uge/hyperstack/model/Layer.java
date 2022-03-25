@@ -1,9 +1,15 @@
 package fr.uge.hyperstack.model;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.View;
+import android.widget.ImageView;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +17,12 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import fr.uge.hyperstack.model.media.Image;
 import fr.uge.hyperstack.model.media.Video;
+import fr.uge.hyperstack.view.EditorView;
+import fr.uge.hyperstack.view.SlideView;
 
 /**
  * Classe représentant un calque qui contient un ou plusieurs éléments.
@@ -25,13 +36,25 @@ public class Layer implements Serializable  {
     /**
      * Ensemble des éléments présents sur ce calque.
      */
-    private List<PaintElement> elements;
+    private List<Element> elements;
+
     private List<Video> videos;
 
+    private final Context context;
 
-    public Layer() {
+    /**
+     * La view sur laquelle le calque dessinera ses éléments.
+     */
+    private SlideView currentView;
+    private ConstraintLayout layout;
+
+
+    public Layer(Context context, ConstraintLayout layout) {
         this.elements = new ArrayList<>();
         this.videos = new ArrayList<>();
+        this.currentView = new SlideView(context, layout);
+        this.layout = layout;
+        this.context = context;
     }
 
 
@@ -39,9 +62,25 @@ public class Layer implements Serializable  {
         elements.add(paintElement);
     }
 
-    public void draw(Canvas canvas, Paint paint) {
-        for (PaintElement element : elements) {
-            element.draw(canvas, paint);
+    public void draw(Canvas canvas) {
+        draw();
+//        for (PaintElement element : elements) {
+//            element.draw(canvas);
+//        }
+    }
+
+    public void draw() {
+//        currentView.drawButton();
+        try (InputStream is = context.getAssets().open("data/cheval.png")) {
+            Bitmap b = BitmapFactory.decodeStream(is);
+            elements.add(new Image(b));
+        } catch (IOException e) {
+            System.err.println("ERROR");
+        }
+        currentView.build();
+        layout.addView(currentView);
+        for (Element element : elements) {
+            element.accept(currentView);
         }
     }
 
@@ -50,30 +89,6 @@ public class Layer implements Serializable  {
             if (element instanceof PaintElement) {
                 ((PaintElement) element).setPathOfStroke();
             }
-        }
-    }
-
-
-    public Memento save() {
-        return new Memento(elements);
-    }
-
-    public void restore(Memento m) {
-        Objects.requireNonNull(m);
-        this.elements = m.state;
-    }
-
-
-    class Memento {
-        private final List<PaintElement> state;
-
-        public Memento(List<PaintElement> elements) {
-            Objects.requireNonNull(elements);
-            this.state = elements;
-        }
-
-        public List<PaintElement> getState() {
-            return state;
         }
     }
 }

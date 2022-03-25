@@ -9,7 +9,7 @@ public interface PaintElement extends Element {
     /**
      * Dessine l'élément.
      */
-    void draw(Canvas canvas, Paint paint);
+    void draw(Canvas canvas);
 
     int getColor();
 

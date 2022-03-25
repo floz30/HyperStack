@@ -7,6 +7,7 @@ import android.graphics.Path;
 import java.io.Serializable;
 import java.util.LinkedList;
 
+import fr.uge.hyperstack.model.ElementVisitor;
 import fr.uge.hyperstack.model.PaintElement;
 
 public class Stroke implements Serializable, PaintElement {
@@ -81,7 +82,23 @@ public class Stroke implements Serializable, PaintElement {
     }
 
     @Override
-    public void draw(Canvas canvas, Paint paint) {
+    public float convertBiasHorizontal(float width) {
+        return 0;
+    }
+
+    @Override
+    public float convertBiasVertical(float height) {
+        return 0;
+    }
+
+    @Override
+    public void accept(ElementVisitor elementVisitor) {
+
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        Paint paint = new Paint();
         paint.setColor(this.color);
         paint.setStrokeWidth(this.strokeSize);
         canvas.drawPath(this.pathOfStroke, paint);
