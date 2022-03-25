@@ -7,6 +7,7 @@ import android.graphics.Path;
 import java.io.Serializable;
 import java.util.LinkedList;
 
+import fr.uge.hyperstack.model.ElementVisitor;
 import fr.uge.hyperstack.model.PaintElement;
 
 public class Stroke implements Serializable, PaintElement {
@@ -78,6 +79,21 @@ public class Stroke implements Serializable, PaintElement {
     @Override
     public float getHeight() {
         return 0;
+    }
+
+    @Override
+    public float convertBiasHorizontal(float width) {
+        return 0;
+    }
+
+    @Override
+    public float convertBiasVertical(float height) {
+        return 0;
+    }
+
+    @Override
+    public void accept(ElementVisitor elementVisitor) {
+
     }
 
     @Override

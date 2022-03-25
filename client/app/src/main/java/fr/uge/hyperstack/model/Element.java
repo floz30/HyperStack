@@ -1,6 +1,11 @@
 package fr.uge.hyperstack.model;
 
 
+import android.content.Context;
+import android.view.View;
+
+import androidx.constraintlayout.widget.ConstraintSet;
+
 /**
  * Représente un élément que l'utilisateur peut ajouter sur les calques de ses présentations.
  */
@@ -32,6 +37,11 @@ public interface Element {
      * @return la hauteur de l'élément.
      */
     float getHeight();
+
+    float convertBiasHorizontal(float width);
+    float convertBiasVertical(float height);
+
+    void accept(ElementVisitor elementVisitor);
 
 
 }
