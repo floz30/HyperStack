@@ -92,6 +92,8 @@ public class Stack implements Serializable {
 
     public void addLayerElementToSlide(PaintElement element, int index) {
         slides.get(index).addElementOnLayer(element);
+    }
+
     public ArrayList<Logs> getLogs() {
         return logs;
     }

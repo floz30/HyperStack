@@ -145,7 +145,6 @@ public class EditActivity extends AppCompatActivity {
                 loadSound();
                 return true;
             case R.id.action_add_location:
-                return true;
             case R.id.action_add_user_input:
                 return true;
             case R.id.action_erase:
