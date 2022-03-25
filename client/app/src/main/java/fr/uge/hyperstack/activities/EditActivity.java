@@ -199,6 +199,10 @@ public class EditActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(event);
     }
 
+    public void onClickAddSlide(View v) {
+        currentStack.addNewSlide();
+    }
+
     private void editSlideText() {
         TextView et = findViewById(R.id.slide_text);
 
