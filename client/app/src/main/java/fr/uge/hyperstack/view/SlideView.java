@@ -1,9 +1,11 @@
 package fr.uge.hyperstack.view;
 
 import android.content.Context;
-import android.graphics.Canvas;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -12,10 +14,19 @@ import androidx.core.view.ViewCompat;
 import fr.uge.hyperstack.model.PaintElement;
 import fr.uge.hyperstack.model.drawing.Figure;
 
-public class SlideView extends ConstraintLayout {
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import fr.uge.hyperstack.R;
+import fr.uge.hyperstack.model.Element;
+import fr.uge.hyperstack.model.ElementVisitor;
+import fr.uge.hyperstack.model.PaintElement;
+import fr.uge.hyperstack.model.media.Image;
+
+public class SlideView extends ConstraintLayout implements ElementVisitor {
     private final Context context;
     private ConstraintSet constraintSet = new ConstraintSet();
-    private final Canvas canvas = new Canvas();
 
     public SlideView(@NonNull Context context, ConstraintLayout layout) {
         super(context);
@@ -26,34 +37,6 @@ public class SlideView extends ConstraintLayout {
     private void init(Context context, ConstraintLayout layout) {
         this.setId(ViewCompat.generateViewId());
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-
-//        ConstraintSet set = new ConstraintSet();
-//        set.clone(layout);
-//        set.constrainHeight(this.getId(), -1);
-//        set.connect(this.getId(), ConstraintSet.TOP, R.id.editLayout, ConstraintSet.TOP);
-//        set.connect(this.getId(), ConstraintSet.BOTTOM, R.id.bottomAppBar, ConstraintSet.TOP);
-//        set.connect(this.getId(), ConstraintSet.START, R.id.editLayout, ConstraintSet.START);
-//        set.connect(this.getId(), ConstraintSet.END, R.id.editLayout, ConstraintSet.END);
-//        layout.setConstraintSet(set);
-
-    }
-
-    public void drawImage() {
-        Button btn = new Button(context);
-        btn.setId(ViewCompat.generateViewId());
-        btn.setText("ALLO");
-
-        constraintSet.connect(btn.getId(), ConstraintSet.START, this.getId(), ConstraintSet.START);
-        constraintSet.connect(btn.getId(), ConstraintSet.END, this.getId(), ConstraintSet.END);
-        constraintSet.connect(btn.getId(), ConstraintSet.TOP, this.getId(), ConstraintSet.TOP);
-        constraintSet.connect(btn.getId(), ConstraintSet.BOTTOM, this.getId(), ConstraintSet.BOTTOM);
-        constraintSet.setHorizontalBias(btn.getId(), 0.25f);
-        constraintSet.setVerticalBias(btn.getId(), 0.75f);
-        constraintSet.constrainWidth(btn.getId(), ConstraintSet.WRAP_CONTENT);
-        constraintSet.constrainHeight(btn.getId(), ConstraintSet.WRAP_CONTENT);
-
-        ViewGroup viewGroup = (ViewGroup) this;
-        viewGroup.addView(btn);
     }
 
     public void drawFigure(PaintElement element) {
@@ -90,4 +73,29 @@ public class SlideView extends ConstraintLayout {
         this.setConstraintSet(constraintSet);
     }
 
+    @Override
+    public void visit(Image image) {
+        ImageView img = new ImageView(context);
+
+        img.setId(ViewCompat.generateViewId());
+        img.setImageBitmap(image.getContent());
+        int id = img.getId();
+
+        constraintSet.connect(id, ConstraintSet.START, this.getId(), ConstraintSet.START);
+        constraintSet.connect(id, ConstraintSet.END, this.getId(), ConstraintSet.END);
+        constraintSet.connect(id, ConstraintSet.TOP, this.getId(), ConstraintSet.TOP);
+        constraintSet.connect(id, ConstraintSet.BOTTOM, this.getId(), ConstraintSet.BOTTOM);
+        constraintSet.setHorizontalBias(id, image.convertBiasHorizontal(this.getWidth()));
+        constraintSet.setVerticalBias(id, image.convertBiasVertical(this.getHeight()));
+        constraintSet.constrainWidth(id, ConstraintSet.WRAP_CONTENT);
+        constraintSet.constrainHeight(id, ConstraintSet.WRAP_CONTENT);
+
+        ViewGroup viewGroup = (ViewGroup) this;
+        viewGroup.addView(img);
+    }
+
+    @Override
+    public void visit(PaintElement paintElement) {
+
+    }
 }
