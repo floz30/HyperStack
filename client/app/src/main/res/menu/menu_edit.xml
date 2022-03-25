@@ -44,5 +44,9 @@
         android:title="Supprimer"
         app:showAsAction="always" />
 
-
+    <item
+        android:id="@+id/logs"
+        android:icon="@drawable/ic_logs"
+        android:title="Historique"
+        app:showAsAction="always" />
 </menu>

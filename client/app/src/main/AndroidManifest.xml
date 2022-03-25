@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Hyperstack">
         <activity
+            android:name=".activities.LogsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.EditActivity"
             android:parentActivityName=".activities.HomeActivity"
             android:exported="false" />
