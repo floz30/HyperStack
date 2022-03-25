@@ -8,6 +8,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.uge.hyperstack.R;
+import fr.uge.hyperstack.view.EditorView;
+
 /**
  * Classe représentant une diapositive (ou aussi planche) d'une présentation.
  * <p>Elle peut contenir différents éléments :</p>
@@ -78,5 +81,9 @@ public class Slide implements Serializable {
 
     public void setEditView(View editView) {
         this.editView = editView;
+    }
+
+    public void addLayer(Layer layer) {
+        layers.add(layer);
     }
 }

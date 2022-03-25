@@ -8,6 +8,10 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,10 +27,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,12 +152,15 @@ public class EditActivity extends AppCompatActivity {
                 loadSound();
                 return true;
             case R.id.action_add_location:
-                return true;
             case R.id.action_add_user_input:
                 return true;
             case R.id.action_erase:
                 clearSlide();
                 return true;
+            case R.id.logs:
+                goToLogs();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -212,6 +219,14 @@ public class EditActivity extends AppCompatActivity {
     private void clearSlide() {
         Stack s = editorView.getCurrentStack();
         s.resetSlide(editorView.currentSlide);
+        editorView.invalidate();
+    }
+
+    private void goToLogs() {
+        EditorView ev = findViewById(R.id.editorView2);
+        Intent intent = new Intent(this, LogsActivity.class);
+        intent.putExtra("logs", ev.getCurrentStack().getLogs());
+        startActivityForResult(intent, 1);
     }
 
     /**
@@ -314,6 +329,5 @@ public class EditActivity extends AppCompatActivity {
                     editorView.setCurrentMode(!editorView.getCurrentMode().equals(Mode.TRIANGLE) ? Mode.TRIANGLE : Mode.SELECTION );
                 }
         );
-
     }
 }
