@@ -77,7 +77,7 @@ public class EditActivity extends AppCompatActivity {
             slideBottomBarDialogFragment.show(getSupportFragmentManager(), "slideBottomBar");
         });
 
-        currentStack.drawSlide(null, 0);
+        currentStack.drawSlide(0);
 //        bottomAppBar.setOnMenuItemClickListener(menuItem -> {
 //            switch (menuItem.getItemId()) {
 //                case R.id.previousSlide:

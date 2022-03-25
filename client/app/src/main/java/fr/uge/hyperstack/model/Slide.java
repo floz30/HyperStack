@@ -62,9 +62,9 @@ public class Slide implements Serializable {
         currentLayer = layers.size()-1;
     }
 
-    public void drawLayers(Canvas canvas) {
+    public void drawLayers() {
         for (Layer layer : layers) {
-            layer.draw(canvas);
+            layer.draw();
         }
     }
 

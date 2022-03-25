@@ -9,6 +9,8 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import fr.uge.hyperstack.model.PaintElement;
@@ -18,47 +20,26 @@ import fr.uge.hyperstack.view.listener.EditorViewListener;
 public class EditorView extends View implements Serializable {
     private EditorViewListener editorViewListener;
     private fr.uge.hyperstack.model.Stack currentStack;
-    private java.util.Stack<PaintElement> strokeStack = new java.util.Stack<>();
-    public int currentSlide = 0;
+    private final List<PaintElement> strokeStack = new ArrayList<>();
     private Mode currentMode = Mode.SELECTION;
     public boolean drawModeOn;
 
 
-
-
     public EditorView(Context context) {
         super(context);
-        init(null, 0);
     }
 
-    public EditorView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(attrs, 0);
-    }
-
-    public EditorView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init(attrs, defStyle);
-    }
-
-    private void init(AttributeSet attrs, int defStyle) {
-
-    }
 
     public void setEditorViewListener(EditorViewListener evl) {
         this.editorViewListener = evl;
         invalidate();
     }
 
-    public fr.uge.hyperstack.model.Stack getCurrentStack() {
-        return currentStack;
+    public void addElement(PaintElement element) {
+        this.strokeStack.add(element);
     }
 
-    public void setCurrentStack(fr.uge.hyperstack.model.Stack currentStack) {
-        this.currentStack = currentStack;
-    }
-
-    public Stack<PaintElement> getStrokeStack() {
+    public List<PaintElement> getStrokeStack() {
         return strokeStack;
     }
 
@@ -77,8 +58,9 @@ public class EditorView extends View implements Serializable {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        currentStack.drawSlide(canvas, currentSlide);
+        for (PaintElement element : strokeStack) {
+            element.draw(canvas);
+        }
     }
 
     @Override

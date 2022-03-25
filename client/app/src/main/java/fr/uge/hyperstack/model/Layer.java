@@ -60,13 +60,14 @@ public class Layer implements Serializable  {
     }
 
     public void draw() {
+        for (PaintElement element : elements) {
+            currentView.drawFigure(element);
+        }
         currentView.drawImage();
         currentView.drawButton();
+
         currentView.build();
         layout.addView(currentView);
-//        for (PaintElement element : elements) {
-//
-//        }
     }
 
     public void setDrawableElements() {

@@ -1,6 +1,7 @@
 package fr.uge.hyperstack.view;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.view.ViewGroup;
 import android.widget.Button;
 
@@ -8,10 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.view.ViewCompat;
+import fr.uge.hyperstack.model.PaintElement;
+import fr.uge.hyperstack.model.drawing.Figure;
 
 public class SlideView extends ConstraintLayout {
     private final Context context;
     private ConstraintSet constraintSet = new ConstraintSet();
+    private final Canvas canvas = new Canvas();
 
     public SlideView(@NonNull Context context, ConstraintLayout layout) {
         super(context);
@@ -32,7 +36,6 @@ public class SlideView extends ConstraintLayout {
 //        set.connect(this.getId(), ConstraintSet.END, R.id.editLayout, ConstraintSet.END);
 //        layout.setConstraintSet(set);
 
-
     }
 
     public void drawImage() {
@@ -51,6 +54,18 @@ public class SlideView extends ConstraintLayout {
 
         ViewGroup viewGroup = (ViewGroup) this;
         viewGroup.addView(btn);
+    }
+
+    public void drawFigure(PaintElement element) {
+        EditorView editorView = new EditorView(context);
+        editorView.addElement(element);
+
+        int id = editorView.getId();
+        constraintSet.constrainWidth(id, ConstraintSet.WRAP_CONTENT);
+        constraintSet.constrainHeight(id, ConstraintSet.WRAP_CONTENT);
+
+        ViewGroup viewGroup = (ViewGroup) this;
+        viewGroup.addView(editorView);
     }
 
     public void drawButton() {

@@ -88,8 +88,8 @@ public class Stack implements Serializable {
         slides.get(index).addElementOnLayer(element);
     }
 
-    public void drawSlide(Canvas canvas, int index) {
-        slides.get(index).drawLayers(canvas);
+    public void drawSlide(int index) {
+        slides.get(index).drawLayers();
     }
 
     public void addNewSlide() {
