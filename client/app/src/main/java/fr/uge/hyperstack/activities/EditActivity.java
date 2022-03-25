@@ -1,8 +1,10 @@
 package fr.uge.hyperstack.activities;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -47,6 +49,7 @@ import fr.uge.hyperstack.model.Stack;
 import fr.uge.hyperstack.model.drawing.Stroke;
 import fr.uge.hyperstack.model.drawing.Triangle;
 import fr.uge.hyperstack.model.media.Image;
+import fr.uge.hyperstack.utils.Localisation;
 import fr.uge.hyperstack.utils.Permission;
 import fr.uge.hyperstack.view.EditorView;
 import fr.uge.hyperstack.view.listener.EditorViewListener;
@@ -58,6 +61,7 @@ public class EditActivity extends AppCompatActivity {
     //private EditorView editorView;
     private ImportImageDialogFragment imageDialogFragment;
     private SlideBottomBarDialogFragment slideBottomBarDialogFragment;
+    private Localisation localisation;
 
 
     @Override
@@ -147,6 +151,9 @@ public class EditActivity extends AppCompatActivity {
                 loadSound();
                 return true;
             case R.id.action_add_location:
+                if(localisation == null)
+                    localisation = new Localisation(this);
+                localisation.runWithPermission(Manifest.permission.ACCESS_FINE_LOCATION, "geolocalisation");
                 return true;
             case R.id.action_add_user_input:
                 return true;
