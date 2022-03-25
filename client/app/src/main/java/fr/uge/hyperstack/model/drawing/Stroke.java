@@ -81,7 +81,8 @@ public class Stroke implements Serializable, PaintElement {
     }
 
     @Override
-    public void draw(Canvas canvas, Paint paint) {
+    public void draw(Canvas canvas) {
+        Paint paint = new Paint();
         paint.setColor(this.color);
         paint.setStrokeWidth(this.strokeSize);
         canvas.drawPath(this.pathOfStroke, paint);

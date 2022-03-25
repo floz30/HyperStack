@@ -16,13 +16,15 @@ import fr.uge.hyperstack.model.Mode;
 import fr.uge.hyperstack.view.listener.EditorViewListener;
 
 public class EditorView extends View implements Serializable {
-    private final Paint paint = new Paint();
     private EditorViewListener editorViewListener;
     private fr.uge.hyperstack.model.Stack currentStack;
     private java.util.Stack<PaintElement> strokeStack = new java.util.Stack<>();
     public int currentSlide = 0;
     private Mode currentMode = Mode.SELECTION;
     public boolean drawModeOn;
+
+
+
 
     public EditorView(Context context) {
         super(context);
@@ -76,11 +78,7 @@ public class EditorView extends View implements Serializable {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.BLACK);
-
-        currentStack.drawSlide(canvas, paint, currentSlide);
-
+        currentStack.drawSlide(canvas, currentSlide);
     }
 
     @Override

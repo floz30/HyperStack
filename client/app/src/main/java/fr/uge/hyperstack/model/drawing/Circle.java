@@ -22,7 +22,8 @@ public class Circle extends AbstractFigure{
     }
 
     @Override
-    public void draw(Canvas canvas, Paint paint) {
+    public void draw(Canvas canvas) {
+        Paint paint = new Paint();
         paint.setColor(getColor());
         paint.setStrokeWidth(getStrokeSize());
         canvas.drawCircle((endPoint.getX() + getPositionX())/2f, (getPositionY() + endPoint.getX())/2f,getWidth()/2f, paint);

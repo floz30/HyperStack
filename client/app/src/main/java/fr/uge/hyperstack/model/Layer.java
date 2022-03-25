@@ -1,5 +1,6 @@
 package fr.uge.hyperstack.model;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.View;
@@ -11,7 +12,10 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import fr.uge.hyperstack.model.media.Video;
+import fr.uge.hyperstack.view.EditorView;
+import fr.uge.hyperstack.view.SlideView;
 
 /**
  * Classe représentant un calque qui contient un ou plusieurs éléments.
@@ -26,12 +30,21 @@ public class Layer implements Serializable  {
      * Ensemble des éléments présents sur ce calque.
      */
     private List<PaintElement> elements;
+
     private List<Video> videos;
 
+    /**
+     * La view sur laquelle le calque dessinera ses éléments.
+     */
+    private SlideView currentView;
+    private ConstraintLayout layout;
 
-    public Layer() {
+
+    public Layer(Context context, ConstraintLayout layout) {
         this.elements = new ArrayList<>();
         this.videos = new ArrayList<>();
+        this.currentView = new SlideView(context, layout);
+        this.layout = layout;
     }
 
 
@@ -39,10 +52,20 @@ public class Layer implements Serializable  {
         elements.add(paintElement);
     }
 
-    public void draw(Canvas canvas, Paint paint) {
-        for (PaintElement element : elements) {
-            element.draw(canvas, paint);
-        }
+    public void draw(Canvas canvas) {
+        draw();
+//        for (PaintElement element : elements) {
+//            element.draw(canvas);
+//        }
+    }
+
+    public void draw() {
+        currentView.drawImage();
+
+        layout.addView(currentView);
+//        for (PaintElement element : elements) {
+//
+//        }
     }
 
     public void setDrawableElements() {

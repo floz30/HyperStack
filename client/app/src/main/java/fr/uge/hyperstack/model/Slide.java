@@ -1,5 +1,6 @@
 package fr.uge.hyperstack.model;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.View;
@@ -7,6 +8,8 @@ import android.view.View;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 /**
  * Classe représentant une diapositive (ou aussi planche) d'une présentation.
@@ -52,16 +55,16 @@ public class Slide implements Serializable {
         layers.get(currentLayer).addPaintElement(layer);
     }
 
-    public void createLayer(View view){
-        Layer tmp = new Layer();
-        setEditView(view);
+    public void createLayer(Context context, ConstraintLayout layout){
+        Layer tmp = new Layer(context, layout);
+        //setEditView(view);
         layers.add(tmp);
         currentLayer = layers.size()-1;
     }
 
-    public void drawLayers(Canvas canvas, Paint paint) {
+    public void drawLayers(Canvas canvas) {
         for (Layer layer : layers) {
-            layer.draw(canvas, paint);
+            layer.draw(canvas);
         }
     }
 

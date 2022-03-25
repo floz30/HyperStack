@@ -2,61 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/editLayout"
     style="@style/EditView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.EditActivity">
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.85" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.75" />
-
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/editButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:clickable="true"-->
-<!--        android:contentDescription="@string/edit"-->
-<!--        android:focusable="true"-->
-<!--        app:backgroundTint="#C5A8A1"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/guideline4"-->
-<!--        app:layout_constraintTop_toTopOf="@+id/guideline2"-->
-<!--        app:srcCompat="@android:drawable/ic_menu_edit" />-->
-
-    <fr.uge.hyperstack.view.EditorView
-        android:id="@+id/editorView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.25" />
 
     <EditText
         android:id="@+id/slide_text"
@@ -75,6 +25,63 @@
         app:layout_constraintStart_toStartOf="@+id/guideline6"
         app:layout_constraintTop_toTopOf="@+id/guideline7"
         app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.85" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--        android:id="@+id/editButton"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:clickable="true"-->
+    <!--        android:contentDescription="@string/edit"-->
+    <!--        android:focusable="true"-->
+    <!--        app:backgroundTint="#C5A8A1"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="@+id/guideline4"-->
+    <!--        app:layout_constraintTop_toTopOf="@+id/guideline2"-->
+    <!--        app:srcCompat="@android:drawable/ic_menu_edit" />-->
+
+    <!--    <fr.uge.hyperstack.view.EditorView-->
+    <!--        android:id="@+id/editorView2"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:layout_marginStart="5dp"-->
+    <!--        android:layout_marginLeft="5dp"-->
+    <!--        android:layout_marginTop="200dp"-->
+    <!--        android:layout_marginEnd="5dp"-->
+    <!--        android:layout_marginRight="5dp"-->
+    <!--        android:layout_marginBottom="200dp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline6"
@@ -104,6 +111,37 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.98" />
 
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:menu="@menu/bottom_edit_bar"
+            app:navigationIcon="@drawable/ic_menu">
+
+            <TextView
+                android:id="@+id/slideNumberBottomBarTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                tools:text="1 sur 3" />
+
+        </com.google.android.material.bottomappbar.BottomAppBar>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_anchor="@id/bottomAppBar"
+            app:srcCompat="@drawable/ic_action_add" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/rectButton"
         android:layout_width="wrap_content"
@@ -127,38 +165,5 @@
         app:layout_constraintTop_toTopOf="@+id/guideline7"
         app:layout_constraintVertical_bias="0.837"
         app:srcCompat="@android:drawable/arrow_up_float" />
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-
-
-        <com.google.android.material.bottomappbar.BottomAppBar
-            android:id="@+id/bottomAppBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
-            app:navigationIcon="@drawable/ic_menu"
-            app:menu="@menu/bottom_edit_bar">
-
-            <TextView
-                android:id="@+id/slideNumberBottomBarTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                tools:text="1 sur 3" />
-
-        </com.google.android.material.bottomappbar.BottomAppBar>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_action_add"
-            app:layout_anchor="@id/bottomAppBar"
-            />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

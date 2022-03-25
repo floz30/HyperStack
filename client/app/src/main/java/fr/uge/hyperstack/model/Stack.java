@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 /**
  * Classe représentant une pile d'une ou plusieurs planches.<br/>
@@ -56,12 +57,12 @@ public class Stack implements Serializable {
         this.creationTime = System.currentTimeMillis();
     }
 
-    public void initSlideLayer(View view){
+
+    public void initSlideLayer(Context context, ConstraintLayout layout){
         for(Slide slide : slides){
-            slide.createLayer(view);
+            slide.createLayer(context, layout);
         }
     }
-
 
     public String getTitle() {
         return title;
@@ -87,8 +88,8 @@ public class Stack implements Serializable {
         slides.get(index).addElementOnLayer(element);
     }
 
-    public void drawSlide(Canvas canvas, Paint paint, int index) {
-        slides.get(index).drawLayers(canvas, paint);
+    public void drawSlide(Canvas canvas, int index) {
+        slides.get(index).drawLayers(canvas);
     }
 
     public void addNewSlide() {

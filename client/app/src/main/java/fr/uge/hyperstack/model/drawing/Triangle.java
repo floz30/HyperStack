@@ -26,7 +26,8 @@ public class Triangle extends AbstractFigure {
     }
 
     @Override
-    public void draw(Canvas canvas, Paint paint) {
+    public void draw(Canvas canvas) {
+        Paint paint = new Paint();
         paint.setColor(getColor());
         paint.setStrokeWidth(getStrokeSize());
         canvas.drawLine(getPositionX(), getPositionY(), pointA.getX(), pointA.getY(), paint);
