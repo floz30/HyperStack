@@ -6,6 +6,7 @@
 
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -36,6 +37,16 @@
             android:name=".activities.SoundListActivity"
             android:parentActivityName=".activities.EditActivity"
             android:exported="false" />
+        
+        <provider
+            android:authorities="fr.uge.hyperstack.provider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_path"/>
+        </provider>
     </application>
 
 </manifest>

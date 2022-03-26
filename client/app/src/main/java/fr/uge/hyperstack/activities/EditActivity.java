@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -24,29 +25,30 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.fragment.ImportImageDialogFragment;
-import fr.uge.hyperstack.fragment.SlideBottomBarDialogFragment;
-import fr.uge.hyperstack.model.PaintElement;
 import fr.uge.hyperstack.fragment.ImportSoundDialogFragment;
+import fr.uge.hyperstack.fragment.SlideBottomBarDialogFragment;
 import fr.uge.hyperstack.model.Mode;
+import fr.uge.hyperstack.model.PaintElement;
+import fr.uge.hyperstack.model.Stack;
 import fr.uge.hyperstack.model.drawing.Circle;
 import fr.uge.hyperstack.model.drawing.Point;
 import fr.uge.hyperstack.model.drawing.Rectangle;
-import fr.uge.hyperstack.model.Stack;
 import fr.uge.hyperstack.model.drawing.Triangle;
 import fr.uge.hyperstack.model.media.Image;
 import fr.uge.hyperstack.model.media.Sound;
+import fr.uge.hyperstack.model.media.Video;
 import fr.uge.hyperstack.utils.Localisation;
 import fr.uge.hyperstack.utils.Permission;
+import fr.uge.hyperstack.view.EditorView;
 
 @SuppressLint("NonConstantResourceId")
 public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
@@ -85,12 +87,12 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         Intent homeIntent = getIntent();
 
         currentStack = (Stack) homeIntent.getSerializableExtra("stack");
-        currentStack.initSlideLayer(getApplicationContext(), findViewById(R.id.editLayout));
+        currentStack.initSlideLayer(this, findViewById(R.id.editLayout));
 
         setEditSetup();
         setUpEditMode();
 
-        imageDialogFragment = new ImportImageDialogFragment();
+        imageDialogFragment = new ImportImageDialogFragment(this);
         soundDialogFragment = new ImportSoundDialogFragment();
         slideBottomBarDialogFragment = new SlideBottomBarDialogFragment(currentStack.getSlides());
 
@@ -206,7 +208,7 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 showImportSoundDialog();
                 return true;
             case R.id.action_add_location:
-                if(localisation == null)
+                if (localisation == null)
                     localisation = new Localisation(this);
                 localisation.runWithPermission(Manifest.permission.ACCESS_FINE_LOCATION, "geolocalisation");
                 return true;
@@ -222,7 +224,8 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 currentMode = currentMode != Mode.TRIANGLE ? Mode.TRIANGLE : Mode.SELECTION;
                 return true;
             case R.id.action_add_circle:
-                // TODO : implement this function
+                setFigureSetup();
+                currentMode = currentMode != Mode.CIRCLE ? Mode.CIRCLE : Mode.SELECTION;
                 return true;
             default:
                 return false;
@@ -236,13 +239,17 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         switch (requestCode) {
             case Permission.IMAGE_CAPTURE_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    Bundle extras = data.getExtras();
-                    Image img = new Image((Bitmap) extras.get("data"));
-                    currentStack.addElementToSlide(img, currentSlideNumber);
+                    Bitmap bitmap = BitmapFactory.decodeFile(imageDialogFragment.getFileLocation());
+                    currentStack.addElementToSlide(new Image(bitmap), currentSlideNumber);
                     imageDialogFragment.dismiss();
                 }
                 break;
             case Permission.VIDEO_CAPTURE_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    Uri videoUri = Uri.parse(imageDialogFragment.getFileLocation());
+                    currentStack.addElementToSlide(new Video(videoUri), currentSlideNumber);
+                    imageDialogFragment.dismiss();
+                }
                 break;
             case Permission.SOUND_TAKEN_FROM_APP_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
@@ -258,7 +265,7 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 break;
             case Permission.SOUND_IMPORT_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    if ((data != null) && (data.getData() != null)){
+                    if ((data != null) && (data.getData() != null)) {
                         Uri audioURI = data.getData();
                         Sound sound = new Sound("");
                         try {
@@ -323,6 +330,8 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 //        Stack s = editorView.getCurrentStack();
 //        s.resetSlide(editorView.currentSlide);
 //        editorView.invalidate();
+
+        currentStack.resetSlide(currentSlideNumber);
     }
 
     private void deleteSlide() {
@@ -385,12 +394,16 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 //        });
     }
 
-    public static PaintElement initFigure(float x, float y){
-        switch (currentMode){
-            case RECTANGLE: return new Rectangle(new Point(x,y),new Point(x,y),Color.RED,10);
-            case TRIANGLE: return new Triangle(Color.RED,10,new Point(x,y),new Point(x,y),new Point(x,y));
-            case CIRCLE: return new Circle(Color.RED,new Point(x,y),10,new Point(x,y));
-            default: return null;
+    public static PaintElement initFigure(float x, float y) {
+        switch (currentMode) {
+            case RECTANGLE:
+                return new Rectangle(new Point(x, y), new Point(x, y), Color.RED, 10);
+            case TRIANGLE:
+                return new Triangle(Color.RED, 10, new Point(x, y), new Point(x, y), new Point(x, y));
+            case CIRCLE:
+                return new Circle(Color.RED, new Point(x, y), 10, new Point(x, y));
+            default:
+                return null;
         }
     }
 
@@ -400,6 +413,7 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
      */
     public void setFigureSetup() {
         View view = findViewById(R.id.editLayout);
+        EditorView ev = currentStack.getSlides().get(currentSlideNumber).getCurrentLayer().getEditorView(); // TODO a refaire
         view.setOnTouchListener(
                 new View.OnTouchListener() {
                     @Override
@@ -407,18 +421,21 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                         switch (motionEvent.getAction()) {
                             case MotionEvent.ACTION_DOWN:
                                 PaintElement element = initFigure(motionEvent.getX(), motionEvent.getY());
-                                strokeStack.add(element);
+                                ev.getStrokeStack().add(element);
                                 currentStack.addElementToSlide(element, currentSlideNumber);
-                                break;
+                                refresh();
+                                return true;
                             case MotionEvent.ACTION_MOVE:
-                                PaintElement currentElem = strokeStack.get(strokeStack.size() - 1);
+                                PaintElement currentElem = ev.getStrokeStack().get(ev.getStrokeStack().size() - 1);
                                 currentElem.onFingerMoveAction(motionEvent.getX(), motionEvent.getY());
-                                break;
+                                refresh();
+                                return true;
                             case MotionEvent.ACTION_UP:
-                                currentMode = Mode.SELECTION;view.setOnTouchListener(null);
-                                break;
+                                currentMode = Mode.SELECTION;
+                                view.setOnTouchListener(null);
+                                return true;
                         }
-                        return true;
+                        return EditActivity.super.onTouchEvent(motionEvent);
                     }
                 }
         );

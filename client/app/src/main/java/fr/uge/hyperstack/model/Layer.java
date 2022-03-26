@@ -29,6 +29,7 @@ import fr.uge.hyperstack.model.media.Image;
 import fr.uge.hyperstack.model.media.Video;
 import fr.uge.hyperstack.view.EditorView;
 import fr.uge.hyperstack.view.SlideView;
+import fr.uge.hyperstack.view.listener.EditorViewListener;
 
 /**
  * Classe représentant un calque qui contient un ou plusieurs éléments.
@@ -90,11 +91,9 @@ public class Layer implements Serializable  {
 //        } catch (IOException e) {
 //            System.err.println("ERROR");
 //        }
-
         for (Element element : elements) {
             element.accept(currentView);
         }
-
         currentView.build();
         layout.addView(currentView);
     }
@@ -106,4 +105,9 @@ public class Layer implements Serializable  {
             }
         }
     }
+
+    public EditorView getEditorView(){
+        return currentView.getEditorView();
+    }
+
 }
