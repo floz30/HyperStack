@@ -36,12 +36,18 @@ public class Slide implements Serializable {
     /**
      * Ensemble des calques de cette diapositive.
      */
-    private List<Layer> layers;
+    private final List<Layer> layers;
 
-    private View editView;
-
+    /**
+     * Position de cette slide dans la présentation.
+     * <p>
+     * Commence à 1.
+     */
     private int slideNumber;
 
+    /**
+     * Calque courant de cette slide.
+     */
     private int currentLayer;
 
 
@@ -54,17 +60,30 @@ public class Slide implements Serializable {
         return layers;
     }
 
-    public void addElementOnLayer(PaintElement layer) {
-        layers.get(currentLayer).addPaintElement(layer);
+    /**
+     * Ajoute un élément au calque courant.
+     *
+     * @param element l'élément à ajouter au calque.
+     */
+    public void addElementOnLayer(Element element) {
+        layers.get(currentLayer).addElement(element);
     }
 
+    /**
+     * Créer un calque.
+     *
+     * @param context
+     * @param layout
+     */
     public void createLayer(Context context, ConstraintLayout layout){
         Layer tmp = new Layer(context, layout);
-        //setEditView(view);
         layers.add(tmp);
-        currentLayer = layers.size()-1;
+        currentLayer = layers.size() - 1;
     }
 
+    /**
+     * Dessine tous les calques contenu dans cette slide à l'écran.
+     */
     public void drawLayers() {
         for (Layer layer : layers) {
             layer.draw();
@@ -77,13 +96,22 @@ public class Slide implements Serializable {
         }
     }
 
-
-    public int getSlideNumber() {
-        return slideNumber;
+    /**
+     * Efface tous les éléments de cette slide présent à l'écran.
+     */
+    public void clear() {
+        for (Layer layer : layers) {
+            layer.clear();
+        }
     }
 
-    public void setEditView(View editView) {
-        this.editView = editView;
+    /**
+     * Renvoie la position de cette slide dans la présentation.
+     *
+     * @return
+     */
+    public int getSlideNumber() {
+        return slideNumber;
     }
 
     public void addLayer(Layer layer) {

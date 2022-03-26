@@ -39,6 +39,7 @@ import fr.uge.hyperstack.fragment.SlideBottomBarDialogFragment;
 import fr.uge.hyperstack.model.PaintElement;
 import fr.uge.hyperstack.fragment.ImportSoundDialogFragment;
 import fr.uge.hyperstack.model.Mode;
+import fr.uge.hyperstack.model.Slide;
 import fr.uge.hyperstack.model.drawing.Circle;
 import fr.uge.hyperstack.model.drawing.Point;
 import fr.uge.hyperstack.model.drawing.Rectangle;
@@ -55,8 +56,16 @@ import fr.uge.hyperstack.view.listener.EditorViewListener;
 @SuppressLint("NonConstantResourceId")
 public class EditActivity extends AppCompatActivity {
     private int currentStackNum = -1;
+    /**
+     * Présentation sélectionnée par l'utilisateur et affichée à l'écran.
+     */
     private Stack currentStack;
-    //private EditorView editorView;
+    /**
+     * Numéro de la slide qui doit être affichée à l'écran.
+     * <p>
+     * Le numéro 0 correspond à la première slide.
+     */
+    private int currentSlideNumber = 0;
     private ImportImageDialogFragment imageDialogFragment;
     private ImportSoundDialogFragment soundDialogFragment;
     private SlideBottomBarDialogFragment slideBottomBarDialogFragment;
@@ -71,9 +80,7 @@ public class EditActivity extends AppCompatActivity {
 
         Intent homeIntent = getIntent();
 
-        //editorView = findViewById(R.id.editorView2);
         currentStack = (Stack) homeIntent.getSerializableExtra("stack");
-        //editorView.setCurrentStack(currentStack);
         currentStackNum = homeIntent.getIntExtra("stackNum", -1);
         currentStack.initSlideLayer(getApplicationContext(), findViewById(R.id.editLayout));
 
@@ -91,29 +98,29 @@ public class EditActivity extends AppCompatActivity {
             slideBottomBarDialogFragment.show(getSupportFragmentManager(), "slideBottomBar");
         });
 
-        currentStack.drawSlide(0);
-//        bottomAppBar.setOnMenuItemClickListener(menuItem -> {
-//            switch (menuItem.getItemId()) {
-//                case R.id.previousSlide:
-//                    if (editorView.currentSlide > 0) {
-//                        editorView.currentSlide--;
-//                        updateSlideNumberLabel();
-//                        editorView.invalidate();
-//                    }
-//                    return true;
-//                case R.id.nextSlide:
-//                    if (currentStack.sizeOfStack() > 0 && editorView.currentSlide < currentStack.sizeOfStack() - 1) {
-//                        editorView.currentSlide++;
-//                        updateSlideNumberLabel();
-//                        editorView.invalidate();
-//                    }
-//                    return true;
-//                default:
-//                    return false;
-//            }
-//        });
 
-//        editorView.getCurrentStack().setDrawableElements();
+        bottomAppBar.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.previousSlide:
+                    if (currentSlideNumber > 0) {
+                        currentStack.clearSlide(currentSlideNumber);
+                        currentSlideNumber--;
+                        updateSlideNumberLabel();
+                        currentStack.drawSlide(currentSlideNumber);
+                    }
+                    return true;
+                case R.id.nextSlide:
+                    if (currentStack.sizeOfStack() > 0 && currentSlideNumber < currentStack.sizeOfStack() - 1) {
+                        currentStack.clearSlide(currentSlideNumber);
+                        currentSlideNumber++;
+                        updateSlideNumberLabel();
+                        currentStack.drawSlide(currentSlideNumber);
+                    }
+                    return true;
+                default:
+                    return false;
+            }
+        });
 
 //        Button backButton = findViewById(R.id.backEditButton);
 //        backButton.setOnClickListener(v -> {
@@ -124,11 +131,24 @@ public class EditActivity extends AppCompatActivity {
 //            setResult(RESULT_OK, intent);
 //            finish();
 //        });
+
+        refresh();
     }
 
+    /**
+     * Met à jour le label indiquant quelle slide est affichée et combien il y a de slide en tout.
+     */
     private void updateSlideNumberLabel() {
         TextView slideNumberTextView = findViewById(R.id.slideNumberBottomBarTextView);
-//        slideNumberTextView.setText(String.format(getResources().getString(R.string.slide_number_bottom_bar), editorView.currentSlide + 1, currentStack.sizeOfStack()));
+        slideNumberTextView.setText(String.format(getResources().getString(R.string.slide_number_bottom_bar), currentSlideNumber + 1, currentStack.sizeOfStack()));
+    }
+
+    /**
+     * Supprime tous les éléments affichés et les réaffiche.
+     */
+    public void refresh() {
+        currentStack.clearSlide(currentSlideNumber);
+        currentStack.drawSlide(currentSlideNumber);
     }
 
     @Override
@@ -178,7 +198,7 @@ public class EditActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     Bundle extras = data.getExtras();
                     Image img = new Image((Bitmap) extras.get("data"));
-                    //currentStack.addLayerElementToSlide(new Layer(img), 0); // TODO
+                    currentStack.addElementToSlide(img, currentSlideNumber);
                     imageDialogFragment.dismiss();
                 }
                 break;
@@ -217,6 +237,8 @@ public class EditActivity extends AppCompatActivity {
                     }
                 }
         }
+
+        refresh();
     }
 
     /**
@@ -243,6 +265,11 @@ public class EditActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(event);
     }
 
+    /**
+     * Ajoute une nouvelle slide à la présentation courante.
+     *
+     * @param v
+     */
     public void onClickAddSlide(View v) {
         currentStack.addNewSlide();
         updateSlideNumberLabel();
@@ -278,6 +305,9 @@ public class EditActivity extends AppCompatActivity {
         imageDialogFragment.show(getSupportFragmentManager(), "importImage");
     }
 
+    /**
+     * Affiche le BottomSheetDialog proposant d'importer un son.
+     */
     private void loadSound() {
         soundDialogFragment.show(getSupportFragmentManager(), "importSound");
     }

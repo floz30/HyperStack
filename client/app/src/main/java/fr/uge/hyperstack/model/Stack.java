@@ -64,9 +64,14 @@ public class Stack implements Serializable {
         this.creationTime = System.currentTimeMillis();
     }
 
-
+    /**
+     * Initialise un calque pour chaque slide de cette présentation.
+     *
+     * @param context
+     * @param layout
+     */
     public void initSlideLayer(Context context, ConstraintLayout layout){
-        for(Slide slide : slides){
+        for (Slide slide : slides){
             slide.createLayer(context, layout);
         }
     }
@@ -91,7 +96,13 @@ public class Stack implements Serializable {
         return slides;
     }
 
-    public void addLayerElementToSlide(PaintElement element, int index) {
+    /**
+     * Ajoute un élément au calque courant de la slide spécifiée.
+     *
+     * @param element l'élément à ajouter.
+     * @param index le numéro de la slide.
+     */
+    public void addElementToSlide(Element element, int index) {
         slides.get(index).addElementOnLayer(element);
     }
 
@@ -105,6 +116,11 @@ public class Stack implements Serializable {
         Log.d("TAG", "Draw: YES");
     }
 
+    /**
+     * Dessine la slide indiquée de cette présentation à l'écran.
+     *
+     * @param index la position de la slide à dessiner.
+     */
     public void drawSlide(int index) {
         slides.get(index).drawLayers();
     }
@@ -115,6 +131,15 @@ public class Stack implements Serializable {
 
     public int sizeOfStack() {
         return slides.size();
+    }
+
+    /**
+     * Efface tous les éléments affichés à l'écran de la slide spécifiée.
+     *
+     * @param position le numéro de la slide à effacer.
+     */
+    public void clearSlide(int position) {
+        slides.get(position).clear();
     }
 
     public void setDrawableElements(){

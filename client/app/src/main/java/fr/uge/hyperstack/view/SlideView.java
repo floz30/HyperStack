@@ -1,8 +1,6 @@
 package fr.uge.hyperstack.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,22 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.view.ViewCompat;
-import fr.uge.hyperstack.model.PaintElement;
-import fr.uge.hyperstack.model.drawing.Figure;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import fr.uge.hyperstack.R;
-import fr.uge.hyperstack.model.Element;
 import fr.uge.hyperstack.model.ElementVisitor;
 import fr.uge.hyperstack.model.PaintElement;
 import fr.uge.hyperstack.model.media.Image;
+import fr.uge.hyperstack.model.media.Video;
 
 public class SlideView extends ConstraintLayout implements ElementVisitor {
     private final Context context;
-    private ConstraintSet constraintSet = new ConstraintSet();
+    private final ConstraintSet constraintSet = new ConstraintSet();
 
     public SlideView(@NonNull Context context, ConstraintLayout layout) {
         super(context);
@@ -39,18 +29,9 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
     }
 
-    public void drawFigure(PaintElement element) {
-        EditorView editorView = new EditorView(context);
-        editorView.addElement(element);
-
-        int id = editorView.getId();
-        constraintSet.constrainWidth(id, ConstraintSet.WRAP_CONTENT);
-        constraintSet.constrainHeight(id, ConstraintSet.WRAP_CONTENT);
-
-        ViewGroup viewGroup = (ViewGroup) this;
-        viewGroup.addView(editorView);
-    }
-
+    /**
+     * EXEMPLE D'UTILISATION
+     */
     public void drawButton() {
         Button btn = new Button(context);
         btn.setId(ViewCompat.generateViewId());
@@ -74,7 +55,7 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
     }
 
     @Override
-    public void visit(Image image) {
+    public void draw(Image image) {
         ImageView img = new ImageView(context);
 
         img.setId(ViewCompat.generateViewId());
@@ -95,7 +76,20 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
     }
 
     @Override
-    public void visit(PaintElement paintElement) {
+    public void draw(Video video) {
 
+    }
+
+    @Override
+    public void draw(PaintElement paintElement) {
+        EditorView editorView = new EditorView(context);
+        editorView.addElement(paintElement);
+
+        int id = editorView.getId();
+        constraintSet.constrainWidth(id, ConstraintSet.WRAP_CONTENT);
+        constraintSet.constrainHeight(id, ConstraintSet.WRAP_CONTENT);
+
+        ViewGroup viewGroup = (ViewGroup) this;
+        viewGroup.addView(editorView);
     }
 }

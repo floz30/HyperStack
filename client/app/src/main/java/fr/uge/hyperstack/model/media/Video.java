@@ -1,11 +1,8 @@
 package fr.uge.hyperstack.model.media;
 
-import android.content.Context;
 import android.net.Uri;
-import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintSet;
 
 import fr.uge.hyperstack.model.ElementVisitor;
 import fr.uge.hyperstack.model.MediaElement;
@@ -49,7 +46,7 @@ public class Video implements MediaElement {
 
     @Override
     public void accept(ElementVisitor elementVisitor) {
-
+        elementVisitor.draw(this);
     }
 
 }

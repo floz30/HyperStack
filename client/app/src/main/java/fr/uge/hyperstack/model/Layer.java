@@ -38,8 +38,6 @@ public class Layer implements Serializable  {
      */
     private List<Element> elements;
 
-    private List<Video> videos;
-
     private final Context context;
 
     /**
@@ -51,37 +49,47 @@ public class Layer implements Serializable  {
 
     public Layer(Context context, ConstraintLayout layout) {
         this.elements = new ArrayList<>();
-        this.videos = new ArrayList<>();
         this.currentView = new SlideView(context, layout);
         this.layout = layout;
         this.context = context;
     }
 
 
-    public void addPaintElement(@NonNull PaintElement paintElement) {
-        elements.add(paintElement);
+    /**
+     * Ajoute un élément à afficher au calque.
+     *
+     * @param element l'élément à afficher.
+     */
+    public void addElement(@NonNull Element element) {
+        elements.add(element);
     }
 
-    public void draw(Canvas canvas) {
-        draw();
-//        for (PaintElement element : elements) {
-//            element.draw(canvas);
-//        }
+    /**
+     * Enlève les éléments affichés via à ce calque.
+     */
+    public void clear() {
+        layout.removeView(currentView);
     }
 
+    /**
+     * Dessine tous les éléments de ce calque à l'écran.
+     *
+     * @see Element
+     */
     public void draw() {
-//        currentView.drawButton();
-        try (InputStream is = context.getAssets().open("data/cheval.png")) {
-            Bitmap b = BitmapFactory.decodeStream(is);
-            elements.add(new Image(b));
-        } catch (IOException e) {
-            System.err.println("ERROR");
-        }
-        currentView.build();
-        layout.addView(currentView);
+//        try (InputStream is = context.getAssets().open("data/cheval.png")) {
+//            Bitmap b = BitmapFactory.decodeStream(is);
+//            elements.add(new Image(b));
+//        } catch (IOException e) {
+//            System.err.println("ERROR");
+//        }
+
         for (Element element : elements) {
             element.accept(currentView);
         }
+
+        currentView.build();
+        layout.addView(currentView);
     }
 
     public void setDrawableElements() {
