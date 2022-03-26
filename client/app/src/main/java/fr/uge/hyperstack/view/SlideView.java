@@ -17,11 +17,16 @@ import fr.uge.hyperstack.model.media.Video;
 public class SlideView extends ConstraintLayout implements ElementVisitor {
     private final Context context;
     private final ConstraintSet constraintSet = new ConstraintSet();
+    private final EditorView editorView;
 
 
     public SlideView(@NonNull Context context, ConstraintLayout layout) {
         super(context);
         this.context = context;
+        this.editorView = new EditorView(context);
+        editorView.setId(ViewCompat.generateViewId());
+        ViewGroup viewGroup = (ViewGroup) this;
+        viewGroup.addView(editorView);
         init(context, layout);
     }
 
@@ -83,14 +88,15 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
 
     @Override
     public void draw(PaintElement paintElement) {
-        EditorView editorView = new EditorView(context);
+//        EditorView editorView = new EditorView(context);
         editorView.addElement(paintElement);
-
         int id = editorView.getId();
+        constraintSet.connect(id, ConstraintSet.START, this.getId(), ConstraintSet.START);
+        constraintSet.connect(id, ConstraintSet.END, this.getId(), ConstraintSet.END);
+        constraintSet.connect(id, ConstraintSet.TOP, this.getId(), ConstraintSet.TOP);
+        constraintSet.connect(id, ConstraintSet.BOTTOM, this.getId(), ConstraintSet.BOTTOM);
         constraintSet.constrainWidth(id, ConstraintSet.WRAP_CONTENT);
         constraintSet.constrainHeight(id, ConstraintSet.WRAP_CONTENT);
-
-        ViewGroup viewGroup = (ViewGroup) this;
-        viewGroup.addView(editorView);
     }
+    
 }

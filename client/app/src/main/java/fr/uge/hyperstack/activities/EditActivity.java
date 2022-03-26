@@ -47,6 +47,7 @@ import fr.uge.hyperstack.model.media.Image;
 import fr.uge.hyperstack.model.media.Sound;
 import fr.uge.hyperstack.utils.Localisation;
 import fr.uge.hyperstack.utils.Permission;
+import fr.uge.hyperstack.view.EditorView;
 
 @SuppressLint("NonConstantResourceId")
 public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
@@ -416,16 +417,19 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                                 PaintElement element = initFigure(motionEvent.getX(), motionEvent.getY());
                                 strokeStack.add(element);
                                 currentStack.addElementToSlide(element, currentSlideNumber);
-                                break;
+                                refresh();
+                                return true;
                             case MotionEvent.ACTION_MOVE:
                                 PaintElement currentElem = strokeStack.get(strokeStack.size() - 1);
                                 currentElem.onFingerMoveAction(motionEvent.getX(), motionEvent.getY());
-                                break;
+                                refresh();
+                                return true;
                             case MotionEvent.ACTION_UP:
                                 currentMode = Mode.SELECTION;view.setOnTouchListener(null);
-                                break;
+                                return true;
                         }
-                        return true;
+                        refresh();
+                        return EditActivity.super.onTouchEvent(motionEvent);
                     }
                 }
         );
