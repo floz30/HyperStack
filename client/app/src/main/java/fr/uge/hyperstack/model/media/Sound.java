@@ -1,46 +1,41 @@
 package fr.uge.hyperstack.model.media;
 
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.FileUtils;
 import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
-import androidx.loader.content.CursorLoader;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.List;
 
+import fr.uge.hyperstack.model.ElementVisitor;
+import fr.uge.hyperstack.model.MediaElement;
+
 /**
  * A mp3 file
  */
-public class Sound implements Serializable {
+public class Sound implements MediaElement, Serializable {
     private final String name;
     private transient Bitmap cachedSound = null;
     private final MediaPlayer player = new MediaPlayer();
+    private float x;
+    private float y;
+    private float width;
+    private float height;
 
     public static final String DATA_LOCATION = "data";
 
@@ -48,39 +43,33 @@ public class Sound implements Serializable {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void playSound(Context context, Uri uri) throws IOException {
+    public void setSoundFromExternalStorage(Uri uri) throws IOException {
         String docId = DocumentsContract.getDocumentId(uri);
         String[] split = docId.split(":");
         String path = Environment.getExternalStorageDirectory() + "/" + split[1];
         player.setDataSource(path);
-        player.setOnPreparedListener(mediaPlayer -> player.start());
         player.prepareAsync();
     }
 
+    public boolean isPlaying() {
+        return player.isPlaying();
+    }
+
+    public void playSound() {
+        player.start();
+    }
+
     public void pauseSound() {
-        if (player.isPlaying()) {
-            player.pause();
-        }
+        player.pause();
     }
 
-    public void stopSound() {
-        if (player.isPlaying()) {
-            player.stop();
-        }
-    }
-
-    public void getSound(Context context) throws IOException {
+    public void setSoundFromAssets(Context context) throws IOException {
         if (cachedSound != null) return;
         AssetFileDescriptor afd = context.getAssets().openFd(DATA_LOCATION + "/sound/" + name + ".mp3");
-        MediaPlayer player = new MediaPlayer();
         player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-        player.prepare();
-        player.start();
+//        player.setOnPreparedListener(mediaPlayer -> player.start());
+        player.prepareAsync();
         try (InputStream is = context.getAssets().open(DATA_LOCATION + "/sound/" + name + ".mp3")) {
             cachedSound = BitmapFactory.decodeStream(is);
         }
@@ -95,5 +84,48 @@ public class Sound implements Serializable {
         String text = sb.toString();
         return new Gson().fromJson(text, new TypeToken<List<Sound>>() {
         }.getType());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public MediaPlayer getPlayer() {
+        return player;
+    }
+
+    @Override
+    public float getPositionX() {
+        return x;
+    }
+
+    @Override
+    public float getPositionY() {
+        return y;
+    }
+
+    @Override
+    public float getWidth() {
+        return width;
+    }
+
+    @Override
+    public float getHeight() {
+        return height;
+    }
+
+    @Override
+    public float convertBiasHorizontal(float maxWidth) {
+        return (x + width / 2) / maxWidth;
+    }
+
+    @Override
+    public float convertBiasVertical(float maxHeight) {
+        return (y + height / 2) / maxHeight;
+    }
+
+    @Override
+    public void accept(ElementVisitor elementVisitor) {
+        elementVisitor.draw(this);
     }
 }

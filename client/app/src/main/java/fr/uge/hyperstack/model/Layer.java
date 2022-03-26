@@ -114,4 +114,8 @@ public class Layer implements Serializable  {
         }
     }
 
+    public EditorView getEditorView(){
+        return currentView.getEditorView();
+    }
+
 }
