@@ -64,6 +64,7 @@ public class EditActivity extends AppCompatActivity {
     private Localisation localisation;
     private static Mode currentMode = Mode.SELECTION;
     private final List<PaintElement> strokeStack = new ArrayList<>();
+    private int currentSlide = 0;
 
 
     @Override
@@ -94,28 +95,28 @@ public class EditActivity extends AppCompatActivity {
         });
 
         currentStack.drawSlide(0);
-//        bottomAppBar.setOnMenuItemClickListener(menuItem -> {
-//            switch (menuItem.getItemId()) {
-//                case R.id.previousSlide:
-//                    if (editorView.currentSlide > 0) {
-//                        editorView.currentSlide--;
-//                        updateSlideNumberLabel();
-//                        editorView.invalidate();
-//                    }
-//                    return true;
-//                case R.id.nextSlide:
-//                    if (currentStack.sizeOfStack() > 0 && editorView.currentSlide < currentStack.sizeOfStack() - 1) {
-//                        editorView.currentSlide++;
-//                        updateSlideNumberLabel();
-//                        editorView.invalidate();
-//                    }
-//                    return true;
-//                default:
-//                    return false;
-//            }
-//        });
+        bottomAppBar.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.previousSlide:
+                    if (currentSlide > 0) {
+                        currentSlide--;
+                        updateSlideNumberLabel();
+//                        editorView.invalidate();  //TODO mettre a jour l'interface
+                    }
+                    return true;
+                case R.id.nextSlide:
+                    if (currentStack.sizeOfStack() > 0 && currentSlide < currentStack.sizeOfStack() - 1) {
+                        currentSlide++;
+                        updateSlideNumberLabel();
+//                        editorView.invalidate(); //TODO mettre a jour l'interface
+                    }
+                    return true;
+                default:
+                    return false;
+            }
+        });
 
-//        editorView.getCurrentStack().setDrawableElements();
+        currentStack.setDrawableElements();
 
 //        Button backButton = findViewById(R.id.backEditButton);
 //        backButton.setOnClickListener(v -> {
@@ -130,7 +131,7 @@ public class EditActivity extends AppCompatActivity {
 
     private void updateSlideNumberLabel() {
         TextView slideNumberTextView = findViewById(R.id.slideNumberBottomBarTextView);
-//        slideNumberTextView.setText(String.format(getResources().getString(R.string.slide_number_bottom_bar), editorView.currentSlide + 1, currentStack.sizeOfStack()));
+        slideNumberTextView.setText(String.format(getResources().getString(R.string.slide_number_bottom_bar), currentSlide + 1, currentStack.sizeOfStack()));
     }
 
     @Override
@@ -341,6 +342,7 @@ public class EditActivity extends AppCompatActivity {
                             case MotionEvent.ACTION_MOVE:
                                 PaintElement currentElem = strokeStack.get(strokeStack.size() - 1);
                                 currentElem.onFingerMoveAction(motionEvent.getX(), motionEvent.getY());
+                                break;
                             case MotionEvent.ACTION_UP:
                                 currentMode = Mode.SELECTION;view.setOnTouchListener(null);
                                 break;

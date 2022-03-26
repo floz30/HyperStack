@@ -86,10 +86,6 @@ public class Slide implements Serializable {
         this.editView = editView;
     }
 
-    public View getEditView(){
-        return editView;
-    }
-
     public void addLayer(Layer layer) {
         layers.add(layer);
         currentLayer+=1;
