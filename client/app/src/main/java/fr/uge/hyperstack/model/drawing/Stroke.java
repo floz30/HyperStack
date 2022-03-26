@@ -93,7 +93,7 @@ public class Stroke implements Serializable, PaintElement {
 
     @Override
     public void accept(ElementVisitor elementVisitor) {
-
+        elementVisitor.draw(this);
     }
 
     @Override

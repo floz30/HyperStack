@@ -39,7 +39,7 @@ public class Triangle extends AbstractFigure {
 
     @Override
     public void accept(ElementVisitor elementVisitor) {
-
+        elementVisitor.draw(this);
     }
 
     @Override
