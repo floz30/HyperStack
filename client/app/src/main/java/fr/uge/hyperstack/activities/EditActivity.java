@@ -32,10 +32,13 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
+import fr.uge.hyperstack.StackWrapper;
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.fragment.ImportImageDialogFragment;
 import fr.uge.hyperstack.fragment.ImportSoundDialogFragment;
 import fr.uge.hyperstack.fragment.SlideBottomBarDialogFragment;
+import fr.uge.hyperstack.model.Element;
 import fr.uge.hyperstack.model.Mode;
 import fr.uge.hyperstack.model.PaintElement;
 import fr.uge.hyperstack.model.Stack;
@@ -77,7 +80,7 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private Localisation localisation;
     private static Mode currentMode = Mode.SELECTION;
     private final List<PaintElement> strokeStack = new ArrayList<>();
-
+    private final ArrayList<StackWrapper> logs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -347,10 +350,10 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
     private void goToLogs() {
-//        EditorView ev = findViewById(R.id.editorView2);
-//        Intent intent = new Intent(this, LogsActivity.class);
-//        intent.putExtra("logs", ev.getCurrentStack().getLogs());
-//        startActivityForResult(intent, 1);
+        Intent intent = new Intent(this, LogsActivity.class);
+
+        intent.putExtra("logs", logs);
+        startActivityForResult(intent, 1);
     }
 
     /**
@@ -424,6 +427,7 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                             case MotionEvent.ACTION_DOWN:
                                 PaintElement element = initFigure(motionEvent.getX(), motionEvent.getY());
                                 ev.getStrokeStack().add(element);
+                                logs.add(new StackWrapper(currentSlideNumber, element));
                                 currentStack.addElementToSlide(element, currentSlideNumber);
                                 refresh();
                                 return true;

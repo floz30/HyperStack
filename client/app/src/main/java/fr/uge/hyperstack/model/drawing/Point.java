@@ -1,6 +1,8 @@
 package fr.uge.hyperstack.model.drawing;
 
-public class Point {
+import java.io.Serializable;
+
+public class Point implements Serializable {
     private final float x;
     private final float y;
 

@@ -8,15 +8,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import fr.uge.hyperstack.model.Stack;
-import fr.uge.hyperstack.view.EditorView;
 
 public class LogsViewAdapter extends RecyclerView.Adapter<LogsViewAdapter.StackViewHolder>{
 
-    private List<Logs> logs;
+    private List<StackWrapper> logs;
 
     public class StackViewHolder extends RecyclerView.ViewHolder {
 
@@ -27,7 +23,7 @@ public class LogsViewAdapter extends RecyclerView.Adapter<LogsViewAdapter.StackV
             timestamp = itemView.findViewById(R.id.timestamp);
         }
 
-        private void update(Logs logs) {
+        private void update(StackWrapper logs) {
             timestamp.setText(logs.getTimestamp()+"");
         }
     }
@@ -48,7 +44,7 @@ public class LogsViewAdapter extends RecyclerView.Adapter<LogsViewAdapter.StackV
         return logs.size();
     }
 
-    public void setLogs(List<Logs> logs) {
+    public void setLogs(List<StackWrapper> logs) {
         this.logs = logs;
     }
 }
