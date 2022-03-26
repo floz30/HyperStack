@@ -72,7 +72,6 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
      * Dialog affichant la liste des slides de la présentation.
      */
     private SlideBottomBarDialogFragment slideBottomBarDialogFragment;
-    private final List<Sound> soundList = new ArrayList<>();
     private Localisation localisation;
     private static Mode currentMode = Mode.SELECTION;
     private final List<PaintElement> strokeStack = new ArrayList<>();
@@ -248,15 +247,12 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             case Permission.SOUND_TAKEN_FROM_APP_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
                     Sound sound = (Sound) data.getExtras().get("sound");
-                    soundList.add(sound);
                     try {
-                        sound.getSound(this);
-                        Toast.makeText(this, sound.getName(), Toast.LENGTH_SHORT).show();
-                        Log.e("Sound", sound.getName());
+                        sound.setSoundFromAssets(this);
                     } catch (IOException e) {
-                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        Log.e("Sound", e.getMessage(), e);
+                        Toast.makeText(this, "Couldn't find the file", Toast.LENGTH_SHORT).show();
                     }
+                    currentStack.addElementToSlide(sound, currentSlideNumber);
                     soundDialogFragment.dismiss();
                 }
                 break;
@@ -264,16 +260,13 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 if (resultCode == RESULT_OK) {
                     if ((data != null) && (data.getData() != null)){
                         Uri audioURI = data.getData();
-                        Sound sound = new Sound("test");
-                        soundList.add(sound);
-                        // TODO faire un bouton play/pause
+                        Sound sound = new Sound("");
                         try {
-                            sound.playSound(this, audioURI);
-                            Toast.makeText(this, "Sound is Playing", Toast.LENGTH_SHORT).show();
+                            sound.setSoundFromExternalStorage(audioURI);
                         } catch (IOException e) {
-                            Log.e("SoundError", e.getMessage(), e);
-                            Toast.makeText(this, "Error :" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Couldn't load file", Toast.LENGTH_SHORT).show();
                         }
+                        currentStack.addElementToSlide(sound, currentSlideNumber);
                         soundDialogFragment.dismiss();
                     }
                 }
@@ -365,7 +358,7 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 
     private void setSoundPlayer(Sound sound) {
         try {
-            sound.getSound(this);
+            sound.setSoundFromAssets(this);
         } catch (IOException e) {
             Log.e("Sound", e.getMessage(), e);
         }

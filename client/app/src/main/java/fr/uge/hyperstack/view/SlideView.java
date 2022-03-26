@@ -9,9 +9,12 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.view.ViewCompat;
+
+import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.model.ElementVisitor;
 import fr.uge.hyperstack.model.PaintElement;
 import fr.uge.hyperstack.model.media.Image;
+import fr.uge.hyperstack.model.media.Sound;
 import fr.uge.hyperstack.model.media.Video;
 
 public class SlideView extends ConstraintLayout implements ElementVisitor {
@@ -79,6 +82,42 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
     @Override
     public void draw(Video video) {
 
+    }
+
+    @Override
+    public void draw(Sound sound) {
+        Button btn = new Button(context);
+
+        btn.setId(ViewCompat.generateViewId());
+        int id = btn.getId();
+
+        constraintSet.connect(id, ConstraintSet.START, this.getId(), ConstraintSet.START);
+        constraintSet.connect(id, ConstraintSet.END, this.getId(), ConstraintSet.END);
+        constraintSet.connect(id, ConstraintSet.TOP, this.getId(), ConstraintSet.TOP);
+        constraintSet.connect(id, ConstraintSet.BOTTOM, this.getId(), ConstraintSet.BOTTOM);
+        constraintSet.setHorizontalBias(id, sound.convertBiasHorizontal(this.getWidth()));
+        constraintSet.setVerticalBias(id, sound.convertBiasVertical(this.getHeight()));
+        constraintSet.constrainWidth(id, ConstraintSet.WRAP_CONTENT);
+        constraintSet.constrainHeight(id, ConstraintSet.WRAP_CONTENT);
+
+
+        btn.setBackgroundResource(R.drawable.ic_play);
+        btn.setOnClickListener(view -> {
+            if (sound.isPlaying()) {
+                sound.pauseSound();
+                btn.setBackgroundResource(R.drawable.ic_play);
+            } else {
+                sound.playSound();
+                btn.setBackgroundResource(R.drawable.ic_pause);
+            }
+        });
+
+        sound.getPlayer().setOnCompletionListener(mediaPlayer -> {
+            btn.setBackgroundResource(R.drawable.ic_play);
+        });
+
+        ViewGroup viewGroup = (ViewGroup) this;
+        viewGroup.addView(btn);
     }
 
     @Override
