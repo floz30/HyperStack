@@ -35,7 +35,7 @@ public class Circle extends AbstractFigure{
 
     @Override
     public void accept(ElementVisitor elementVisitor) {
-
+        elementVisitor.draw(this);
     }
 
     @Override
