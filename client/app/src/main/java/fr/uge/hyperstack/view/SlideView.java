@@ -12,6 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.view.ViewCompat;
+
+import java.util.List;
+
 import fr.uge.hyperstack.model.ElementVisitor;
 import fr.uge.hyperstack.model.PaintElement;
 import fr.uge.hyperstack.model.media.Image;
@@ -120,8 +123,8 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
 
     @Override
     public void draw(PaintElement paintElement) {
-//        EditorView editorView = new EditorView(context);
-        editorView.addElement(paintElement);
+//        editorView.addElement(paintElement);
+//        System.out.println(editorView.getStrokeStack().size());
         int id = editorView.getId();
         constraintSet.connect(id, ConstraintSet.START, this.getId(), ConstraintSet.START);
         constraintSet.connect(id, ConstraintSet.END, this.getId(), ConstraintSet.END);
@@ -130,5 +133,9 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
         constraintSet.constrainWidth(id, ConstraintSet.WRAP_CONTENT);
         constraintSet.constrainHeight(id, ConstraintSet.WRAP_CONTENT);
     }
-    
+
+    public EditorView getEditorView(){
+        return editorView;
+    }
+
 }

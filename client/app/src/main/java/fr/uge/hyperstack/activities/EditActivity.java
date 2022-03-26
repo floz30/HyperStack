@@ -225,7 +225,8 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 currentMode = currentMode != Mode.TRIANGLE ? Mode.TRIANGLE : Mode.SELECTION;
                 return true;
             case R.id.action_add_circle:
-                // TODO : implement this function
+                setFigureSetup();
+                currentMode = currentMode != Mode.CIRCLE ? Mode.CIRCLE : Mode.SELECTION;
                 return true;
             default:
                 return false;
@@ -419,6 +420,7 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
      */
     public void setFigureSetup() {
         View view = findViewById(R.id.editLayout);
+        EditorView ev = currentStack.getSlides().get(currentSlideNumber).getCurrentLayer().getEditorView(); // TODO a refaire
         view.setOnTouchListener(
                 new View.OnTouchListener() {
                     @Override
@@ -426,12 +428,12 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                         switch (motionEvent.getAction()) {
                             case MotionEvent.ACTION_DOWN:
                                 PaintElement element = initFigure(motionEvent.getX(), motionEvent.getY());
-                                strokeStack.add(element);
+                                ev.getStrokeStack().add(element);
                                 currentStack.addElementToSlide(element, currentSlideNumber);
                                 refresh();
                                 return true;
                             case MotionEvent.ACTION_MOVE:
-                                PaintElement currentElem = strokeStack.get(strokeStack.size() - 1);
+                                PaintElement currentElem = ev.getStrokeStack().get(ev.getStrokeStack().size() - 1);
                                 currentElem.onFingerMoveAction(motionEvent.getX(), motionEvent.getY());
                                 refresh();
                                 return true;
@@ -440,7 +442,6 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                                 view.setOnTouchListener(null);
                                 return true;
                         }
-                        refresh();
                         return EditActivity.super.onTouchEvent(motionEvent);
                     }
                 }
