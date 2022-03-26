@@ -91,4 +91,8 @@ public class EditorView extends View implements Serializable {
         strokeStack.clear();
     }
 
+    public void clear() {
+        strokeStack.clear();
+    }
+
 }

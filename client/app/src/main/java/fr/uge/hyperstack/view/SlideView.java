@@ -182,4 +182,9 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
         return editorView;
     }
 
+
+    public void clear() {
+        editorView.clear();
+    }
+
 }

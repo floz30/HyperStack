@@ -182,7 +182,7 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 showPopupMenu(R.id.action_draw_mode, R.menu.menu_drawing_mode);
                 return true;
             case R.id.action_erase:
-                clearSlide();
+                eraseSlide();
                 return true;
             case R.id.action_delete:
                 deleteSlide();
@@ -326,22 +326,24 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
-    private void clearSlide() {
+    private void eraseSlide() {
 //        Stack s = editorView.getCurrentStack();
 //        s.resetSlide(editorView.currentSlide);
 //        editorView.invalidate();
 
-        currentStack.resetSlide(currentSlideNumber);
+        currentStack.eraseSlide(currentSlideNumber);
     }
 
     private void deleteSlide() {
         if (currentStack.sizeOfStack() > 1) {
+            eraseSlide();
             currentStack.getSlides().remove(currentSlideNumber);
             if (currentSlideNumber > 0) {
                 currentSlideNumber--;
             }
             updateSlideNumberLabel();
         }
+        refresh();
     }
 
     private void goToLogs() {

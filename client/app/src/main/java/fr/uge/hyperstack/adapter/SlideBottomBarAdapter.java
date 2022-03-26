@@ -1,6 +1,7 @@
 package fr.uge.hyperstack.adapter;
 
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,11 @@ public class SlideBottomBarAdapter extends RecyclerView.Adapter<SlideBottomBarAd
     public void onBindViewHolder(@NonNull SlideBottomBarViewHolder holder, int position) {
         Slide currentSlide = slides[position];
         holder.bind(currentSlide);
+
+        holder.labelTextView.setOnClickListener(x -> {
+            Log.d("Binding", String.valueOf(holder.id));
+            
+        });
     }
 
     @Override
@@ -42,6 +48,7 @@ public class SlideBottomBarAdapter extends RecyclerView.Adapter<SlideBottomBarAd
     static class SlideBottomBarViewHolder extends RecyclerView.ViewHolder {
         private final Resources resources;
         private final TextView labelTextView;
+        private int id;
 
         public SlideBottomBarViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -51,6 +58,7 @@ public class SlideBottomBarAdapter extends RecyclerView.Adapter<SlideBottomBarAd
 
         public void bind(Slide slide) {
             labelTextView.setText(String.format(resources.getString(R.string.slide_number_item), slide.getSlideNumber()));
+            id = slide.getSlideNumber();
         }
     }
 }
