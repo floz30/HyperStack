@@ -48,7 +48,6 @@ import fr.uge.hyperstack.model.media.Sound;
 import fr.uge.hyperstack.model.media.Video;
 import fr.uge.hyperstack.utils.Localisation;
 import fr.uge.hyperstack.utils.Permission;
-import fr.uge.hyperstack.view.EditorView;
 
 @SuppressLint("NonConstantResourceId")
 public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
@@ -183,7 +182,7 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 showPopupMenu(R.id.action_draw_mode, R.menu.menu_drawing_mode);
                 return true;
             case R.id.action_erase:
-                clearSlide();
+                eraseSlide();
                 return true;
             case R.id.action_delete:
                 deleteSlide();
@@ -332,12 +331,12 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
-    private void clearSlide() {
+    private void eraseSlide() {
 //        Stack s = editorView.getCurrentStack();
 //        s.resetSlide(editorView.currentSlide);
 //        editorView.invalidate();
 
-        currentStack.resetSlide(currentSlideNumber);
+        currentStack.eraseSlide(currentSlideNumber);
     }
 
     private void deleteSlide() {

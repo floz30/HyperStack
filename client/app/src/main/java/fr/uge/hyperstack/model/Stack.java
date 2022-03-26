@@ -152,8 +152,8 @@ public class Stack implements Serializable {
         }
     }
 
-    public void resetSlide(int index) {
-        slides.get(index).clear();
+    public void eraseSlide(int index) {
+        slides.get(index).erase();
         logs.add(new Logs(this));
     }
 }

@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -78,6 +79,12 @@ public class Layer implements Serializable  {
         layout.removeView(currentView);
     }
 
+    public void erase() {
+        layout.removeView(currentView);
+        currentView.clear();
+        elements.clear();
+    }
+
     /**
      * Dessine tous les éléments de ce calque à l'écran.
      *
@@ -92,6 +99,7 @@ public class Layer implements Serializable  {
 //            System.err.println("ERROR");
 //        }
         for (Element element : elements) {
+            Log.d("draw", "draw");
             element.accept(currentView);
         }
         currentView.build();

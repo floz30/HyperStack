@@ -88,4 +88,8 @@ public class EditorView extends View implements Serializable {
         return super.onTouchEvent(event);
     }
 
+    public void clear() {
+        strokeStack.clear();
+    }
+
 }

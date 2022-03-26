@@ -130,5 +130,9 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
         constraintSet.constrainWidth(id, ConstraintSet.WRAP_CONTENT);
         constraintSet.constrainHeight(id, ConstraintSet.WRAP_CONTENT);
     }
+
+    public void clear() {
+        editorView.clear();
+    }
     
 }

@@ -105,6 +105,12 @@ public class Slide implements Serializable {
         }
     }
 
+    public void erase() {
+        for (Layer layer: layers) {
+            layer.erase();
+        }
+    }
+
     /**
      * Renvoie la position de cette slide dans la présentation.
      *
