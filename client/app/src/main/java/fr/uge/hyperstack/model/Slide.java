@@ -116,5 +116,10 @@ public class Slide implements Serializable {
 
     public void addLayer(Layer layer) {
         layers.add(layer);
+        currentLayer+=1;
+    }
+
+    public Layer getCurrentLayer(){
+        return layers.get(currentLayer);
     }
 }

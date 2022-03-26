@@ -71,6 +71,8 @@ public class EditActivity extends AppCompatActivity {
     private SlideBottomBarDialogFragment slideBottomBarDialogFragment;
     private final List<Sound> soundList = new ArrayList<>();
     private Localisation localisation;
+    private static Mode currentMode = Mode.SELECTION;
+    private final List<PaintElement> strokeStack = new ArrayList<>();
 
 
     @Override
@@ -121,6 +123,7 @@ public class EditActivity extends AppCompatActivity {
                     return false;
             }
         });
+        currentStack.setDrawableElements();
 
 //        Button backButton = findViewById(R.id.backEditButton);
 //        backButton.setOnClickListener(v -> {
@@ -341,21 +344,46 @@ public class EditActivity extends AppCompatActivity {
 //        });
     }
 
-    public static PaintElement initFigure(float x, float y, EditorView ev) {
-        switch (ev.getCurrentMode()) {
-            case RECTANGLE:
-                return new Rectangle(new Point(x, y), new Point(x, y), Color.RED, 10);
-            case TRIANGLE:
-                return new Triangle(Color.RED, 10, new Point(x, y), new Point(x, y), new Point(x, y));
-            case CIRCLE:
-                return new Circle(Color.RED, new Point(x, y), 10, new Point(x, y));
-            default:
-                return null;
+    public static PaintElement initFigure(float x, float y){
+        switch (currentMode){
+            case RECTANGLE: return new Rectangle(new Point(x,y),new Point(x,y),Color.RED,10);
+            case TRIANGLE: return new Triangle(Color.RED,10,new Point(x,y),new Point(x,y),new Point(x,y));
+            case CIRCLE: return new Circle(Color.RED,new Point(x,y),10,new Point(x,y));
+            default: return null;
         }
     }
 
+
+    /**
+     * Set the listener when a draw figure button is called
+     */
     public void setFigureSetup() {
-        Intent homeIntent = getIntent();
+        View view = findViewById(R.id.editLayout);
+        view.setOnTouchListener(
+                new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        switch (motionEvent.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                PaintElement element = initFigure(motionEvent.getX(), motionEvent.getY());
+                                strokeStack.add(element);
+                                currentStack.addLayerElementToSlide(element, 0); // TODO modification on current Slide
+                                break;
+                            case MotionEvent.ACTION_MOVE:
+                                PaintElement currentElem = strokeStack.get(strokeStack.size() - 1);
+                                currentElem.onFingerMoveAction(motionEvent.getX(), motionEvent.getY());
+                                break;
+                            case MotionEvent.ACTION_UP:
+                                currentMode = Mode.SELECTION;view.setOnTouchListener(null);
+                                break;
+                        }
+                        return true;
+                    }
+                }
+        );
+    }
+
+//    public void setFigureSetup() {
 //        editorView.setCurrentStack((Stack) homeIntent.getSerializableExtra("stack"));
 //        editorView.setEditorViewListener(new EditorViewListener() {
 //            @Override
@@ -376,7 +404,7 @@ public class EditActivity extends AppCompatActivity {
 //                editorView.setCurrentMode(Mode.SELECTION);
 //            }
 //        });
-    }
+//    }
 
     private void setUpEditMode() {
 //        FloatingActionButton editButton = findViewById(R.id.editButton);
@@ -399,19 +427,19 @@ public class EditActivity extends AppCompatActivity {
 //        );
 
 
-//        rectButton.setOnClickListener(
-//                (view) -> {
-//                    setFigureSetup();
-//                    editorView.setCurrentMode(!editorView.getCurrentMode().equals(Mode.RECTANGLE) ? Mode.RECTANGLE : Mode.SELECTION );
-//                }
-//        );
-//
-//        triangleButton.setOnClickListener(
-//                (view) -> {
-//                    setFigureSetup();
-//                    setFigureSetup();
-//                    editorView.setCurrentMode(!editorView.getCurrentMode().equals(Mode.TRIANGLE) ? Mode.TRIANGLE : Mode.SELECTION );
-//                }
-//        );
+        rectButton.setOnClickListener(
+                (view) -> {
+                    setFigureSetup();
+                    currentMode = currentMode != Mode.RECTANGLE ? Mode.RECTANGLE : Mode.SELECTION;
+                }
+        );
+
+        triangleButton.setOnClickListener(
+                (view) -> {
+                    setFigureSetup();
+                    setFigureSetup();
+                    currentMode = currentMode != Mode.TRIANGLE ? Mode.TRIANGLE : Mode.SELECTION;
+                }
+        );
     }
 }

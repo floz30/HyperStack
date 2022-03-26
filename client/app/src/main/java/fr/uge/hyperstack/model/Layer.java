@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,6 +21,10 @@ import androidx.annotation.NonNull;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import fr.uge.hyperstack.model.drawing.Point;
+import fr.uge.hyperstack.model.drawing.Rectangle;
+import fr.uge.hyperstack.model.drawing.Point;
+import fr.uge.hyperstack.model.drawing.Rectangle;
 import fr.uge.hyperstack.model.media.Image;
 import fr.uge.hyperstack.model.media.Video;
 import fr.uge.hyperstack.view.EditorView;
@@ -80,6 +86,7 @@ public class Layer implements Serializable  {
 //        try (InputStream is = context.getAssets().open("data/cheval.png")) {
 //            Bitmap b = BitmapFactory.decodeStream(is);
 //            elements.add(new Image(b));
+//            elements.add(new Rectangle(new Point(0f,0f),new Point(500,500), Color.RED,20));
 //        } catch (IOException e) {
 //            System.err.println("ERROR");
 //        }
