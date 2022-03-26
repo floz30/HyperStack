@@ -86,6 +86,14 @@ public class Sound implements MediaElement, Serializable {
         }.getType());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public static String getFileFromUri(Uri uri) {
+        String docId = DocumentsContract.getDocumentId(uri);
+        String[] split = docId.split(":");
+        String[] directories = split[1].split("/");
+        return directories[directories.length - 1];
+    }
+
     public String getName() {
         return name;
     }

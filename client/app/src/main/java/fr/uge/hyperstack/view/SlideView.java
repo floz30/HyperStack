@@ -1,17 +1,22 @@
 package fr.uge.hyperstack.view;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.view.ViewCompat;
+
+import org.w3c.dom.Text;
 
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.model.ElementVisitor;
@@ -124,7 +129,10 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
     @Override
     public void draw(Sound sound) {
         Button btn = new Button(context);
+        Drawable pause = AppCompatResources.getDrawable(context, R.drawable.ic_pause);
+        Drawable play = AppCompatResources.getDrawable(context, R.drawable.ic_play);
 
+        btn.setText(sound.getName());
         btn.setId(ViewCompat.generateViewId());
         int id = btn.getId();
 
@@ -138,19 +146,19 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
         constraintSet.constrainHeight(id, ConstraintSet.WRAP_CONTENT);
 
 
-        btn.setBackgroundResource(R.drawable.ic_play);
+        btn.setCompoundDrawablesWithIntrinsicBounds(play, null, null, null);
         btn.setOnClickListener(view -> {
             if (sound.isPlaying()) {
                 sound.pauseSound();
-                btn.setBackgroundResource(R.drawable.ic_play);
+                btn.setCompoundDrawablesWithIntrinsicBounds(play, null, null, null);
             } else {
                 sound.playSound();
-                btn.setBackgroundResource(R.drawable.ic_pause);
+                btn.setCompoundDrawablesWithIntrinsicBounds(pause, null, null, null);
             }
         });
 
         sound.getPlayer().setOnCompletionListener(mediaPlayer -> {
-            btn.setBackgroundResource(R.drawable.ic_play);
+            btn.setCompoundDrawablesWithIntrinsicBounds(play, null, null, null);
         });
 
         ViewGroup viewGroup = (ViewGroup) this;
