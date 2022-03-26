@@ -28,6 +28,7 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
     private final Context context;
     private ConstraintSet constraintSet = new ConstraintSet();
 
+
     public SlideView(@NonNull Context context, ConstraintLayout layout) {
         super(context);
         this.context = context;
