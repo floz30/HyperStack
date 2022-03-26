@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -57,9 +58,12 @@ public class Stack implements Serializable {
 
     private ArrayList<Logs> logs = new ArrayList<>();
 
+    private final AtomicInteger atomicInt = new AtomicInteger(1);
+
+
     public Stack(@NonNull String title) {
         this.slides = new ArrayList<>();
-        this.slides.add(new Slide(1));
+        this.slides.add(new Slide(atomicInt.getAndIncrement()));
         this.title = Objects.requireNonNull(title);
         this.creationTime = System.currentTimeMillis();
     }
@@ -70,8 +74,8 @@ public class Stack implements Serializable {
      * @param context
      * @param layout
      */
-    public void initSlideLayer(Context context, ConstraintLayout layout){
-        for (Slide slide : slides){
+    public void initSlideLayer(Context context, ConstraintLayout layout) {
+        for (Slide slide : slides) {
             slide.createLayer(context, layout);
         }
     }
@@ -100,7 +104,7 @@ public class Stack implements Serializable {
      * Ajoute un élément au calque courant de la slide spécifiée.
      *
      * @param element l'élément à ajouter.
-     * @param index le numéro de la slide.
+     * @param index   le numéro de la slide.
      */
     public void addElementToSlide(Element element, int index) {
         slides.get(index).addElementOnLayer(element);
@@ -126,7 +130,7 @@ public class Stack implements Serializable {
     }
 
     public void addNewSlide() {
-        slides.add(new Slide(slides.size() + 1));
+        slides.add(new Slide(atomicInt.getAndIncrement()));
     }
 
     public int sizeOfStack() {
@@ -142,7 +146,7 @@ public class Stack implements Serializable {
         slides.get(position).clear();
     }
 
-    public void setDrawableElements(){
+    public void setDrawableElements() {
         for (Slide slide : slides) {
             slide.setDrawableElements();
         }
