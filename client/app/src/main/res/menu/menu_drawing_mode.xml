@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_pen"
+        android:icon="@drawable/ic_edit_white"
+        android:title="@string/action_add_draw"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_add_circle"
+        android:icon="@drawable/ic_edit_white"
+        android:title="@string/action_add_circle"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_add_rectangle"
+        android:icon="@drawable/ic_edit_white"
+        android:title="@string/action_add_rectangle"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_add_triangle"
+        android:icon="@drawable/ic_edit_white"
+        android:title="@string/action_add_triangle"
+        app:showAsAction="never" />
+
+
+</menu>

@@ -10,4 +10,18 @@
     <string name="previous">Précédent</string>
     <string name="slide_number_item" translatable="false">Slide n°%1$d</string>
     <string name="slide_number_bottom_bar">%1$d sur %2$d</string>
+    <string name="action_add_text">Ajouter un élément texte</string>
+    <string name="action_add_image">Ajouter une image/vidéo</string>
+    <string name="action_add_sound">Ajouter un son</string>
+    <string name="action_add_location">Ajouter un géocalisation</string>
+    <string name="action_add_input">Ajouter une entrée utilisateur</string>
+    <string name="action_add_circle">Ajouter un cercle</string>
+    <string name="action_add_triangle">Ajouter un triangle</string>
+    <string name="action_add_rectangle">Ajouter un rectangle</string>
+    <string name="action_add_draw">Crayon</string>
+    <string name="action_delete">Supprimer</string>
+    <string name="action_log">Historique</string>
+    <string name="action_share">Partager</string>
+    <string name="action_insertion_mode">Insérer un élément</string>
+    <string name="action_drawing_mode">Dessiner</string>
 </resources>

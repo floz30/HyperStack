@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -19,11 +18,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -39,23 +38,18 @@ import fr.uge.hyperstack.fragment.SlideBottomBarDialogFragment;
 import fr.uge.hyperstack.model.PaintElement;
 import fr.uge.hyperstack.fragment.ImportSoundDialogFragment;
 import fr.uge.hyperstack.model.Mode;
-import fr.uge.hyperstack.model.Slide;
 import fr.uge.hyperstack.model.drawing.Circle;
 import fr.uge.hyperstack.model.drawing.Point;
 import fr.uge.hyperstack.model.drawing.Rectangle;
 import fr.uge.hyperstack.model.Stack;
-import fr.uge.hyperstack.model.drawing.Stroke;
 import fr.uge.hyperstack.model.drawing.Triangle;
 import fr.uge.hyperstack.model.media.Image;
 import fr.uge.hyperstack.model.media.Sound;
 import fr.uge.hyperstack.utils.Localisation;
 import fr.uge.hyperstack.utils.Permission;
-import fr.uge.hyperstack.view.EditorView;
-import fr.uge.hyperstack.view.listener.EditorViewListener;
 
 @SuppressLint("NonConstantResourceId")
-public class EditActivity extends AppCompatActivity {
-    private int currentStackNum = -1;
+public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
     /**
      * Présentation sélectionnée par l'utilisateur et affichée à l'écran.
      */
@@ -66,8 +60,17 @@ public class EditActivity extends AppCompatActivity {
      * Le numéro 0 correspond à la première slide.
      */
     private int currentSlideNumber = 0;
+    /**
+     * Dialog pour l'importation d'image/vidéo.
+     */
     private ImportImageDialogFragment imageDialogFragment;
+    /***
+     * Dialog pour l'importation de son.
+     */
     private ImportSoundDialogFragment soundDialogFragment;
+    /**
+     * Dialog affichant la liste des slides de la présentation.
+     */
     private SlideBottomBarDialogFragment slideBottomBarDialogFragment;
     private final List<Sound> soundList = new ArrayList<>();
     private Localisation localisation;
@@ -83,7 +86,6 @@ public class EditActivity extends AppCompatActivity {
         Intent homeIntent = getIntent();
 
         currentStack = (Stack) homeIntent.getSerializableExtra("stack");
-        currentStackNum = homeIntent.getIntExtra("stackNum", -1);
         currentStack.initSlideLayer(getApplicationContext(), findViewById(R.id.editLayout));
 
         setEditSetup();
@@ -161,8 +163,37 @@ public class EditActivity extends AppCompatActivity {
         return true;
     }
 
+    private void showPopupMenu(int anchorId, int menu) {
+        PopupMenu popupMenu = new PopupMenu(this, findViewById(anchorId));
+        popupMenu.setOnMenuItemClickListener(this);
+        popupMenu.inflate(menu);
+        popupMenu.show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // ICI pour les boutons dans menu_edit.xml
+        switch (item.getItemId()) {
+            case R.id.action_insert_mode:
+                showPopupMenu(R.id.action_insert_mode, R.menu.menu_insertion_mode);
+                return true;
+            case R.id.action_draw_mode:
+                showPopupMenu(R.id.action_draw_mode, R.menu.menu_drawing_mode);
+                return true;
+            case R.id.action_erase:
+                clearSlide();
+                return true;
+            case R.id.logs:
+                goToLogs();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        // ICI pour les boutons dans menu_drawing_mode.xml et menu_insertion_mode.xml
         switch (item.getItemId()) {
             case R.id.action_add_text:
                 editSlideText();
@@ -171,7 +202,7 @@ public class EditActivity extends AppCompatActivity {
                 showImportImageVideoDialog();
                 return true;
             case R.id.action_add_sound:
-                loadSound();
+                showImportSoundDialog();
                 return true;
             case R.id.action_add_location:
                 if(localisation == null)
@@ -179,16 +210,21 @@ public class EditActivity extends AppCompatActivity {
                 localisation.runWithPermission(Manifest.permission.ACCESS_FINE_LOCATION, "geolocalisation");
                 return true;
             case R.id.action_add_user_input:
+                // TODO : implement this function
                 return true;
-            case R.id.action_erase:
-                clearSlide();
+            case R.id.action_add_rectangle:
+                setFigureSetup();
+                currentMode = currentMode != Mode.RECTANGLE ? Mode.RECTANGLE : Mode.SELECTION;
                 return true;
-            case R.id.logs:
-                goToLogs();
+            case R.id.action_add_triangle:
+                setFigureSetup();
+                currentMode = currentMode != Mode.TRIANGLE ? Mode.TRIANGLE : Mode.SELECTION;
                 return true;
-
+            case R.id.action_add_circle:
+                // TODO : implement this function
+                return true;
             default:
-                return super.onOptionsItemSelected(item);
+                return false;
         }
     }
 
@@ -311,7 +347,7 @@ public class EditActivity extends AppCompatActivity {
     /**
      * Affiche le BottomSheetDialog proposant d'importer un son.
      */
-    private void loadSound() {
+    private void showImportSoundDialog() {
         soundDialogFragment.show(getSupportFragmentManager(), "importSound");
     }
 
@@ -367,7 +403,7 @@ public class EditActivity extends AppCompatActivity {
                             case MotionEvent.ACTION_DOWN:
                                 PaintElement element = initFigure(motionEvent.getX(), motionEvent.getY());
                                 strokeStack.add(element);
-                                currentStack.addElementToSlide(element, 0); // TODO modification on current Slide
+                                currentStack.addElementToSlide(element, currentSlideNumber);
                                 break;
                             case MotionEvent.ACTION_MOVE:
                                 PaintElement currentElem = strokeStack.get(strokeStack.size() - 1);
@@ -407,10 +443,6 @@ public class EditActivity extends AppCompatActivity {
 //    }
 
     private void setUpEditMode() {
-//        FloatingActionButton editButton = findViewById(R.id.editButton);
-        FloatingActionButton rectButton = findViewById(R.id.rectButton);
-        FloatingActionButton triangleButton = findViewById(R.id.triangleButton);
-
 //        editButton.setOnClickListener(
 //            (view) -> {
 //                setEditSetup();
@@ -425,21 +457,7 @@ public class EditActivity extends AppCompatActivity {
 //                }
 //            }
 //        );
-
-
-        rectButton.setOnClickListener(
-                (view) -> {
-                    setFigureSetup();
-                    currentMode = currentMode != Mode.RECTANGLE ? Mode.RECTANGLE : Mode.SELECTION;
-                }
-        );
-
-        triangleButton.setOnClickListener(
-                (view) -> {
-                    setFigureSetup();
-                    setFigureSetup();
-                    currentMode = currentMode != Mode.TRIANGLE ? Mode.TRIANGLE : Mode.SELECTION;
-                }
-        );
     }
+
+
 }

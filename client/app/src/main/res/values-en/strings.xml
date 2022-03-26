@@ -9,4 +9,18 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="slide_number_bottom_bar">%1$d on %2$d</string>
+    <string name="action_add_text">Add text element</string>
+    <string name="action_add_image">Add an image/video</string>
+    <string name="action_add_sound">Add a sound</string>
+    <string name="action_add_location">Add a location</string>
+    <string name="action_add_input">Add an input</string>
+    <string name="action_add_circle">Add a circle</string>
+    <string name="action_add_triangle">Add a triangle</string>
+    <string name="action_add_rectangle">Add a rectangle</string>
+    <string name="action_add_draw">Pencil</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_log">History</string>
+    <string name="action_share">Share</string>
+    <string name="action_insertion_mode">Insert an element</string>
+    <string name="action_drawing_mode">Draw</string>
 </resources>

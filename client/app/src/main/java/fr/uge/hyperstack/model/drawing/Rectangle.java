@@ -37,7 +37,7 @@ public class Rectangle extends AbstractFigure {
 
     @Override
     public void accept(ElementVisitor elementVisitor) {
-        elementVisitor.visit(this);
+        elementVisitor.draw(this);
     }
 
     @Override
