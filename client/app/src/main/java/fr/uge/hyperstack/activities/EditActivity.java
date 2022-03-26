@@ -367,7 +367,7 @@ public class EditActivity extends AppCompatActivity {
                             case MotionEvent.ACTION_DOWN:
                                 PaintElement element = initFigure(motionEvent.getX(), motionEvent.getY());
                                 strokeStack.add(element);
-                                currentStack.addLayerElementToSlide(element, 0); // TODO modification on current Slide
+                                currentStack.addElementToSlide(element, 0); // TODO modification on current Slide
                                 break;
                             case MotionEvent.ACTION_MOVE:
                                 PaintElement currentElem = strokeStack.get(strokeStack.size() - 1);
