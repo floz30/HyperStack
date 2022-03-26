@@ -13,7 +13,7 @@
     <string name="action_add_text">Ajouter un élément texte</string>
     <string name="action_add_image">Ajouter une image/vidéo</string>
     <string name="action_add_sound">Ajouter un son</string>
-    <string name="action_add_location">Ajouter un géocalisation</string>
+    <string name="action_add_location">Ajouter une géolocalisation</string>
     <string name="action_add_input">Ajouter une entrée utilisateur</string>
     <string name="action_add_circle">Ajouter un cercle</string>
     <string name="action_add_triangle">Ajouter un triangle</string>
@@ -24,4 +24,5 @@
     <string name="action_share">Partager</string>
     <string name="action_insertion_mode">Insérer un élément</string>
     <string name="action_drawing_mode">Dessiner</string>
+    <string name="action_erase">Effacer</string>
 </resources>

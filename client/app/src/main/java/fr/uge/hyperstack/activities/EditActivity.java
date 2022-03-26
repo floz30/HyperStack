@@ -183,6 +183,8 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             case R.id.action_erase:
                 clearSlide();
                 return true;
+            case R.id.action_delete:
+                deleteSlide();
             case R.id.logs:
                 goToLogs();
                 return true;
@@ -328,6 +330,16 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 //        Stack s = editorView.getCurrentStack();
 //        s.resetSlide(editorView.currentSlide);
 //        editorView.invalidate();
+    }
+
+    private void deleteSlide() {
+        if (currentStack.sizeOfStack() > 1) {
+            currentStack.getSlides().remove(currentSlideNumber);
+            if (currentSlideNumber > 0) {
+                currentSlideNumber--;
+            }
+            updateSlideNumberLabel();
+        }
     }
 
     private void goToLogs() {
