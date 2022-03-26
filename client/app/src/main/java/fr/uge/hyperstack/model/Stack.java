@@ -153,9 +153,7 @@ public class Stack implements Serializable {
     }
 
     public void resetSlide(int index) {
-        slides.set(index, new Slide(index));
+        slides.get(index).clear();
         logs.add(new Logs(this));
-        Log.d("TAG", "reset: YES");
-
     }
 }
