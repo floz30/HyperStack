@@ -3,7 +3,10 @@ package fr.uge.hyperstack.view;
 import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.MediaController;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -71,6 +74,8 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
         constraintSet.setVerticalBias(id, image.convertBiasVertical(this.getHeight()));
         constraintSet.constrainWidth(id, ConstraintSet.WRAP_CONTENT);
         constraintSet.constrainHeight(id, ConstraintSet.WRAP_CONTENT);
+        constraintSet.constrainMaxWidth(id, ConstraintSet.MATCH_CONSTRAINT);
+        constraintSet.constrainMaxHeight(id, ConstraintSet.MATCH_CONSTRAINT);
 
         ViewGroup viewGroup = (ViewGroup) this;
         viewGroup.addView(img);
@@ -78,7 +83,34 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
 
     @Override
     public void draw(Video video) {
+        VideoView videoView = new VideoView(context);
+        videoView.setId(ViewCompat.generateViewId());
+        videoView.setVideoURI(video.getLocation());
 
+        MediaController mediaController = new MediaController(context);
+        mediaController.setId(ViewCompat.generateViewId());
+        videoView.setMediaController(mediaController);
+        mediaController.setAnchorView(videoView);
+
+        FrameLayout videoFrame = new FrameLayout(context);
+        videoFrame.setId(ViewCompat.generateViewId());
+        videoFrame.addView(videoView);
+
+        int id = videoFrame.getId();
+
+        constraintSet.connect(id, ConstraintSet.START, this.getId(), ConstraintSet.START);
+        constraintSet.connect(id, ConstraintSet.END, this.getId(), ConstraintSet.END);
+        constraintSet.connect(id, ConstraintSet.TOP, this.getId(), ConstraintSet.TOP);
+        constraintSet.connect(id, ConstraintSet.BOTTOM, this.getId(), ConstraintSet.BOTTOM);
+        constraintSet.setHorizontalBias(id, video.convertBiasHorizontal(this.getWidth()));
+        constraintSet.setVerticalBias(id, video.convertBiasVertical(this.getHeight()));
+        constraintSet.constrainWidth(id, ConstraintSet.WRAP_CONTENT);
+        constraintSet.constrainHeight(id, ConstraintSet.WRAP_CONTENT);
+        constraintSet.constrainMaxWidth(id, ConstraintSet.MATCH_CONSTRAINT);
+        constraintSet.constrainMaxHeight(id, ConstraintSet.MATCH_CONSTRAINT);
+
+        ViewGroup viewGroup = (ViewGroup) this;
+        viewGroup.addView(videoFrame);
     }
 
     @Override

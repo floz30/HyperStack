@@ -9,39 +9,47 @@ import fr.uge.hyperstack.model.MediaElement;
 
 public class Video implements MediaElement {
     private final Uri location;
+    private float x;
+    private float y;
+    private float width;
+    private float height;
 
     public Video(@NonNull Uri location) {
         this.location = location;
     }
 
+    public Uri getLocation() {
+        return location;
+    }
+
     @Override
     public float getPositionX() {
-        return 0;
+        return x;
     }
 
     @Override
     public float getPositionY() {
-        return 0;
+        return y;
     }
 
     @Override
     public float getWidth() {
-        return 0;
+        return width;
     }
 
     @Override
     public float getHeight() {
-        return 0;
+        return height;
     }
 
     @Override
-    public float convertBiasHorizontal(float width) {
-        return 0;
+    public float convertBiasHorizontal(float maxWidth) {
+        return (x + width / 2) / maxWidth;
     }
 
     @Override
-    public float convertBiasVertical(float height) {
-        return 0;
+    public float convertBiasVertical(float maxHeight) {
+        return (y + height / 2) / maxHeight;
     }
 
     @Override

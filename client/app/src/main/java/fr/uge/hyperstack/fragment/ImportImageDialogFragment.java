@@ -1,8 +1,11 @@
 package fr.uge.hyperstack.fragment;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +15,27 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import fr.uge.hyperstack.BuildConfig;
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.utils.Permission;
 
 public class ImportImageDialogFragment extends BottomSheetDialogFragment {
+    private final Context context;
+    private String fileLocation;
+
+    public ImportImageDialogFragment(Context context) {
+        this.context = context;
+    }
 
     @Nullable
     @Override
@@ -40,14 +56,27 @@ public class ImportImageDialogFragment extends BottomSheetDialogFragment {
         return super.onCreateDialog(savedInstanceState);
     }
 
+    public String getFileLocation() {
+        return fileLocation;
+    }
+
+    private File createImageFile(String format) throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName, format, storageDir);
+        fileLocation = image.getAbsolutePath();
+        return image;
+    }
+
 
     public class ImportImageItemAdapter extends RecyclerView.Adapter<ImportImageItemAdapter.ImportImageItemViewHolder> {
 
         private final ImportImageItem[] items = {
-                new ImportImageItem(R.drawable.ic_download, "Importer une image", "", 1),
-                new ImportImageItem(R.drawable.ic_download, "Importer une vidéo", "", 2),
-                new ImportImageItem(R.drawable.ic_camera, "Prendre une photo", MediaStore.ACTION_IMAGE_CAPTURE, Permission.IMAGE_CAPTURE_REQUEST_CODE),
-                new ImportImageItem(R.drawable.ic_video, "Prendre une vidéo", MediaStore.ACTION_VIDEO_CAPTURE, Permission.VIDEO_CAPTURE_REQUEST_CODE)
+                new ImportImageItem(R.drawable.ic_download, "Importer une image", "", 1, ".jpg"),
+                new ImportImageItem(R.drawable.ic_download, "Importer une vidéo", "", 2, ".mp4"),
+                new ImportImageItem(R.drawable.ic_camera, "Prendre une photo", MediaStore.ACTION_IMAGE_CAPTURE, Permission.IMAGE_CAPTURE_REQUEST_CODE, ".jpg"),
+                new ImportImageItem(R.drawable.ic_video, "Prendre une vidéo", MediaStore.ACTION_VIDEO_CAPTURE, Permission.VIDEO_CAPTURE_REQUEST_CODE, ".mp4")
         };
 
         private class ImportImageItem {
@@ -55,12 +84,14 @@ public class ImportImageDialogFragment extends BottomSheetDialogFragment {
             private final String label;
             private final String action;
             private final int requestCode;
+            private final String format;
 
-            ImportImageItem(int iconId, String label, String action, int requestCode) {
+            ImportImageItem(int iconId, String label, String action, int requestCode, String format) {
                 this.iconId = iconId;
                 this.label = label;
                 this.action = action;
                 this.requestCode = requestCode;
+                this.format = format;
             }
         }
 
@@ -103,7 +134,15 @@ public class ImportImageDialogFragment extends BottomSheetDialogFragment {
 
                 labelTextView.setOnClickListener(view -> {
                     Intent cameraIntent = new Intent(item.action);
-                    getActivity().startActivityForResult(cameraIntent, item.requestCode);
+                    try {
+                        File file = createImageFile(item.format);
+                        Uri uri = FileProvider.getUriForFile(context.getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", file);
+                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                        getActivity().startActivityForResult(cameraIntent, item.requestCode);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 });
             }
         }
