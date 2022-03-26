@@ -20,6 +20,8 @@ public class Image implements MediaElement, Serializable {
 
     public Image(@NonNull Bitmap content) {
         this.content = content;
+        this.height = content.getHeight();
+        this.width = content.getWidth();
     }
 
     @Override
