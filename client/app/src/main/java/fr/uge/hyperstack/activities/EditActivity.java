@@ -48,6 +48,7 @@ import fr.uge.hyperstack.model.media.Sound;
 import fr.uge.hyperstack.model.media.Video;
 import fr.uge.hyperstack.utils.Localisation;
 import fr.uge.hyperstack.utils.Permission;
+import fr.uge.hyperstack.view.EditorView;
 
 @SuppressLint("NonConstantResourceId")
 public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
@@ -184,6 +185,8 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
             case R.id.action_erase:
                 clearSlide();
                 return true;
+            case R.id.action_delete:
+                deleteSlide();
             case R.id.logs:
                 goToLogs();
                 return true;
@@ -335,6 +338,16 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 //        editorView.invalidate();
     }
 
+    private void deleteSlide() {
+        if (currentStack.sizeOfStack() > 1) {
+            currentStack.getSlides().remove(currentSlideNumber);
+            if (currentSlideNumber > 0) {
+                currentSlideNumber--;
+            }
+            updateSlideNumberLabel();
+        }
+    }
+
     private void goToLogs() {
 //        EditorView ev = findViewById(R.id.editorView2);
 //        Intent intent = new Intent(this, LogsActivity.class);
@@ -409,16 +422,19 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                                 PaintElement element = initFigure(motionEvent.getX(), motionEvent.getY());
                                 strokeStack.add(element);
                                 currentStack.addElementToSlide(element, currentSlideNumber);
-                                break;
+                                refresh();
+                                return true;
                             case MotionEvent.ACTION_MOVE:
                                 PaintElement currentElem = strokeStack.get(strokeStack.size() - 1);
                                 currentElem.onFingerMoveAction(motionEvent.getX(), motionEvent.getY());
-                                break;
+                                refresh();
+                                return true;
                             case MotionEvent.ACTION_UP:
                                 currentMode = Mode.SELECTION;view.setOnTouchListener(null);
-                                break;
+                                return true;
                         }
-                        return true;
+                        refresh();
+                        return EditActivity.super.onTouchEvent(motionEvent);
                     }
                 }
         );

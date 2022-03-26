@@ -3,7 +3,7 @@
     <string name="cancel">Cancel</string>
     <string name="validate">Validate</string>
     <string name="title">Title</string>
-    <string name="creation_stack_btn">Create new stack</string>
+    <string name="creation_stack_btn">Create new slideshow</string>
     <string name="back">Back</string>
     <string name="edit">Edit</string>
     <string name="next">Next</string>
@@ -23,4 +23,5 @@
     <string name="action_share">Share</string>
     <string name="action_insertion_mode">Insert an element</string>
     <string name="action_drawing_mode">Draw</string>
+    <string name="action_erase">Clear</string>
 </resources>

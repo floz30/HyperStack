@@ -17,7 +17,7 @@
     <item
         android:id="@+id/action_erase"
         android:icon="@drawable/ic_delete"
-        android:title="@string/action_delete"
+        android:title="@string/action_erase"
         app:showAsAction="never" />
 
     <item
@@ -30,6 +30,9 @@
         android:id="@+id/action_share"
         android:title="@string/action_share"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_delete"
+        android:title="@string/action_delete" />
 
 
 </menu>
