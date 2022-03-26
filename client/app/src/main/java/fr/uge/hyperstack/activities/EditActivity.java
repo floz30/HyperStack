@@ -209,7 +209,7 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 showImportSoundDialog();
                 return true;
             case R.id.action_add_location:
-                if(localisation == null)
+                if (localisation == null)
                     localisation = new Localisation(this);
                 localisation.runWithPermission(Manifest.permission.ACCESS_FINE_LOCATION, "geolocalisation");
                 return true;
@@ -268,7 +268,7 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 break;
             case Permission.SOUND_IMPORT_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    if ((data != null) && (data.getData() != null)){
+                    if ((data != null) && (data.getData() != null)) {
                         Uri audioURI = data.getData();
                         Sound sound = new Sound("test");
                         soundList.add(sound);
@@ -336,6 +336,8 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 //        Stack s = editorView.getCurrentStack();
 //        s.resetSlide(editorView.currentSlide);
 //        editorView.invalidate();
+
+        currentStack.resetSlide(currentSlideNumber);
     }
 
     private void deleteSlide() {
@@ -398,12 +400,16 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 //        });
     }
 
-    public static PaintElement initFigure(float x, float y){
-        switch (currentMode){
-            case RECTANGLE: return new Rectangle(new Point(x,y),new Point(x,y),Color.RED,10);
-            case TRIANGLE: return new Triangle(Color.RED,10,new Point(x,y),new Point(x,y),new Point(x,y));
-            case CIRCLE: return new Circle(Color.RED,new Point(x,y),10,new Point(x,y));
-            default: return null;
+    public static PaintElement initFigure(float x, float y) {
+        switch (currentMode) {
+            case RECTANGLE:
+                return new Rectangle(new Point(x, y), new Point(x, y), Color.RED, 10);
+            case TRIANGLE:
+                return new Triangle(Color.RED, 10, new Point(x, y), new Point(x, y), new Point(x, y));
+            case CIRCLE:
+                return new Circle(Color.RED, new Point(x, y), 10, new Point(x, y));
+            default:
+                return null;
         }
     }
 
@@ -430,7 +436,8 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                                 refresh();
                                 return true;
                             case MotionEvent.ACTION_UP:
-                                currentMode = Mode.SELECTION;view.setOnTouchListener(null);
+                                currentMode = Mode.SELECTION;
+                                view.setOnTouchListener(null);
                                 return true;
                         }
                         refresh();
