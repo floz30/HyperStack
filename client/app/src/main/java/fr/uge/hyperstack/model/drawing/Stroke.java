@@ -106,6 +106,7 @@ public class Stroke implements Serializable, PaintElement {
         Paint paint = new Paint();
         paint.setColor(this.color);
         paint.setStrokeWidth(this.strokeSize);
+        setPathOfStroke();
         canvas.drawPath(this.pathOfStroke, paint);
     }
 }

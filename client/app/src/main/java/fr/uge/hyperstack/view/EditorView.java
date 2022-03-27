@@ -19,10 +19,8 @@ import fr.uge.hyperstack.view.listener.EditorViewListener;
 
 public class EditorView extends View implements Serializable {
     private EditorViewListener editorViewListener;
-    private fr.uge.hyperstack.model.Stack currentStack;
-    private final List<PaintElement> strokeStack = new ArrayList<>();
+    private List<PaintElement> strokeStack = new ArrayList<>();
     private Mode currentMode = Mode.SELECTION;
-    public boolean drawModeOn;
 
 
     public EditorView(Context context) {
@@ -86,10 +84,6 @@ public class EditorView extends View implements Serializable {
 //        invalidate();
 //        return super.onTouchEvent(event);
 //    }
-
-    public void resetStack(){
-        strokeStack.clear();
-    }
 
     public void clear() {
         strokeStack.clear();
