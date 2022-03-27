@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -28,8 +29,10 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,6 +51,7 @@ import fr.uge.hyperstack.model.Stack;
 import fr.uge.hyperstack.model.drawing.Circle;
 import fr.uge.hyperstack.model.drawing.Point;
 import fr.uge.hyperstack.model.drawing.Rectangle;
+import fr.uge.hyperstack.model.drawing.Stroke;
 import fr.uge.hyperstack.model.drawing.Triangle;
 import fr.uge.hyperstack.model.media.Image;
 import fr.uge.hyperstack.model.media.Sound;
@@ -55,6 +59,7 @@ import fr.uge.hyperstack.model.media.Video;
 import fr.uge.hyperstack.utils.Localisation;
 import fr.uge.hyperstack.utils.Permission;
 import fr.uge.hyperstack.view.EditorView;
+import fr.uge.hyperstack.view.listener.EditorViewListener;
 
 @SuppressLint("NonConstantResourceId")
 public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
@@ -97,7 +102,6 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         currentStack.initSlideLayer(this, findViewById(R.id.editLayout));
 
         setEditSetup();
-        setUpEditMode();
 
         imageDialogFragment = new ImportImageDialogFragment(this);
         soundDialogFragment = new ImportSoundDialogFragment();
@@ -221,6 +225,9 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 return true;
             case R.id.action_add_user_input:
                 // TODO : implement this function
+            case R.id.action_pen:
+                setFigureSetup();
+                currentMode = currentMode != Mode.DRAW ? Mode.DRAW : Mode.SELECTION;
                 return true;
             case R.id.action_add_rectangle:
                 setFigureSetup();
@@ -429,28 +436,33 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
     public void setEditSetup() {
-//        editorView.setEditorViewListener(new EditorViewListener() {
-//            @Override
-//            public void onFingerTouch(float x, float y) {
-//                Stroke stroke = new Stroke(Color.RED, 25);
-//                stroke.moveTo(x,y);
-//                editorView.getStrokeStack().add(stroke);
-//                editorView.getCurrentStack().addLayerElementToSlide(stroke, editorView.currentSlide);
-//            }
-//
-//            @Override
-//            public void onFingerMove(float x, float y) {
-//                PaintElement currentElem = editorView.getStrokeStack().peek();
-//                currentElem.onFingerMoveAction(x,y);
-//            }
-//
-//            @Override
-//            public void onFingerRaise(float x, float y) { }
-//        });
+        EditorView ev = currentStack.getSlides().get(currentSlideNumber).getCurrentLayer().getEditorView();
+        ev.setEditorViewListener(new EditorViewListener() {
+            @Override
+            public void onFingerTouch(float x, float y) {
+                PaintElement stroke = initFigure(x, y);
+                stroke.moveTo(x,y);
+                ev.getStrokeStack().add(stroke);
+                currentStack.addElementToSlide(stroke, currentSlideNumber);
+            }
+
+            @Override
+            public void onFingerMove(float x, float y) {
+                PaintElement currentElem = ev.getStrokeStack().get(ev.getStrokeStack().size()-1);
+                currentElem.onFingerMoveAction(x,y);
+            }
+
+            @Override
+            public void onFingerRaise(float x, float y) { }
+        });
     }
 
     public static PaintElement initFigure(float x, float y) {
         switch (currentMode) {
+            case DRAW:
+                PaintElement stroke = new Stroke(Color.RED, 10);
+                stroke.moveTo(x, y);
+                return stroke;
             case RECTANGLE:
                 return new Rectangle(new Point(x, y), new Point(x, y), Color.RED, 10);
             case TRIANGLE:
@@ -468,7 +480,7 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
      */
     public void setFigureSetup() {
         View view = findViewById(R.id.editLayout);
-        EditorView ev = currentStack.getSlides().get(currentSlideNumber).getCurrentLayer().getEditorView(); // TODO a refaire
+        EditorView ev = currentStack.getSlides().get(currentSlideNumber).getCurrentLayer().getEditorView();
         view.setOnTouchListener(
                 new View.OnTouchListener() {
                     @Override
@@ -556,23 +568,6 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
 //        });
 //    }
 
-    private void setUpEditMode() {
-//        editButton.setOnClickListener(
-//            (view) -> {
-//                setEditSetup();
-//                if (!editorView.drawModeOn) {
-//                    editorView.drawModeOn = true;
-//                    editorView.setCurrentMode(Mode.DRAW);
-//                    editButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
-//                } else{
-//                    editorView.drawModeOn = false;
-//                    editorView.setCurrentMode(Mode.SELECTION);
-//                    editButton.setImageResource(android.R.drawable.ic_menu_edit);
-//                }
-//            }
-//        );
-    }
-
 
 
     public void selectSlide(int currentSlideNumber) {
@@ -581,7 +576,5 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         updateSlideNumberLabel();
         currentStack.drawSlide(this.currentSlideNumber);
         currentStack.setDrawableElements();
-
-        Log.d("current", String.valueOf(this.currentSlideNumber));
     }
 }

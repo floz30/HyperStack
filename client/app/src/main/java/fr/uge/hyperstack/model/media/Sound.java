@@ -36,7 +36,7 @@ import fr.uge.hyperstack.model.MediaElement;
 public class Sound implements MediaElement, Serializable {
     private final String name;
     private transient Bitmap cachedSound = null;
-    private final MediaPlayer player = new MediaPlayer();
+    private transient final MediaPlayer player = new MediaPlayer();
     private float x;
     private float y;
     private float width;

@@ -19,10 +19,8 @@ import fr.uge.hyperstack.view.listener.EditorViewListener;
 
 public class EditorView extends View implements Serializable {
     private EditorViewListener editorViewListener;
-    private fr.uge.hyperstack.model.Stack currentStack;
-    private final List<PaintElement> strokeStack = new ArrayList<>();
+    private List<PaintElement> strokeStack = new ArrayList<>();
     private Mode currentMode = Mode.SELECTION;
-    public boolean drawModeOn;
 
 
     public EditorView(Context context) {
@@ -63,32 +61,28 @@ public class EditorView extends View implements Serializable {
         }
     }
 
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        int action = event.getActionMasked();
-//        float x = event.getX();
-//        float y = event.getY();
-//
-//        if (currentMode == Mode.DRAW || currentMode == Mode.TRIANGLE || currentMode == Mode.RECTANGLE || currentMode == Mode.CIRCLE) {
-//            switch (action) {
-//                case MotionEvent.ACTION_DOWN:
-//                    editorViewListener.onFingerTouch(x, y);
-//                    invalidate();
-//                    return true;
-//                case MotionEvent.ACTION_MOVE:
-//                    editorViewListener.onFingerMove(x, y);
-//                    break;
-//                case MotionEvent.ACTION_UP:
-//                    editorViewListener.onFingerRaise(x, y);
-//                    break;
-//            }
-//        }
-//        invalidate();
-//        return super.onTouchEvent(event);
-//    }
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = event.getActionMasked();
+        float x = event.getX();
+        float y = event.getY();
 
-    public void resetStack(){
-        strokeStack.clear();
+        if (currentMode == Mode.DRAW || currentMode == Mode.TRIANGLE || currentMode == Mode.RECTANGLE || currentMode == Mode.CIRCLE) {
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    editorViewListener.onFingerTouch(x, y);
+                    invalidate();
+                    return true;
+                case MotionEvent.ACTION_MOVE:
+                    editorViewListener.onFingerMove(x, y);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    editorViewListener.onFingerRaise(x, y);
+                    break;
+            }
+        }
+        invalidate();
+        return super.onTouchEvent(event);
     }
 
     public void clear() {
