@@ -11,6 +11,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -242,6 +244,26 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+            case Permission.IMAGE_IMPORT_REQUEST_CODE:
+            case Permission.VIDEO_IMPORT_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    Uri uri = data.getData();
+                    if (uri.toString().contains("image")) {
+                        try {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+                            currentStack.addElementToSlide(new Image(bitmap), currentSlideNumber);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (uri.toString().contains("video")) {
+                        currentStack.addElementToSlide(new Video(uri), currentSlideNumber);
+                    } else {
+                        Snackbar.make(findViewById(R.id.editLayout), "Format de fichier non pris en charge", Snackbar.LENGTH_LONG).show();
+                    }
+
+                    imageDialogFragment.dismiss();
+                }
+                break;
             case Permission.IMAGE_CAPTURE_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
                     Bitmap bitmap = BitmapFactory.decodeFile(imageDialogFragment.getFileLocation());
