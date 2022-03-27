@@ -1,14 +1,18 @@
 package fr.uge.hyperstack.model.media;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
+import android.provider.MediaStore;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -16,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -44,11 +49,8 @@ public class Sound implements MediaElement, Serializable {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public void setSoundFromExternalStorage(Uri uri) throws IOException {
-        String docId = DocumentsContract.getDocumentId(uri);
-        String[] split = docId.split(":");
-        String path = Environment.getExternalStorageDirectory() + "/" + split[1];
-        player.setDataSource(path);
+    public void setSoundFromExternalStorage(Context context, Uri uri) throws IOException {
+        player.setDataSource(context, uri);
         player.prepareAsync();
     }
 
@@ -88,8 +90,7 @@ public class Sound implements MediaElement, Serializable {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public static String getFileFromUri(Uri uri) {
-        String docId = DocumentsContract.getDocumentId(uri);
-        String[] split = docId.split(":");
+        String[] split = uri.getPath().split(":");
         String[] directories = split[1].split("/");
         return directories[directories.length - 1];
     }

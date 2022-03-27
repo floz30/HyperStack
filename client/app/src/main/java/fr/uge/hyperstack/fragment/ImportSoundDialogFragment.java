@@ -34,6 +34,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.activities.SoundListActivity;
@@ -61,7 +62,12 @@ public class ImportSoundDialogFragment extends BottomSheetDialogFragment {
         return super.onCreateDialog(savedInstanceState);
     }
 
-    public static class ImportSoundItemAdapter extends RecyclerView.Adapter<ImportSoundDialogFragment.ImportSoundItemAdapter.ViewHolder> {
+    private void loadSoundList() {
+        Intent intent = new Intent(getActivity(), SoundListActivity.class);
+        requireActivity().startActivity(intent);
+    }
+
+    public class ImportSoundItemAdapter extends RecyclerView.Adapter<ImportSoundDialogFragment.ImportSoundItemAdapter.ViewHolder> {
         private final Activity activity;
         private final List<ImportSoundDialogFragment.ImportSoundItemAdapter.ImportSoundItem> items;
 
@@ -107,16 +113,11 @@ public class ImportSoundDialogFragment extends BottomSheetDialogFragment {
             return items.size();
         }
 
-        private void loadSoundList() {
-            Intent intent = new Intent(activity, SoundListActivity.class);
-            activity.startActivity(intent);
-        }
-
         private void importSoundFromUser() throws IOException {
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("audio/*");
+                    intent.setDataAndType(Uri.parse(MediaStore.Audio.Media.DATA), "audio/*");
                     activity.startActivityForResult(Intent.createChooser(intent, "SoundImport"), Permission.SOUND_IMPORT_REQUEST_CODE);
                 }
             } else {
@@ -124,7 +125,7 @@ public class ImportSoundDialogFragment extends BottomSheetDialogFragment {
             }
         }
 
-        private static class ImportSoundItem {
+        private class ImportSoundItem {
             private final int iconId;
             private final String label;
 
@@ -134,7 +135,7 @@ public class ImportSoundDialogFragment extends BottomSheetDialogFragment {
             }
         }
 
-        private static class ViewHolder extends RecyclerView.ViewHolder {
+        private class ViewHolder extends RecyclerView.ViewHolder {
             private final ImageView iconImageView;
             private final TextView labelTextView;
 

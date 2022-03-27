@@ -294,9 +294,9 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 if (resultCode == RESULT_OK) {
                     if ((data != null) && (data.getData() != null)) {
                         Uri audioURI = data.getData();
-                        Sound sound = new Sound("");
+                        Sound sound = new Sound(Sound.getFileFromUri(audioURI));
                         try {
-                            sound.setSoundFromExternalStorage(audioURI);
+                            sound.setSoundFromExternalStorage(this, audioURI);
                         } catch (IOException e) {
                             Toast.makeText(this, "Couldn't load file", Toast.LENGTH_SHORT).show();
                         }

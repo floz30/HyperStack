@@ -1,5 +1,6 @@
 package fr.uge.hyperstack.activities;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.model.media.Sound;
+import fr.uge.hyperstack.utils.Permission;
 
 public class SoundListActivity extends AppCompatActivity {
     private static final int READ_FILE_PERMISSION_CODE = 1;
@@ -72,11 +74,11 @@ public class SoundListActivity extends AppCompatActivity {
 
     public void loadSound(Sound sound) throws IOException {
         // TODO retourner sur le slide + afficher le player pour le son
-        sound.setSoundFromAssets(this);
-//        Intent intent = new Intent(this, SoundListActivity.class);
-//        intent.putExtra("sound", sound);
-//        startActivityForResult(intent, Permission.SOUND_TAKEN_FROM_APP_REQUEST_CODE);
-//        this.finish();
+//        sound.setSoundFromAssets(this);
+        Intent intent = new Intent();
+        intent.putExtra("sound", sound);
+        setResult(Permission.SOUND_TAKEN_FROM_APP_REQUEST_CODE, intent);
+        finish();
     }
 
     public static class SoundListAdapter extends RecyclerView.Adapter<SoundListAdapter.ViewHolder> {
