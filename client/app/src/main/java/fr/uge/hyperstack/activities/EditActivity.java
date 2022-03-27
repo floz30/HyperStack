@@ -581,7 +581,5 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         updateSlideNumberLabel();
         currentStack.drawSlide(this.currentSlideNumber);
         currentStack.setDrawableElements();
-
-        Log.d("current", String.valueOf(this.currentSlideNumber));
     }
 }
