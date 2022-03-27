@@ -3,25 +3,17 @@ package fr.uge.hyperstack.model;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.view.View;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
-import fr.uge.hyperstack.Logs;
-import fr.uge.hyperstack.view.EditorView;
 
 /**
  * Classe représentant une pile d'une ou plusieurs planches.<br/>
@@ -56,7 +48,7 @@ public class Stack implements Serializable {
     private transient Bitmap cachedImage = null;
 
 
-    private ArrayList<Logs> logs = new ArrayList<>();
+    //private ArrayList<Logs> logs = new ArrayList<>();
 
     private final AtomicInteger atomicInt = new AtomicInteger(1);
 
@@ -110,14 +102,8 @@ public class Stack implements Serializable {
         slides.get(index).addElementOnLayer(element);
     }
 
-    public ArrayList<Logs> getLogs() {
-        return logs;
-    }
-
     public void addLayerElementToSlide(Layer layer, int index) {
         slides.get(index).addLayer(layer);
-        logs.add(new Logs(this));
-        Log.d("TAG", "Draw: YES");
     }
 
     /**
@@ -154,6 +140,5 @@ public class Stack implements Serializable {
 
     public void eraseSlide(int index) {
         slides.get(index).erase();
-        logs.add(new Logs(this));
     }
 }

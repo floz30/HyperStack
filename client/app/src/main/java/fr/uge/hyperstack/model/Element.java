@@ -6,10 +6,12 @@ import android.view.View;
 
 import androidx.constraintlayout.widget.ConstraintSet;
 
+import java.io.Serializable;
+
 /**
  * Représente un élément que l'utilisateur peut ajouter sur les calques de ses présentations.
  */
-public interface Element {
+public interface Element extends Serializable {
     /**
      * Renvoie la position du coin haut gauche de l'élement sur l'axe des abscisses.
      *

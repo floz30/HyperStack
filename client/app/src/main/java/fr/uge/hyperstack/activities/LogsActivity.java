@@ -7,14 +7,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
-import fr.uge.hyperstack.Logs;
+import fr.uge.hyperstack.StackWrapper;
 import fr.uge.hyperstack.LogsViewAdapter;
 import fr.uge.hyperstack.R;
-import fr.uge.hyperstack.model.Stack;
 
 public class LogsActivity extends AppCompatActivity {
 
@@ -33,7 +31,7 @@ public class LogsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         recyclerView = findViewById(R.id.logsRecycleView);
         adapter = new LogsViewAdapter();
-        ArrayList<Logs> logs = (ArrayList<Logs>) intent.getSerializableExtra("logs");
+        ArrayList<StackWrapper> logs = (ArrayList<StackWrapper>) intent.getSerializableExtra("logs");
         recyclerView.setAdapter(adapter);
 
         adapter.setLogs(logs);

@@ -19,4 +19,8 @@ public interface PaintElement extends Element {
 
     void setPathOfStroke();
 
+    boolean containsPoint(float x, float y);
+
+    void moveTo(float width, float height);
+
 }

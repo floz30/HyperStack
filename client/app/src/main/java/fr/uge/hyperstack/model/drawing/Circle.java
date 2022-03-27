@@ -6,21 +6,21 @@ import android.graphics.Paint;
 import fr.uge.hyperstack.model.ElementVisitor;
 
 public class Circle extends AbstractFigure{
-    private Point endPoint;
+    private float radius;
 
     public Circle(int color, Point endPoint, int strokeSize, Point origin) {
         super(color, strokeSize, origin);
-        this.endPoint = endPoint;
+        this.radius = (float) Math.sqrt(Math.pow(getPositionX()-endPoint.getX(),2) + Math.pow(getPositionY()- endPoint.getY(),2));
     }
 
     @Override
     public float getWidth() {
-        return Math.abs(Math.abs(endPoint.getX()) - Math.abs(getPositionX()));
+        return radius;
     }
 
     @Override
     public float getHeight() {
-        return Math.abs(Math.abs(endPoint.getY()) - Math.abs(getPositionY()));
+        return radius;
     }
 
     @Override
@@ -44,12 +44,12 @@ public class Circle extends AbstractFigure{
         paint.setColor(getColor());
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(getStrokeSize());
-        canvas.drawCircle((endPoint.getX() + getPositionX())/2f, (getPositionY() + endPoint.getX())/2f,getWidth()/2f, paint);
+        canvas.drawCircle(getPositionX(), getPositionY(),radius, paint);
     }
 
     @Override
     public void onFingerMoveAction(float x, float y) {
-        setEndPoint(new Point(x,y));
+        this.radius = (float) Math.sqrt(Math.pow(getPositionX() - x,2) + Math.pow(getPositionY()- y,2));
     }
 
     @Override
@@ -59,11 +59,12 @@ public class Circle extends AbstractFigure{
 
     @Override
     public boolean containsPoint(float x, float y) {
-        return false;
+        return Math.sqrt(Math.pow(x-getPositionX(),2) + Math.pow(y-getPositionY(),2)) <= getWidth()/2f;
     }
 
-    public void setEndPoint(Point endPoint) {
-        this.endPoint = endPoint;
+    @Override
+    public void moveTo(float width, float height) {
+        setOrigin(new Point(getPositionX()+width,getPositionY()+height));
     }
 
     @Override
