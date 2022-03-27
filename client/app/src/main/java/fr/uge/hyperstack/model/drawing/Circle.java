@@ -59,7 +59,7 @@ public class Circle extends AbstractFigure{
 
     @Override
     public boolean containsPoint(float x, float y) {
-        return Math.sqrt(Math.pow(x-getPositionX(),2) + Math.pow(y-getPositionY(),2)) <= getWidth()/2f;
+        return Math.sqrt(Math.pow(x-getPositionX(),2) + Math.pow(y-getPositionY(),2)) <= radius;
     }
 
     @Override
