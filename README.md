@@ -4,7 +4,7 @@ HyperStack est une application Android qui propose un système de prise de note 
 ## Utilisation
 
 Pour utiliser l'application, il suffit d'ouvrir le projet sous Android Studio et la lancer soit dans un émulateur soit sur un téléphone Android.
-Afin de découvrir les fonctionnalités disponibles, merci de regarder le fichier **Rapport d'utilisateur** qui explique comment faire.
+Afin de découvrir les fonctionnalités disponibles, merci de regarder le fichier [Rapport d'utilisateur](Rapport_Utilisateur.pdf) qui explique comment faire.
 
 ## Limitations
 
