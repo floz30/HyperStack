@@ -190,6 +190,7 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
         editorView.clear();
         ViewGroup vg = this;
         vg.removeAllViews();
+        vg.addView(editorView);
     }
 
 }
