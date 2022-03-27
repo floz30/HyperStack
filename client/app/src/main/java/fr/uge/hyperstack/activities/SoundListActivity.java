@@ -73,11 +73,9 @@ public class SoundListActivity extends AppCompatActivity {
     }
 
     public void loadSound(Sound sound) throws IOException {
-        // TODO retourner sur le slide + afficher le player pour le son
-//        sound.setSoundFromAssets(this);
         Intent intent = new Intent();
         intent.putExtra("sound", sound);
-        setResult(Permission.SOUND_TAKEN_FROM_APP_REQUEST_CODE, intent);
+        setResult(RESULT_OK, intent);
         finish();
     }
 

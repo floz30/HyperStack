@@ -36,7 +36,7 @@ import fr.uge.hyperstack.model.MediaElement;
 public class Sound implements MediaElement, Serializable {
     private final String name;
     private transient Bitmap cachedSound = null;
-    private transient final MediaPlayer player = new MediaPlayer();
+    private transient MediaPlayer player = new MediaPlayer();
     private float x;
     private float y;
     private float width;
@@ -69,12 +69,13 @@ public class Sound implements MediaElement, Serializable {
     public void setSoundFromAssets(Context context) throws IOException {
         if (cachedSound != null) return;
         AssetFileDescriptor afd = context.getAssets().openFd(DATA_LOCATION + "/sound/" + name + ".mp3");
+        player = new MediaPlayer();
         player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-//        player.setOnPreparedListener(mediaPlayer -> player.start());
         player.prepareAsync();
         try (InputStream is = context.getAssets().open(DATA_LOCATION + "/sound/" + name + ".mp3")) {
             cachedSound = BitmapFactory.decodeStream(is);
         }
+        afd.close();
     }
 
     public static List<Sound> loadSoundList(Context context) throws IOException {

@@ -63,8 +63,8 @@ public class ImportSoundDialogFragment extends BottomSheetDialogFragment {
     }
 
     private void loadSoundList() {
-        Intent intent = new Intent(getActivity(), SoundListActivity.class);
-        requireActivity().startActivity(intent);
+        Intent intent = new Intent(requireActivity(), SoundListActivity.class);
+        requireActivity().startActivityForResult(intent, Permission.SOUND_TAKEN_FROM_APP_REQUEST_CODE);
     }
 
     public class ImportSoundItemAdapter extends RecyclerView.Adapter<ImportSoundDialogFragment.ImportSoundItemAdapter.ViewHolder> {

@@ -287,13 +287,15 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 break;
             case Permission.SOUND_TAKEN_FROM_APP_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    Sound sound = (Sound) data.getExtras().get("sound");
-                    try {
-                        sound.setSoundFromAssets(this);
-                    } catch (IOException e) {
-                        Toast.makeText(this, "Couldn't find the file", Toast.LENGTH_SHORT).show();
+                    if (data != null) {
+                        Sound sound = (Sound) data.getSerializableExtra("sound");
+                        try {
+                            sound.setSoundFromAssets(this);
+                        } catch (IOException e) {
+                            Toast.makeText(this, "Couldn't find the file", Toast.LENGTH_SHORT).show();
+                        }
+                        currentStack.addElementToSlide(sound, currentSlideNumber);
                     }
-                    currentStack.addElementToSlide(sound, currentSlideNumber);
                     soundDialogFragment.dismiss();
                 }
                 break;
