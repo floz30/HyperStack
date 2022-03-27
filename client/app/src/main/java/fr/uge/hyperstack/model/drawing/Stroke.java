@@ -52,18 +52,13 @@ public class Stroke implements Serializable, PaintElement {
 
     @Override
     public void onFingerMoveAction(float x, float y) {
-        lineTo(x, y);
+        pathOfStroke.lineTo(x, y);
+        pathPoints.add(new float[]{x, y});
     }
 
     public void moveTo(float x, float y) {
         pathOfStroke.moveTo(x, y);
         pathPoints.add(new float[]{x, y});
-    }
-
-    public void lineTo(float x, float y) {
-        pathOfStroke.lineTo(x, y);
-        pathPoints.add(new float[]{x, y});
-
     }
 
     @Override
@@ -106,6 +101,7 @@ public class Stroke implements Serializable, PaintElement {
         Paint paint = new Paint();
         paint.setColor(this.color);
         paint.setStrokeWidth(this.strokeSize);
+        paint.setStyle(Paint.Style.STROKE);
         setPathOfStroke();
         canvas.drawPath(this.pathOfStroke, paint);
     }

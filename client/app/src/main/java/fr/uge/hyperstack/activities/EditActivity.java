@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -459,7 +460,9 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     public static PaintElement initFigure(float x, float y) {
         switch (currentMode) {
             case DRAW:
-                return new Stroke(Color.RED, 10);
+                PaintElement stroke = new Stroke(Color.RED, 10);
+                stroke.moveTo(x, y);
+                return stroke;
             case RECTANGLE:
                 return new Rectangle(new Point(x, y), new Point(x, y), Color.RED, 10);
             case TRIANGLE:
@@ -485,7 +488,6 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                         switch (motionEvent.getAction()) {
                             case MotionEvent.ACTION_DOWN:
                                 PaintElement element = initFigure(motionEvent.getX(), motionEvent.getY());
-                                element.moveTo(motionEvent.getX(), motionEvent.getY());
                                 ev.getStrokeStack().add(element);
                                 logs.add(new StackWrapper(currentSlideNumber, element));
                                 currentStack.addElementToSlide(element, currentSlideNumber);
