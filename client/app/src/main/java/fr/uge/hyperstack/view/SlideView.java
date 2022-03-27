@@ -1,11 +1,14 @@
 package fr.uge.hyperstack.view;
 
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,7 @@ import androidx.core.view.ViewCompat;
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.model.ElementVisitor;
 import fr.uge.hyperstack.model.PaintElement;
+import fr.uge.hyperstack.model.Text;
 import fr.uge.hyperstack.model.media.Image;
 import fr.uge.hyperstack.model.media.Sound;
 import fr.uge.hyperstack.model.media.Video;
@@ -177,6 +181,8 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
 
     public void clear() {
         editorView.clear();
+        ViewGroup vg = this;
+        vg.removeAllViews();
     }
 
 }
