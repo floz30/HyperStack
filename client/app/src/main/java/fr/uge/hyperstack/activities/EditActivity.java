@@ -305,7 +305,7 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                     }
                 }
                 break;
-            case 1:
+            case 0:
                 if (resultCode == RESULT_OK) {
                     ArrayList<StackWrapper> res = (ArrayList<StackWrapper>) data.getSerializableExtra("selected");
                     ArrayList<Slide> slides = new ArrayList<>();
@@ -403,7 +403,7 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
         Intent intent = new Intent(this, LogsActivity.class);
 
         intent.putExtra("logs", logs);
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, 0);
     }
 
     /**
