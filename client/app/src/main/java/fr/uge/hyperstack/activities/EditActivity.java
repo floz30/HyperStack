@@ -42,6 +42,7 @@ import fr.uge.hyperstack.model.Element;
 import fr.uge.hyperstack.model.Mode;
 import fr.uge.hyperstack.model.PaintElement;
 import fr.uge.hyperstack.model.Stack;
+import fr.uge.hyperstack.model.Text;
 import fr.uge.hyperstack.model.drawing.Circle;
 import fr.uge.hyperstack.model.drawing.Point;
 import fr.uge.hyperstack.model.drawing.Rectangle;
@@ -282,7 +283,6 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                     }
                 }
         }
-
         refresh();
     }
 
@@ -331,10 +331,6 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
     private void eraseSlide() {
-//        Stack s = editorView.getCurrentStack();
-//        s.resetSlide(editorView.currentSlide);
-//        editorView.invalidate();
-
         currentStack.eraseSlide(currentSlideNumber);
     }
 

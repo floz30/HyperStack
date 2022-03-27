@@ -2,14 +2,11 @@ package fr.uge.hyperstack.view;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.MediaController;
-import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
@@ -17,8 +14,6 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.view.ViewCompat;
-
-import org.w3c.dom.Text;
 
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.model.ElementVisitor;
@@ -179,6 +174,11 @@ public class SlideView extends ConstraintLayout implements ElementVisitor {
         constraintSet.connect(id, ConstraintSet.BOTTOM, this.getId(), ConstraintSet.BOTTOM);
         constraintSet.constrainWidth(id, ConstraintSet.WRAP_CONTENT);
         constraintSet.constrainHeight(id, ConstraintSet.WRAP_CONTENT);
+    }
+
+    @Override
+    public void draw(Text text) {
+
     }
 
     public EditorView getEditorView(){

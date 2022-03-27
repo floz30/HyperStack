@@ -9,4 +9,5 @@ public interface ElementVisitor {
     void draw(Video video);
     void draw(Sound sound);
     void draw(PaintElement paintElement);
+    void draw(Text text);
 }
