@@ -98,6 +98,7 @@ public class Layer implements Serializable  {
 //        } catch (IOException e) {
 //            System.err.println("ERROR");
 //        }
+        clear();
         for (Element element : elements) {
             Log.d("draw", "draw");
             element.accept(currentView);

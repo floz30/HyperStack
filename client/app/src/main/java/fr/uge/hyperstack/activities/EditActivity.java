@@ -27,7 +27,6 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -38,11 +37,9 @@ import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.fragment.ImportImageDialogFragment;
 import fr.uge.hyperstack.fragment.ImportSoundDialogFragment;
 import fr.uge.hyperstack.fragment.SlideBottomBarDialogFragment;
-import fr.uge.hyperstack.model.Element;
 import fr.uge.hyperstack.model.Mode;
 import fr.uge.hyperstack.model.PaintElement;
 import fr.uge.hyperstack.model.Stack;
-import fr.uge.hyperstack.model.Text;
 import fr.uge.hyperstack.model.drawing.Circle;
 import fr.uge.hyperstack.model.drawing.Point;
 import fr.uge.hyperstack.model.drawing.Rectangle;
@@ -521,4 +518,14 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     }
 
 
+
+    public void selectSlide(int currentSlideNumber) {
+        currentStack.clearSlide(this.currentSlideNumber);
+        this.currentSlideNumber = currentSlideNumber;
+        updateSlideNumberLabel();
+        currentStack.drawSlide(this.currentSlideNumber);
+        currentStack.setDrawableElements();
+
+        Log.d("current", String.valueOf(this.currentSlideNumber));
+    }
 }

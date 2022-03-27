@@ -1,7 +1,6 @@
 package fr.uge.hyperstack.adapter;
 
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +12,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.model.Slide;
+import fr.uge.hyperstack.view.listener.OnSlideChangeListener;
 
 public class SlideBottomBarAdapter extends RecyclerView.Adapter<SlideBottomBarAdapter.SlideBottomBarViewHolder> {
     private final Slide[] slides;
+    private final OnSlideChangeListener listener;
 
-    public SlideBottomBarAdapter(List<Slide> slides) {
+    public SlideBottomBarAdapter(List<Slide> slides, OnSlideChangeListener listener) {
         super();
         this.slides = slides.toArray(new Slide[0]);
+        this.listener = listener;
     }
 
     @NonNull
@@ -35,8 +37,7 @@ public class SlideBottomBarAdapter extends RecyclerView.Adapter<SlideBottomBarAd
         holder.bind(currentSlide);
 
         holder.labelTextView.setOnClickListener(x -> {
-            Log.d("Binding", String.valueOf(holder.id));
-            
+            listener.onSlideChangeListener(holder.id - 1);
         });
     }
 
