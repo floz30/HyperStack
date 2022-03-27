@@ -485,23 +485,28 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                 new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
-                        switch (motionEvent.getAction()) {
-                            case MotionEvent.ACTION_DOWN:
-                                PaintElement element = initFigure(motionEvent.getX(), motionEvent.getY());
-                                ev.getStrokeStack().add(element);
-                                logs.add(new StackWrapper(currentSlideNumber, element));
-                                currentStack.addElementToSlide(element, currentSlideNumber);
-                                refresh();
-                                return true;
-                            case MotionEvent.ACTION_MOVE:
-                                PaintElement currentElem = ev.getStrokeStack().get(ev.getStrokeStack().size() - 1);
-                                currentElem.onFingerMoveAction(motionEvent.getX(), motionEvent.getY());
-                                refresh();
-                                return true;
-                            case MotionEvent.ACTION_UP:
-                                currentMode = Mode.SELECTION;
-                                setSelectionSetup();
-                                return true;
+                        if(currentMode != Mode.SELECTION) {
+                            switch (motionEvent.getAction()) {
+                                case MotionEvent.ACTION_DOWN:
+                                    PaintElement element = initFigure(motionEvent.getX(), motionEvent.getY());
+                                    ev.getStrokeStack().add(element);
+                                    logs.add(new StackWrapper(currentSlideNumber, element));
+                                    currentStack.addElementToSlide(element, currentSlideNumber);
+                                    refresh();
+                                    return true;
+                                case MotionEvent.ACTION_MOVE:
+                                    PaintElement currentElem = ev.getStrokeStack().get(ev.getStrokeStack().size() - 1);
+                                    currentElem.onFingerMoveAction(motionEvent.getX(), motionEvent.getY());
+                                    refresh();
+                                    return true;
+                                case MotionEvent.ACTION_UP:
+                                    currentMode = Mode.SELECTION;
+                                    setSelectionSetup();
+                                    return true;
+                            }
+                        }
+                        else{
+                            setSelectionSetup();
                         }
                         return EditActivity.super.onTouchEvent(motionEvent);
                     }
