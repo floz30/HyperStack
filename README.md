@@ -21,5 +21,5 @@ Toutes les fonctionnalités prévues non pas été implémentée. Voici la liste
 ## Bugs connus
 
 - Ajout d'un élément sur une slide créée via le bouton "+"
-- La navigation entre les slides via le bouton en bas à gauche ne fonctionne plus après la suppression d'une slide
-- Léffacement d'une slide ne fonctionne pas pour l'élément Texte
+- La navigation entre les slides via les boutons en bas à gauche ne fonctionne plus après la suppression d'une slide
+- L'effacement d'une slide ne fonctionne pas pour l'élément Texte
