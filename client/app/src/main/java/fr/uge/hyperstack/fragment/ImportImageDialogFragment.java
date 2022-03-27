@@ -73,10 +73,10 @@ public class ImportImageDialogFragment extends BottomSheetDialogFragment {
     public class ImportImageItemAdapter extends RecyclerView.Adapter<ImportImageItemAdapter.ImportImageItemViewHolder> {
 
         private final ImportImageItem[] items = {
-                new ImportImageItem(R.drawable.ic_download, "Importer une image", "", 1, ".jpg"),
-                new ImportImageItem(R.drawable.ic_download, "Importer une vidéo", "", 2, ".mp4"),
-                new ImportImageItem(R.drawable.ic_camera, "Prendre une photo", MediaStore.ACTION_IMAGE_CAPTURE, Permission.IMAGE_CAPTURE_REQUEST_CODE, ".jpg"),
-                new ImportImageItem(R.drawable.ic_video, "Prendre une vidéo", MediaStore.ACTION_VIDEO_CAPTURE, Permission.VIDEO_CAPTURE_REQUEST_CODE, ".mp4")
+                new ImportImageItem(R.drawable.ic_download, "Importer une image", Intent.ACTION_GET_CONTENT, Permission.IMAGE_IMPORT_REQUEST_CODE, ".jpg", true),
+                new ImportImageItem(R.drawable.ic_download, "Importer une vidéo", Intent.ACTION_GET_CONTENT, Permission.VIDEO_IMPORT_REQUEST_CODE, ".mp4", true),
+                new ImportImageItem(R.drawable.ic_camera, "Prendre une photo", MediaStore.ACTION_IMAGE_CAPTURE, Permission.IMAGE_CAPTURE_REQUEST_CODE, ".jpg", false),
+                new ImportImageItem(R.drawable.ic_video, "Prendre une vidéo", MediaStore.ACTION_VIDEO_CAPTURE, Permission.VIDEO_CAPTURE_REQUEST_CODE, ".mp4", false)
         };
 
         private class ImportImageItem {
@@ -85,13 +85,15 @@ public class ImportImageDialogFragment extends BottomSheetDialogFragment {
             private final String action;
             private final int requestCode;
             private final String format;
+            private final boolean isImportation;
 
-            ImportImageItem(int iconId, String label, String action, int requestCode, String format) {
+            ImportImageItem(int iconId, String label, String action, int requestCode, String format, boolean isImportation) {
                 this.iconId = iconId;
                 this.label = label;
                 this.action = action;
                 this.requestCode = requestCode;
                 this.format = format;
+                this.isImportation = isImportation;
             }
         }
 
@@ -133,15 +135,22 @@ public class ImportImageDialogFragment extends BottomSheetDialogFragment {
                 labelTextView.setText(item.label);
 
                 labelTextView.setOnClickListener(view -> {
-                    Intent cameraIntent = new Intent(item.action);
-                    try {
-                        File file = createImageFile(item.format);
-                        Uri uri = FileProvider.getUriForFile(context.getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", file);
-                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                        getActivity().startActivityForResult(cameraIntent, item.requestCode);
+                    if (item.isImportation) {
+                        Intent intent = new Intent();
+                        intent.setAction(item.action);
+                        intent.setDataAndType(MediaStore.Images.Media.INTERNAL_CONTENT_URI, "image/* video/*");
+                        getActivity().startActivityForResult(Intent.createChooser(intent, "Importation d'un média"), item.requestCode);
+                    } else {
+                        Intent intent = new Intent(item.action);
+                        try {
+                            File file = createImageFile(item.format);
+                            Uri uri = FileProvider.getUriForFile(context.getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", file);
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                            getActivity().startActivityForResult(intent, item.requestCode);
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
             }
