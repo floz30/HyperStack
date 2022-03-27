@@ -92,6 +92,10 @@ public class Stack implements Serializable {
         return slides;
     }
 
+    public void setSlides(List<Slide> slides) {
+        this.slides = slides;
+    }
+
     /**
      * Ajoute un élément au calque courant de la slide spécifiée.
      *

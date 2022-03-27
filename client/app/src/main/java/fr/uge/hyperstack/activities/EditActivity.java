@@ -39,8 +39,11 @@ import fr.uge.hyperstack.R;
 import fr.uge.hyperstack.fragment.ImportImageDialogFragment;
 import fr.uge.hyperstack.fragment.ImportSoundDialogFragment;
 import fr.uge.hyperstack.fragment.SlideBottomBarDialogFragment;
+import fr.uge.hyperstack.model.Element;
+import fr.uge.hyperstack.model.Layer;
 import fr.uge.hyperstack.model.Mode;
 import fr.uge.hyperstack.model.PaintElement;
+import fr.uge.hyperstack.model.Slide;
 import fr.uge.hyperstack.model.Stack;
 import fr.uge.hyperstack.model.drawing.Circle;
 import fr.uge.hyperstack.model.drawing.Point;
@@ -301,6 +304,37 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                         soundDialogFragment.dismiss();
                     }
                 }
+                break;
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    ArrayList<StackWrapper> res = (ArrayList<StackWrapper>) data.getSerializableExtra("selected");
+                    ArrayList<Slide> slides = new ArrayList<>();
+                    int max = 0;
+                    for (StackWrapper s: res) {
+                        if (max < s.getSlideIndex()) {
+                            max = s.getSlideIndex();
+                        }
+                    }
+
+                    for (int i = 0; i<=max; i++) {
+                        slides.add(new Slide(i));
+                    }
+
+                    for (StackWrapper s: res) {
+                        Layer l = new Layer(this, findViewById(R.id.editLayout));
+                        l.addElement(s.getElement());
+                        for (Slide slide: slides) {
+                            if (slide.getSlideNumber() == s.getSlideIndex()) {
+                                slide.addLayer(l);
+                            }
+                        }
+                    }
+
+                    currentStack.clearSlide(currentSlideNumber);
+                    currentStack.setSlides(slides);
+                    currentStack.drawSlide(currentSlideNumber);
+                }
+                break;
         }
         refresh();
     }
