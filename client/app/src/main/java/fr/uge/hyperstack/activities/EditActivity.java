@@ -79,8 +79,9 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
     private SlideBottomBarDialogFragment slideBottomBarDialogFragment;
     private Localisation localisation;
     private static Mode currentMode = Mode.SELECTION;
-    private final List<PaintElement> strokeStack = new ArrayList<>();
     private final ArrayList<StackWrapper> logs = new ArrayList<>();
+    private PaintElement selectedItem;
+    private Point selectPoint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -438,7 +439,43 @@ public class EditActivity extends AppCompatActivity implements PopupMenu.OnMenuI
                                 return true;
                             case MotionEvent.ACTION_UP:
                                 currentMode = Mode.SELECTION;
-                                view.setOnTouchListener(null);
+                                setSelectionSetup();
+                                return true;
+                        }
+                        return EditActivity.super.onTouchEvent(motionEvent);
+                    }
+                }
+        );
+    }
+
+    public void setSelectionSetup() {
+        View view = findViewById(R.id.editLayout);
+        EditorView ev = currentStack.getSlides().get(currentSlideNumber).getCurrentLayer().getEditorView(); // TODO a refaire
+        view.setOnTouchListener(
+                new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        switch (motionEvent.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                for(PaintElement elem : ev.getStrokeStack()){
+                                    if(elem.containsPoint(motionEvent.getX(),motionEvent.getY())){
+                                        selectedItem = elem;
+                                        selectPoint = new Point(motionEvent.getX(), motionEvent.getY());
+                                        break;
+                                    }
+                                    selectedItem = null;
+                                }
+                                return true;
+                            case MotionEvent.ACTION_MOVE:
+                                if(selectedItem != null){
+                                    float width =  motionEvent.getX() - selectPoint.getX();
+                                    float height = motionEvent.getY() - selectPoint.getY();
+                                    selectedItem.moveTo(width,height);
+                                    selectPoint = new Point(motionEvent.getX(), motionEvent.getY());
+                                    refresh();
+                                }
+                                return true;
+                            case MotionEvent.ACTION_UP:
                                 return true;
                         }
                         return EditActivity.super.onTouchEvent(motionEvent);

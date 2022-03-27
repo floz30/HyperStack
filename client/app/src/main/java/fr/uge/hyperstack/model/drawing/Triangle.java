@@ -69,6 +69,11 @@ public class Triangle extends AbstractFigure {
     }
 
     @Override
+    public void moveTo(float width, float height) {
+
+    }
+
+    @Override
     public float getArea() {
         return (getHeight()*getWidth())/2f;
     }

@@ -36,6 +36,11 @@ public class Stroke implements Serializable, PaintElement {
     }
 
     @Override
+    public boolean containsPoint(float x, float y) {
+        return false;
+    }
+
+    @Override
     public int getColor() {
         return color;
     }

@@ -30,6 +30,10 @@ abstract class AbstractFigure implements Figure {
         return origin.getY();
     }
 
+    public void setOrigin(Point origin) {
+        this.origin = origin;
+    }
+
     @Override
     public int getStrokeSize() {
         return strokeSize;

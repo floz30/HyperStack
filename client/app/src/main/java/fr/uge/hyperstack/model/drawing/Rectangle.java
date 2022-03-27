@@ -61,7 +61,16 @@ public class Rectangle extends AbstractFigure {
 
     @Override
     public boolean containsPoint(float x, float y) {
+        if(x > Math.min(endPoint.getX(),getPositionX()) && x < Math.max(endPoint.getX(),getPositionX())){
+            return y > Math.min(endPoint.getY(), getPositionY()) && y < Math.max(endPoint.getY(), getPositionY());
+        }
         return false;
+    }
+
+    @Override
+    public void moveTo(float width, float height) {
+        setOrigin(new Point(getPositionX()+width,getPositionY()+height));
+        endPoint = new Point(endPoint.getX() + width, endPoint.getY() + height);
     }
 
     @Override
